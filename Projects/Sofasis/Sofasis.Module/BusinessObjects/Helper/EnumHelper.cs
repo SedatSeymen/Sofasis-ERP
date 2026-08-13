@@ -242,7 +242,12 @@ public enum SatinAlmaSiparisDurumu
     [XafDisplayName("Faturalandı")]
     Faturalandi,
     [XafDisplayName("İptal Edildi")]
-    IptalEdildi
+    IptalEdildi,
+    // v1.5 kısmi teslimat: ordinal DEĞERİ korumak için EN SONA eklendi (SatinAlmaSiparisiM.cs'deki
+    // [Appearance] renklendirmeleri "Durum = 1/2/3" gibi ORDİNAL sayı literal'i kullanıyor — araya
+    // eklemek mevcut renklendirmeleri sessizce kaydırıp yanlış hale getirirdi).
+    [XafDisplayName("Kısmi Teslim Alındı")]
+    KismiTeslimAlindi
 }
 
 // SA-5 (Alış Faturası) kapsamında üçlü eşleştirme (Sipariş/Mal Kabul/Fatura miktar-fiyat) sapması
@@ -257,6 +262,21 @@ public enum UcluEslestirmePolitikasi
     [XafDisplayName("Engelle")]
     Engelle
 }
+#endregion
+
+#region Fatura Yönetimi
+
+// FaturaM.Durum — v1.5'te yalnızca 2 durum yeterli (basit taslak/onay akışı; Satın Alma
+// Talebi'ndeki çok adımlı onay süreci burada YOK — YAGNI, fatura zaten bir Sipariş/Mal Kabul
+// zincirinin sonunda, tek adımda oluşturulur).
+public enum FaturaDurumu
+{
+    [XafDisplayName("Taslak")]
+    Taslak,
+    [XafDisplayName("Onaylandı")]
+    Onaylandi
+}
+
 #endregion
 
 #region Satış Pazarlama Yönetimi

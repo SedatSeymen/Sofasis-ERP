@@ -32,11 +32,27 @@ namespace Sofasis.Module.BusinessObjects
         {
         }
 
+        StokHareketleriM stokHareketleriM;
+
         [VisibleInDetailView(false)]
         [VisibleInListView(false)]
         [Association("StokHareketleriM-StokHareketleriDs")]
         [RuleRequiredField("RuleRequired_StokHareketleriD_StokHareketleriM", DefaultContexts.Save, "Satır bir fiş başlığına bağlı olmalıdır.")]
-        public StokHareketleriM StokHareketleriM { get; set; }
+        public StokHareketleriM StokHareketleriM
+        {
+            get => stokHareketleriM;
+            // KRİTİK: bu alan eskiden düz bir auto-property'ydi ({ get; set; }) — SetPropertyValue
+            // ÇAĞIRMIYORDU. XPO'nun [Association] çift-yönlü senkronizasyonu (bu satır set
+            // edildiğinde StokHareketleriM.StokHareketleriDs koleksiyonuna otomatik eklenmesi)
+            // SetPropertyValue'nün İÇİNDEKİ mekanizmaya bağlıdır — auto-property bunu tamamen
+            // BAYPAS ediyordu. Sonuç: programatik olarak (servis katmanında, UI grid'i açılmadan
+            // ÖNCE) oluşturulan satırlar StokHareketleriDs.Count'ta HİÇBİR ZAMAN görünmüyordu
+            // (canlı testte kanıtlandı: satır oluşturuluyor, istisna yok, ama Count sıfır kalıyor,
+            // Reload() bile çözmüyordu). Diğer tüm ilişki alanları (bkz. SatinAlmaSiparisiD.
+            // SatinAlmaSiparisiM) zaten SetPropertyValue kullanıyor — bu, o standarttan sapan tek
+            // istisnaydı.
+            set => SetPropertyValue(nameof(StokHareketleriM), ref stokHareketleriM, value);
+        }
 
         StokTanim stokTanim;
         decimal miktar;
@@ -52,7 +68,17 @@ namespace Sofasis.Module.BusinessObjects
         bool motorIslendi;
 
         [XafDisplayName("Stok")]
-        [Appearance("ED_StokHareketleriD_StokTanim", Enabled = false, Criteria = "!(IsNewObject(this))", Context = "Any")]
+        // NOT: "!(IsNewObject(this))" DEĞİL — Mal Kabul (STSAGR) gibi akışlarda satırlar servis
+        // tarafından programatik olarak (kullanıcı "Yeni" butonuna basmadan) ÖNCEDEN oluşturulup
+        // popup'a öyle taşınıyor; bu durumda XAF'ın ListPropertyEditor'ün iç içe (nested)
+        // ObjectSpace'i, satırın KENDİ IsNewObject() durumunu YANLIŞ (false) raporluyor — hâlbuki
+        // satır gerçekten hiç commit edilmemiş (canlı testte kanıtlandı: aynı satırın CreatedDate'i
+        // gerçek commit anına kadar boş kalıyor). Bunun yerine BAŞLIK fişinin gerçekten numaralanıp
+        // numaralanmadığına (yani gerçekten kaydedilip kaydedilmediğine) bakılır — bu düz bir alan
+        // okumasıdır, IsNewObject() gibi bağlama duyarlı bir fonksiyon çağrısı değildir, bu yüzden
+        // güvenilir. Kayıtlı bir fişe sonradan satır eklenmesi zaten StokHareketleriMKayitliFisKilitleController
+        // tarafından engellendiğinden ("Yeni" satır butonu devre dışı), bu değişim regresyon YARATMAZ.
+        [Appearance("ED_StokHareketleriD_StokTanim", Enabled = false, Criteria = "StokHareketleriM.FisNo != '" + Helper.ConstNewRecordText + "'", Context = "Any")]
         [RuleRequiredField("RuleRequired_StokHareketleriD_StokTanim", DefaultContexts.Save, "Lütfen Stok Seçiniz...")]
         public StokTanim StokTanim
         {
@@ -62,7 +88,8 @@ namespace Sofasis.Module.BusinessObjects
 
         [DbType("decimal(18,4)")]
         [XafDisplayName("Miktar")]
-        [Appearance("ED_StokHareketleriD_Miktar", Enabled = false, Criteria = "!(IsNewObject(this))", Context = "Any")]
+        // Kriter gerekçesi: bkz. StokTanim property'sindeki yorum (nested ObjectSpace/IsNewObject sorunu).
+        [Appearance("ED_StokHareketleriD_Miktar", Enabled = false, Criteria = "StokHareketleriM.FisNo != '" + Helper.ConstNewRecordText + "'", Context = "Any")]
         [RuleValueComparison("Rule_StokHareketleriD_Miktar_Pozitif", DefaultContexts.Save, ValueComparisonType.GreaterThan, 0,
             CustomMessageTemplate = "Lütfen miktarı sıfırdan büyük giriniz.")]
         public decimal Miktar
@@ -79,7 +106,8 @@ namespace Sofasis.Module.BusinessObjects
         // kullanıcı çıkış maliyeti seçmez.
         [DbType("decimal(28,6)")]
         [XafDisplayName("Birim Maliyet")]
-        [Appearance("ED_StokHareketleriD_BirimMaliyet", Enabled = false, Criteria = "!(IsNewObject(this))", Context = "Any")]
+        // Kriter gerekçesi: bkz. StokTanim property'sindeki yorum (nested ObjectSpace/IsNewObject sorunu).
+        [Appearance("ED_StokHareketleriD_BirimMaliyet", Enabled = false, Criteria = "StokHareketleriM.FisNo != '" + Helper.ConstNewRecordText + "'", Context = "Any")]
         public decimal BirimMaliyet
         {
             get => birimMaliyet;
@@ -100,7 +128,8 @@ namespace Sofasis.Module.BusinessObjects
         }
 
         [XafDisplayName("Döviz Kodu")]
-        [Appearance("ED_StokHareketleriD_DovizTanim", Enabled = false, Criteria = "!(IsNewObject(this))", Context = "Any")]
+        // Kriter gerekçesi: bkz. StokTanim property'sindeki yorum (nested ObjectSpace/IsNewObject sorunu).
+        [Appearance("ED_StokHareketleriD_DovizTanim", Enabled = false, Criteria = "StokHareketleriM.FisNo != '" + Helper.ConstNewRecordText + "'", Context = "Any")]
         public DovizTanim DovizTanim
         {
             get => dovizTanim;
@@ -108,7 +137,8 @@ namespace Sofasis.Module.BusinessObjects
         }
 
         [XafDisplayName("Döviz Kuru")]
-        [Appearance("ED_StokHareketleriD_DovizKuru", Enabled = false, Criteria = "!(IsNewObject(this))", Context = "Any")]
+        // Kriter gerekçesi: bkz. StokTanim property'sindeki yorum (nested ObjectSpace/IsNewObject sorunu).
+        [Appearance("ED_StokHareketleriD_DovizKuru", Enabled = false, Criteria = "StokHareketleriM.FisNo != '" + Helper.ConstNewRecordText + "'", Context = "Any")]
         [VisibleInListView(false)]
         public decimal? DovizKuru
         {

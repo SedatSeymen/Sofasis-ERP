@@ -31,11 +31,16 @@ namespace Sofasis.Module.BusinessObjects;
     Criteria = "Durum = 2", Context = "ListView", BackColor = "Blue", FontColor = "White", Priority = 1)]
 [Appearance("SatinAlmaSiparisiM_IptalEdildi", AppearanceItemType = "ViewItem", TargetItems = "*",
     Criteria = "Durum = 3", Context = "ListView", BackColor = "Gray", FontColor = "White", Priority = 1)]
+// KismiTeslimAlindi (ordinal=4) enum'un SONUNA eklendiği için burada da 4 kullanılır (bkz.
+// EnumHelper.cs'deki yorum — ordinal kaymasını önlemek için araya eklenmedi).
+[Appearance("SatinAlmaSiparisiM_KismiTeslimAlindi", AppearanceItemType = "ViewItem", TargetItems = "*",
+    Criteria = "Durum = 4", Context = "ListView", BackColor = "Orange", FontColor = "White", Priority = 1)]
 [ListViewFilter("Verilenler", "Durum = 0", isCurrentFilter: true, Index = 0)]
-[ListViewFilter("Mal Kabul Yapılanlar", "Durum = 1", Index = 1)]
-[ListViewFilter("Faturalananlar", "Durum = 2", Index = 2)]
-[ListViewFilter("İptal Edilenler", "Durum = 3", Index = 3)]
-[ListViewFilter("Tüm Kayıtlar", "", "", Index = 4)]
+[ListViewFilter("Kısmi Teslim Alınanlar", "Durum = 4", Index = 1)]
+[ListViewFilter("Mal Kabul Yapılanlar", "Durum = 1", Index = 2)]
+[ListViewFilter("Faturalananlar", "Durum = 2", Index = 3)]
+[ListViewFilter("İptal Edilenler", "Durum = 3", Index = 4)]
+[ListViewFilter("Tüm Kayıtlar", "", "", Index = 5)]
 public class SatinAlmaSiparisiM : BaseClassWithAuditAndDescription
 {
     public SatinAlmaSiparisiM(Session session)
@@ -112,7 +117,13 @@ public class SatinAlmaSiparisiM : BaseClassWithAuditAndDescription
             // SatisSiparisM.CariHesapTanim'daki OnChanged deseninin sadeleştirilmiş hali — Sipariş'te
             // ayrıca KDVTipi/FiyatListesi taşınmaz (Satın Alma tarafında henüz kullanılmıyor).
             if (!IsLoading && tedarikci != null)
+            {
                 DovizTanim = tedarikci.DovizTanim;
+                // Standardizasyon (bu turda kararlaştırıldı): CariHesapHareketleri/StokHareketleriD
+                // ile AYNI tam desen — kur artık elle zorunlu değil, güncel kur otomatik çekilir.
+                if (DovizTanim != null)
+                    DovizKuruGuncelle(DovizTanim);
+            }
         }
     }
 
@@ -183,6 +194,7 @@ public class SatinAlmaSiparisiM : BaseClassWithAuditAndDescription
     [XafDisplayName("Döviz Kuru")]
     [ModelDefault("DisplayFormat", "{0:n6}")]
     [ModelDefault("EditMask", "n6")]
+    [Appearance("ED_SatinAlmaSiparisiM_DovizKuru", Enabled = false, Criteria = "!(IsNewObject(this))", Context = "DetailView")]
     [RuleValueComparison("Rule_SatinAlmaSiparisiM_DovizKuru_Pozitif", DefaultContexts.Save, ValueComparisonType.GreaterThan, 0,
         CustomMessageTemplate = "Lütfen döviz kurunu sıfırdan büyük giriniz.")]
     public decimal DovizKuru
@@ -218,6 +230,34 @@ public class SatinAlmaSiparisiM : BaseClassWithAuditAndDescription
         ToplamTutar = SatinAlmaSiparisiDs
             .Where(x => x != deletedObject)
             .Sum(x => x.ToplamTutar);
+    }
+
+    // CariHesapHareketleri/StokHareketleriD.OnChanged(DovizTanim)'in birebir portu — Döviz Kodu
+    // elle değiştirilirse de (Tedarikçi'den miras alınan varsayılanın kullanıcı tarafından
+    // override edilmesi) kur otomatik güncellenir.
+    protected override void OnChanged(string propertyName, object oldValue, object newValue)
+    {
+        base.OnChanged(propertyName, oldValue, newValue);
+        if (propertyName == nameof(DovizTanim) && newValue != null && !IsLoading)
+            DovizKuruGuncelle((DovizTanim)newValue);
+    }
+
+    // CariHesapHareketleri.DovizKuruGuncelle'nin birebir portu — SatinAlmaSiparisiM zaten kendi
+    // Master'ı olduğundan (StokHareketleriD'deki gibi ayrı bir Master'a bağımlılık yok) doğrudan
+    // kendi SiparisTarihi'ni kullanır.
+    void DovizKuruGuncelle(DovizTanim doviz)
+    {
+        if (doviz.DovizKodu == "TRY")
+        {
+            DovizKuru = 1;
+        }
+        else
+        {
+            DovizGunlukKurM entity = Session.FindObject<DovizGunlukKurM>(new BinaryOperator("KurTarihi", SiparisTarihi));
+            DovizGunlukKurD entitydetail = entity?.DovizGunlukKurDetails.FirstOrDefault(x => x.DovizTanim == doviz);
+            if (entitydetail != null)
+                DovizKuru = entitydetail.DovizSatis;
+        }
     }
 
     protected override void OnSaving()

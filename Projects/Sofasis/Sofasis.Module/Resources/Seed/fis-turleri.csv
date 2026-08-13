@@ -34,19 +34,22 @@ CKCIRO;Çek Ciro;Cek;Borc;;Yok
 SNSGIR;Senet Girişi;Senet;Alacak;;Yok
 SNSCIK;Senet Çıkışı;Senet;Borc;;Yok
 SNCIRO;Senet Ciro;Senet;Borc;;Yok
-FAALIS;Alış Faturası;Fatura;Alacak;;Yok
-FAALID;Alış İade Faturası;Fatura;Borc;;Yok
-FASTIS;Satış Faturası;Fatura;Borc;;Yok
-FASTID;Satış İade Faturası;Fatura;Alacak;;Yok
-IRALIS;Alış İrsaliyesi;Fatura;Alacak;;Yok
-IRALID;Alış İade İrsaliyesi;Fatura;Borc;;Yok
-IRSTIS;Satış İrsaliyesi;Irsaliye;Borc;;Yok
-IRSTID;Satış İade İrsaliyesi;Irsaliye;Alacak;;Yok
-FAPKST;Perakende Satış Faturası;Irsaliye;Borc;;Yok
-FAPKSI;Perakende Satış İade Faturası;Irsaliye;Alacak;;Yok
+FAALIS;Alış Faturası;Fatura;Borc;FaturaM_DetailView;Yok
+FAALID;Alış İade Faturası;Fatura;Alacak;FaturaM_DetailView;Yok
+FASTIS;Satış Faturası;Fatura;Alacak;FaturaM_DetailView;Yok
+FASTID;Satış İade Faturası;Fatura;Borc;FaturaM_DetailView;Yok
+IRALIS;Alış İrsaliyesi;Fatura;Borc;;Yok
+IRALID;Alış İade İrsaliyesi;Fatura;Alacak;;Yok
+IRSTIS;Satış İrsaliyesi;Irsaliye;Alacak;;Yok
+IRSTID;Satış İade İrsaliyesi;Irsaliye;Borc;;Yok
+FAPKST;Perakende Satış Faturası;Irsaliye;Alacak;;Yok
+FAPKSI;Perakende Satış İade Faturası;Irsaliye;Borc;;Yok
+CAALIS;Cari Alış Faturası Karşılığı;Cari;Borc;;Yok
+CASTIS;Cari Satış Faturası Karşılığı;Cari;Alacak;;Yok
 SPSTIS;Satış & Pazarlama Siparişi;Siparis;Borc;SatisSiparisM_DetailView;Yok
 STACLS;Stok Açılış Fişi;Stok;Yok;StokAcilisFisi_ListView;Giris
 STALIS;Stok Alış Girişi;Stok;Yok;StokAlisGirisi_ListView;Giris
+STSAGR;Satın Alma Mal Kabul Girişi;Stok;Yok;StokHareketleriM_ListView;Giris
 STURET;Üretim Girişi;Stok;Yok;StokUretimGirisi_ListView;Giris
 STSFAZ;Sayım Fazlası;Stok;Yok;StokSayimFazlasi_ListView;Giris
 STTRGR;Depo Transfer Girişi;Stok;Yok;;Giris

@@ -27,6 +27,7 @@ public class SatinAlmaSiparisiD : BaseClass
     decimal toplamTutar;
     SatinAlmaTalebiD kaynakTalepD;
     SatinAlmaTeklifD kaynakTeklifD;
+    decimal teslimEdilenMiktar;
 
     [VisibleInDetailView(false)]
     [VisibleInListView(false)]
@@ -40,6 +41,7 @@ public class SatinAlmaSiparisiD : BaseClass
 
     [XafDisplayName("Stok / Hizmet / Masraf")]
     [RuleRequiredField("RuleRequired_SatinAlmaSiparisiD_StokTanim", DefaultContexts.Save, "Lütfen Stok/Hizmet/Masraf Seçiniz...")]
+    [Appearance("ED_SatinAlmaSiparisiD_StokTanim", Enabled = false, Criteria = "!(IsNewObject(this))", Context = "Any")]
     public StokTanim StokTanim
     {
         get => stokTanim;
@@ -55,6 +57,7 @@ public class SatinAlmaSiparisiD : BaseClass
     [XafDisplayName("Miktar")]
     [RuleValueComparison("Rule_SatinAlmaSiparisiD_Miktar_Pozitif", DefaultContexts.Save, ValueComparisonType.GreaterThan, 0,
         CustomMessageTemplate = "Lütfen miktarı sıfırdan büyük giriniz.")]
+    [Appearance("ED_SatinAlmaSiparisiD_Miktar", Enabled = false, Criteria = "!(IsNewObject(this))", Context = "Any")]
     public decimal Miktar
     {
         get => miktar;
@@ -70,6 +73,7 @@ public class SatinAlmaSiparisiD : BaseClass
     [XafDisplayName("Birim Fiyat")]
     [RuleValueComparison("Rule_SatinAlmaSiparisiD_BirimFiyat_Pozitif", DefaultContexts.Save, ValueComparisonType.GreaterThan, 0,
         CustomMessageTemplate = "Lütfen birim fiyatı sıfırdan büyük giriniz.")]
+    [Appearance("ED_SatinAlmaSiparisiD_BirimFiyat", Enabled = false, Criteria = "!(IsNewObject(this))", Context = "Any")]
     public decimal BirimFiyat
     {
         get => birimFiyat;
@@ -105,6 +109,23 @@ public class SatinAlmaSiparisiD : BaseClass
         get => kaynakTeklifD;
         set => SetPropertyValue(nameof(KaynakTeklifD), ref kaynakTeklifD, value);
     }
+
+    // v1.5 kısmi teslimat: ISatinAlmaMalKabulServisi her kısmi Mal Kabul'de bu alanı artırır.
+    // Bir Sipariş satırı birden fazla Mal Kabul'e (İrsaliye'ye) bölünebilir — Logo Tiger'daki
+    // "sipariş → birden fazla irsaliye" esnekliğinin sadeleştirilmiş karşılığı.
+    [DbType("decimal(18,4)")]
+    [XafDisplayName("Teslim Edilen Miktar")]
+    [Appearance("ED_SatinAlmaSiparisiD_TeslimEdilenMiktar", Enabled = false, Context = "Any")]
+    public decimal TeslimEdilenMiktar
+    {
+        get => teslimEdilenMiktar;
+        set => SetPropertyValue(nameof(TeslimEdilenMiktar), ref teslimEdilenMiktar, value);
+    }
+
+    // Kalıcı bir kolon DEĞİL — Birim property'siyle (satır 52) aynı "hesaplanan, sorgulanamaz"
+    // desen. Mal Kabul popup'ında varsayılan miktar olarak kullanılır.
+    [XafDisplayName("Kalan Miktar")]
+    public decimal KalanMiktar => Miktar - TeslimEdilenMiktar;
 
     void HesaplaToplamTutar()
     {

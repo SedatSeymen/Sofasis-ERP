@@ -259,6 +259,7 @@ public class CariHesapTanim : BaseClassWithAuditAndDescription
             var CariHareketlist = new XPQuery<CariHesapHareketleri>(Session).Where(x => x.CariHesapTanim == this);
             var SatinAlmaSiparisleri = new XPQuery<SatinAlmaSiparisiM>(Session).Where(x => x.Tedarikci == this);
             var SatinAlmaTeklifleri = new XPQuery<SatinAlmaTeklifM>(Session).Where(x => x.Tedarikci == this);
+            var Faturalar = new XPQuery<FaturaM>(Session).Where(x => x.CariHesap == this);
 
             if (Siparislist.Count() > 0)
             {
@@ -271,6 +272,10 @@ public class CariHesapTanim : BaseClassWithAuditAndDescription
             else if (SatinAlmaTeklifleri.Count() > 0)
             {
                 throw new UserFriendlyException("Bu Cari, Satın Alma Tekliflerinde Kullanılmış — Silemezsiniz !!!");
+            }
+            else if (Faturalar.Count() > 0)
+            {
+                throw new UserFriendlyException("Bu Cari, Faturalarda Kullanılmış — Silemezsiniz !!!");
             }
             else if (CariHareketlist.Count() > 0)
             {

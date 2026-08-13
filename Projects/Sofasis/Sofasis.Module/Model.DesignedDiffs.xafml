@@ -101,6 +101,11 @@
               <Item Id="@6a3f9e21-7b4c-4d8e-9a1f-2c5d8e7b3a4f" ViewId="SatinAlmaTeklifM_ListView" Index="1" IsNewNode="True" />
               <Item Id="@8d2c1f4a-3e6b-4a7c-8f9d-1b3c5e7a9d2f" Caption="Teklif Karşılaştırma" ViewId="SatinAlmaTeklifD_ListView" Index="2" IsNewNode="True" />
               <Item Id="@dad15a59-c79d-4446-8efa-2007c1d99e69" ViewId="SatinAlmaSiparisiM_ListView" Index="3" IsNewNode="True" />
+              <!-- SA-5: Faturalar burada AllowNew="False" — tek giriş noktası Mal Kabul ekranındaki
+                   "Fatura Oluştur" aksiyonu (bkz. FaturaOlusturController), rastgele boş fatura
+                   oluşturmak KaynakSiparis bağlantısını (3'lü eşleştirme/Cari ayna için gerekli)
+                   atlar. -->
+              <Item Id="@c4e8f2a6-1d9b-4a3e-8f6c-5b2d7e9a4c1f" Caption="Faturalar" ViewId="FaturaM_ListView" Index="4" IsNewNode="True" />
             </Items>
           </Item>
         </Items>
@@ -161,6 +166,7 @@
           <Item Id="DepoTanim_ListView" Removed="True" />
           <Item Id="DovizGunlukKurD_ListView" Removed="True" />
           <Item Id="Event_ListView" Visible="False" />
+          <Item Id="FaturaM_ListView" Removed="True" />
           <Item Id="FilteringCriterion_ListView" Removed="True" />
           <Item Id="FisTuruTanim_ListView" Removed="True" />
           <Item Id="FiyatListeSablonD_ListView" Removed="True" />
@@ -3776,6 +3782,8 @@
         <PropertyEditor Id="Miktar" PropertyName="Miktar" IsNewNode="True" />
         <PropertyEditor Id="BirimFiyat" PropertyName="BirimFiyat" IsNewNode="True" />
         <PropertyEditor Id="ToplamTutar" PropertyName="ToplamTutar" IsNewNode="True" />
+        <PropertyEditor Id="TeslimEdilenMiktar" PropertyName="TeslimEdilenMiktar" IsNewNode="True" />
+        <PropertyEditor Id="KalanMiktar" PropertyName="KalanMiktar" IsNewNode="True" />
         <PropertyEditor Id="KaynakTalepD" PropertyName="KaynakTalepD" IsNewNode="True" />
         <PropertyEditor Id="KaynakTeklifD" PropertyName="KaynakTeklifD" IsNewNode="True" />
       </Items>
@@ -3787,8 +3795,10 @@
             <LayoutItem Id="Miktar" ViewItem="Miktar" Index="2" RelativeSize="100" IsNewNode="True" />
             <LayoutItem Id="BirimFiyat" ViewItem="BirimFiyat" Index="3" RelativeSize="100" IsNewNode="True" />
             <LayoutItem Id="ToplamTutar" ViewItem="ToplamTutar" Index="4" RelativeSize="100" IsNewNode="True" />
-            <LayoutItem Id="KaynakTalepD" ViewItem="KaynakTalepD" Index="5" RelativeSize="100" IsNewNode="True" />
-            <LayoutItem Id="KaynakTeklifD" ViewItem="KaynakTeklifD" Index="6" RelativeSize="100" IsNewNode="True" />
+            <LayoutItem Id="TeslimEdilenMiktar" ViewItem="TeslimEdilenMiktar" Index="5" RelativeSize="100" IsNewNode="True" />
+            <LayoutItem Id="KalanMiktar" ViewItem="KalanMiktar" Index="6" RelativeSize="100" IsNewNode="True" />
+            <LayoutItem Id="KaynakTalepD" ViewItem="KaynakTalepD" Index="7" RelativeSize="100" IsNewNode="True" />
+            <LayoutItem Id="KaynakTeklifD" ViewItem="KaynakTeklifD" Index="8" RelativeSize="100" IsNewNode="True" />
           </LayoutGroup>
           <LayoutGroup Id="SatinAlmaSiparisiD" Caption="Satin Alma Siparisi D" RelativeSize="100" Removed="True">
             <LayoutItem Id="StokTanim" Removed="True" />
@@ -4805,6 +4815,162 @@
         <ColumnInfo Id="DepoTanim" PropertyName="DepoTanim" Index="2" IsNewNode="True" />
         <ColumnInfo Id="BelgeNo" PropertyName="BelgeNo" Index="3" IsNewNode="True" />
         <ColumnInfo Id="BelgeTarihi" PropertyName="BelgeTarihi" Index="4" IsNewNode="True" />
+      </Columns>
+    </ListView>
+    <!-- SA-4b: STSAGR (Satın Alma Mal Kabul Girişi) için 9. fiş-türü-özel ekran. Diğer 8 ekran
+         gibi StokHareketleriDs PropertyEditor'ında View= OVERRIDE EDİLMEZ — bu yüzden varsayılan
+         StokHareketleriM_StokHareketleriDs_ListView'e (kısıtlamasız: AllowNew/Delete/Unlink
+         varsayılan True) çözümlenir. Genel StokHareketleriM_DetailView (satır ~4201) BİLEREK
+         KULLANILMADI: o ekranın grid'i StokHareketleriMGenelKalemler_ListView'e sabitlenmiş
+         (AllowDelete="False") — Mal Kabul'ün kısmi teslimat akışı (kullanıcının taslak satırları
+         SİLEBİLMESİ gerekir) bununla çelişir. SatinAlmaMalKabulOlusturController bu View Id'yi
+         CreateDetailView(..., "SatinAlmaMalKabul_DetailView", false, ...) ile açıkça talep eder. -->
+    <DetailView Id="SatinAlmaMalKabul_DetailView" CaptionColon=":" EnableCaptionColon="True" CaptionLocation="Default" CaptionHorizontalAlignment="Default" CaptionVerticalAlignment="Default" CaptionWordWrap="Default" EnableLayoutGroupImages="True" CustomizationFormEnabled="True" RequiredFieldMark="*" ClassName="Sofasis.Module.BusinessObjects.StokHareketleriM" Caption="Mal Kabul Girişi" DefaultFocusedItem="DepoTanim" IsNewNode="True">
+      <Items IsNewNode="True">
+        <PropertyEditor Id="FisNo" PropertyName="FisNo" IsNewNode="True" />
+        <PropertyEditor Id="FisTarihi" PropertyName="FisTarihi" IsNewNode="True" />
+        <PropertyEditor Id="FisTuruTanim" PropertyName="FisTuruTanim" IsNewNode="True" />
+        <PropertyEditor Id="BelgeNo" PropertyName="BelgeNo" IsNewNode="True" />
+        <PropertyEditor Id="BelgeTarihi" PropertyName="BelgeTarihi" IsNewNode="True" />
+        <PropertyEditor Id="DepoTanim" PropertyName="DepoTanim" IsNewNode="True" />
+        <PropertyEditor Id="StokHareketleriDs" PropertyName="StokHareketleriDs" IsNewNode="True" />
+        <PropertyEditor Id="CustomCode1" PropertyName="CustomCode1" IsNewNode="True" />
+        <PropertyEditor Id="CustomCode2" PropertyName="CustomCode2" IsNewNode="True" />
+        <PropertyEditor Id="Description" PropertyName="Description" IsNewNode="True" />
+        <PropertyEditor Id="CreatedBy" PropertyName="CreatedBy" IsNewNode="True" />
+        <PropertyEditor Id="ModifiedBy" PropertyName="ModifiedBy" IsNewNode="True" />
+        <PropertyEditor Id="CreatedDate" PropertyName="CreatedDate" IsNewNode="True" />
+        <PropertyEditor Id="ModifiedDate" PropertyName="ModifiedDate" IsNewNode="True" />
+      </Items>
+      <Layout IsNewNode="True">
+        <LayoutGroup Id="Main" Index="0" ShowCaption="False" RelativeSize="100" IsNewNode="True">
+          <LayoutGroup Id="SimpleEditors" Index="0" ShowCaption="False" RelativeSize="100" IsNewNode="True">
+            <TabbedGroup Id="Item1" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
+              <LayoutGroup Id="SatinAlmaMalKabulGenel" ShowCaption="True" Caption="Genel" Index="0" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="SatinAlmaMalKabul_Row1" ShowCaption="False" Direction="Horizontal" Index="0" RelativeSize="12" IsNewNode="True">
+                  <LayoutItem Id="FisNo" ViewItem="FisNo" Index="0" RelativeSize="34" IsNewNode="True" />
+                  <LayoutItem Id="FisTarihi" ViewItem="FisTarihi" Index="1" RelativeSize="33" IsNewNode="True" />
+                  <LayoutItem Id="DepoTanim" ViewItem="DepoTanim" Index="2" RelativeSize="33" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="SatinAlmaMalKabul_Row2" ShowCaption="False" Direction="Horizontal" Index="1" RelativeSize="12" IsNewNode="True">
+                  <LayoutItem Id="BelgeNo" ViewItem="BelgeNo" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="BelgeTarihi" ViewItem="BelgeTarihi" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="SatinAlmaMalKabul_KalemlerGroup" ShowCaption="True" Caption="Stok Kalemleri" Index="2" RelativeSize="76" IsNewNode="True">
+                  <LayoutItem Id="StokHareketleriDs" ViewItem="StokHareketleriDs" Index="0" RelativeSize="100" IsNewNode="True" />
+                </LayoutGroup>
+              </LayoutGroup>
+              <LayoutGroup Id="SatinAlmaMalKabulOzelKodlar" ShowCaption="True" CaptionLocation="Top" Index="1" Caption="Özel Kodlar &amp; Açıklama" RelativeSize="100" IsNewNode="True">
+                <LayoutItem Id="CustomCode1" ViewItem="CustomCode1" Index="0" RelativeSize="10" IsNewNode="True" />
+                <LayoutItem Id="CustomCode2" ViewItem="CustomCode2" Index="1" RelativeSize="10" IsNewNode="True" />
+                <LayoutItem Id="Description" ViewItem="Description" Index="2" RelativeSize="80" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutGroup Id="SatinAlmaMalKabulDenetim" ShowCaption="True" CaptionLocation="Top" Direction="Horizontal" Index="2" Caption="Sistem Kayıt Bilgisi" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="SatinAlmaMalKabulDenetim_col1" ShowCaption="False" Index="0" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedBy" ViewItem="CreatedBy" Index="0" RelativeSize="25" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedBy" ViewItem="ModifiedBy" Index="1" RelativeSize="75" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="SatinAlmaMalKabulDenetim_col2" ShowCaption="False" Index="1" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedDate" ViewItem="CreatedDate" Index="0" RelativeSize="25" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedDate" ViewItem="ModifiedDate" Index="1" RelativeSize="75" IsNewNode="True" />
+                </LayoutGroup>
+              </LayoutGroup>
+            </TabbedGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <!-- SA-5: FaturaM tek DetailView'da hem FAALIS (Alış) hem FASTIS (Satış — gelecek faz) yönünü
+         karşılar; hangi alanların görünür olduğu FisTuruTanim.FinansBorcAlacakTipi'ne göre (bkz.
+         FaturaM.cs Appearance kriterleri) çalışma zamanında belirlenir. FaturaOlusturController bu
+         View Id'yi CreateDetailView(..., "FaturaM_DetailView", false, ...) ile açıkça talep eder. -->
+    <DetailView Id="FaturaM_DetailView" CaptionColon=":" EnableCaptionColon="True" CaptionLocation="Default" CaptionHorizontalAlignment="Default" CaptionVerticalAlignment="Default" CaptionWordWrap="Default" EnableLayoutGroupImages="True" CustomizationFormEnabled="True" RequiredFieldMark="*" ClassName="Sofasis.Module.BusinessObjects.FaturaM" Caption="Fatura" DefaultFocusedItem="CariHesap" IsNewNode="True">
+      <Items IsNewNode="True">
+        <PropertyEditor Id="FaturaNo" PropertyName="FaturaNo" IsNewNode="True" />
+        <PropertyEditor Id="FaturaTarihi" PropertyName="FaturaTarihi" IsNewNode="True" />
+        <PropertyEditor Id="CariHesap" PropertyName="CariHesap" IsNewNode="True" />
+        <PropertyEditor Id="TedarikciFaturaNo" PropertyName="TedarikciFaturaNo" IsNewNode="True" />
+        <PropertyEditor Id="TedarikciFaturaTarihi" PropertyName="TedarikciFaturaTarihi" IsNewNode="True" />
+        <PropertyEditor Id="DovizTanim" PropertyName="DovizTanim" IsNewNode="True" />
+        <PropertyEditor Id="DovizKuru" PropertyName="DovizKuru" IsNewNode="True" />
+        <PropertyEditor Id="Durum" PropertyName="Durum" IsNewNode="True" />
+        <PropertyEditor Id="FaturaDs" PropertyName="FaturaDs" IsNewNode="True" />
+        <PropertyEditor Id="KDVHaricToplam" PropertyName="KDVHaricToplam" IsNewNode="True" />
+        <PropertyEditor Id="KDVToplam" PropertyName="KDVToplam" IsNewNode="True" />
+        <PropertyEditor Id="TevkifatToplam" PropertyName="TevkifatToplam" IsNewNode="True" />
+        <PropertyEditor Id="ToplamTutar" PropertyName="ToplamTutar" IsNewNode="True" />
+        <PropertyEditor Id="OdenecekTutar" PropertyName="OdenecekTutar" IsNewNode="True" />
+        <PropertyEditor Id="YerelToplamTutar" PropertyName="YerelToplamTutar" IsNewNode="True" />
+        <PropertyEditor Id="YerelOdenecekTutar" PropertyName="YerelOdenecekTutar" IsNewNode="True" />
+        <PropertyEditor Id="CustomCode1" PropertyName="CustomCode1" IsNewNode="True" />
+        <PropertyEditor Id="CustomCode2" PropertyName="CustomCode2" IsNewNode="True" />
+        <PropertyEditor Id="Description" PropertyName="Description" IsNewNode="True" />
+        <PropertyEditor Id="CreatedBy" PropertyName="CreatedBy" IsNewNode="True" />
+        <PropertyEditor Id="ModifiedBy" PropertyName="ModifiedBy" IsNewNode="True" />
+        <PropertyEditor Id="CreatedDate" PropertyName="CreatedDate" IsNewNode="True" />
+        <PropertyEditor Id="ModifiedDate" PropertyName="ModifiedDate" IsNewNode="True" />
+      </Items>
+      <Layout IsNewNode="True">
+        <LayoutGroup Id="Main" Index="0" ShowCaption="False" RelativeSize="100" IsNewNode="True">
+          <LayoutGroup Id="SimpleEditors" Index="0" ShowCaption="False" RelativeSize="100" IsNewNode="True">
+            <TabbedGroup Id="Item1" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
+              <LayoutGroup Id="FaturaMGenel" ShowCaption="True" Caption="Genel" Index="0" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="FaturaM_Row1" ShowCaption="False" Direction="Horizontal" Index="0" RelativeSize="12" IsNewNode="True">
+                  <LayoutItem Id="FaturaNo" ViewItem="FaturaNo" Index="0" RelativeSize="25" IsNewNode="True" />
+                  <LayoutItem Id="FaturaTarihi" ViewItem="FaturaTarihi" Index="1" RelativeSize="25" IsNewNode="True" />
+                  <LayoutItem Id="CariHesap" ViewItem="CariHesap" Index="2" RelativeSize="25" IsNewNode="True" />
+                  <LayoutItem Id="Durum" ViewItem="Durum" Index="3" RelativeSize="25" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="FaturaM_Row2" ShowCaption="False" Direction="Horizontal" Index="1" RelativeSize="12" IsNewNode="True">
+                  <LayoutItem Id="TedarikciFaturaNo" ViewItem="TedarikciFaturaNo" Index="0" RelativeSize="25" IsNewNode="True" />
+                  <LayoutItem Id="TedarikciFaturaTarihi" ViewItem="TedarikciFaturaTarihi" Index="1" RelativeSize="25" IsNewNode="True" />
+                  <LayoutItem Id="DovizTanim" ViewItem="DovizTanim" Index="2" RelativeSize="25" IsNewNode="True" />
+                  <LayoutItem Id="DovizKuru" ViewItem="DovizKuru" Index="3" RelativeSize="25" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="FaturaM_KalemlerGroup" ShowCaption="True" Caption="Fatura Kalemleri" Index="2" RelativeSize="52" IsNewNode="True">
+                  <LayoutItem Id="FaturaDs" ViewItem="FaturaDs" Index="0" RelativeSize="100" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="FaturaM_ToplamlarGroup" ShowCaption="True" Caption="Toplamlar" Direction="Horizontal" Index="3" RelativeSize="24" IsNewNode="True">
+                  <LayoutGroup Id="FaturaM_Toplamlar_col1" ShowCaption="False" Index="0" RelativeSize="50" IsNewNode="True">
+                    <LayoutItem Id="KDVHaricToplam" ViewItem="KDVHaricToplam" Index="0" RelativeSize="25" IsNewNode="True" />
+                    <LayoutItem Id="KDVToplam" ViewItem="KDVToplam" Index="1" RelativeSize="25" IsNewNode="True" />
+                    <LayoutItem Id="TevkifatToplam" ViewItem="TevkifatToplam" Index="2" RelativeSize="25" IsNewNode="True" />
+                    <LayoutItem Id="ToplamTutar" ViewItem="ToplamTutar" Index="3" RelativeSize="25" IsNewNode="True" />
+                  </LayoutGroup>
+                  <LayoutGroup Id="FaturaM_Toplamlar_col2" ShowCaption="False" Index="1" RelativeSize="50" IsNewNode="True">
+                    <LayoutItem Id="OdenecekTutar" ViewItem="OdenecekTutar" Index="0" RelativeSize="34" IsNewNode="True" />
+                    <LayoutItem Id="YerelToplamTutar" ViewItem="YerelToplamTutar" Index="1" RelativeSize="33" IsNewNode="True" />
+                    <LayoutItem Id="YerelOdenecekTutar" ViewItem="YerelOdenecekTutar" Index="2" RelativeSize="33" IsNewNode="True" />
+                  </LayoutGroup>
+                </LayoutGroup>
+              </LayoutGroup>
+              <LayoutGroup Id="FaturaMOzelKodlar" ShowCaption="True" CaptionLocation="Top" Index="1" Caption="Özel Kodlar &amp; Açıklama" RelativeSize="100" IsNewNode="True">
+                <LayoutItem Id="CustomCode1" ViewItem="CustomCode1" Index="0" RelativeSize="10" IsNewNode="True" />
+                <LayoutItem Id="CustomCode2" ViewItem="CustomCode2" Index="1" RelativeSize="10" IsNewNode="True" />
+                <LayoutItem Id="Description" ViewItem="Description" Index="2" RelativeSize="80" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutGroup Id="FaturaMDenetim" ShowCaption="True" CaptionLocation="Top" Direction="Horizontal" Index="2" Caption="Sistem Kayıt Bilgisi" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="FaturaMDenetim_col1" ShowCaption="False" Index="0" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedBy" ViewItem="CreatedBy" Index="0" RelativeSize="25" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedBy" ViewItem="ModifiedBy" Index="1" RelativeSize="75" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="FaturaMDenetim_col2" ShowCaption="False" Index="1" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedDate" ViewItem="CreatedDate" Index="0" RelativeSize="25" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedDate" ViewItem="ModifiedDate" Index="1" RelativeSize="75" IsNewNode="True" />
+                </LayoutGroup>
+              </LayoutGroup>
+            </TabbedGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <ListView Id="FaturaM_ListView" ClassName="Sofasis.Module.BusinessObjects.FaturaM" Caption="Faturalar" AllowNew="False" AllowDelete="False" IsNewNode="True">
+      <Columns IsNewNode="True">
+        <ColumnInfo Id="FaturaNo" PropertyName="FaturaNo" Index="0" IsNewNode="True" />
+        <ColumnInfo Id="FaturaTarihi" PropertyName="FaturaTarihi" Index="1" IsNewNode="True" />
+        <ColumnInfo Id="CariHesap" PropertyName="CariHesap" Index="2" IsNewNode="True" />
+        <ColumnInfo Id="ToplamTutar" PropertyName="ToplamTutar" Index="3" IsNewNode="True" />
+        <ColumnInfo Id="Durum" PropertyName="Durum" Index="4" IsNewNode="True" />
       </Columns>
     </ListView>
     <DetailView Id="StokTransferi_DetailView" CaptionColon=":" EnableCaptionColon="True" CaptionLocation="Default" CaptionHorizontalAlignment="Default" CaptionVerticalAlignment="Default" CaptionWordWrap="Default" EnableLayoutGroupImages="True" CustomizationFormEnabled="True" RequiredFieldMark="*" ClassName="Sofasis.Module.BusinessObjects.StokTransferi" Caption="Depo Transferi" DefaultFocusedItem="StokTanim" IsNewNode="True">

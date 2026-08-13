@@ -17,6 +17,8 @@ StokTanim;MetreKup;Miktar
 StokTanim;Agirlik;Miktar
 StokTransferi;Miktar;Miktar
 SatinAlmaSiparisiD;Miktar;Miktar
+SatinAlmaSiparisiD;TeslimEdilenMiktar;Miktar
+SatinAlmaSiparisiD;KalanMiktar;Miktar
 SatinAlmaTalebiD;Miktar;Miktar
 SatinAlmaTeklifD;Miktar;Miktar
 SatinAlmaTeklifD;TalepMiktari;Miktar
@@ -76,3 +78,16 @@ SatinAlmaTeklifD;TeklifBirimFiyat;Maliyet
 SatinAlmaTeklifD;TeklifTutar;Maliyet
 WW_FiyatListeRapor;ListeFiyati;Maliyet
 WW_FiyatListeRapor;BirimFiyat;Maliyet
+FaturaD;Miktar;Miktar
+FaturaD;BirimFiyat;Tutar
+FaturaD;KDVHaricTutar;Tutar
+FaturaD;KDVTutar;Tutar
+FaturaD;TevkifatTutar;Tutar
+FaturaD;NetTutar;Tutar
+FaturaM;KDVHaricToplam;Tutar
+FaturaM;KDVToplam;Tutar
+FaturaM;TevkifatToplam;Tutar
+FaturaM;ToplamTutar;Tutar
+FaturaM;OdenecekTutar;Tutar
+FaturaM;YerelToplamTutar;Yerel
+FaturaM;YerelOdenecekTutar;Yerel
