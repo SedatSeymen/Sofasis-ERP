@@ -38,8 +38,8 @@ FAALIS;Alış Faturası;Fatura;Borc;FaturaM_DetailView;Yok
 FAALID;Alış İade Faturası;Fatura;Alacak;FaturaM_DetailView;Yok
 FASTIS;Satış Faturası;Fatura;Alacak;FaturaM_DetailView;Yok
 FASTID;Satış İade Faturası;Fatura;Borc;FaturaM_DetailView;Yok
-IRALIS;Alış İrsaliyesi;Fatura;Borc;;Yok
-IRALID;Alış İade İrsaliyesi;Fatura;Alacak;;Yok
+IRALIS;Alış İrsaliyesi;Irsaliye;Yok;IrsaliyeM_DetailView;Yok
+IRALID;Alış İade İrsaliyesi;Irsaliye;Yok;;Yok
 IRSTIS;Satış İrsaliyesi;Irsaliye;Alacak;;Yok
 IRSTID;Satış İade İrsaliyesi;Irsaliye;Borc;;Yok
 FAPKST;Perakende Satış Faturası;Irsaliye;Alacak;;Yok

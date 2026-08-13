@@ -11,16 +11,20 @@ namespace Sofasis.Module.Services;
 
 public sealed class FaturaKaydetServisi : IFaturaKaydetServisi
 {
-    public FaturaM FaturaTaslagiOlustur(IObjectSpace objectSpace, StokHareketleriM malKabulFisi)
+    public FaturaM FaturaTaslagiOlustur(IObjectSpace objectSpace, IrsaliyeM irsaliye)
     {
+        if (irsaliye == null)
+            throw new UserFriendlyException("İrsaliye bulunamadı.");
+        if (irsaliye.FisTuruTanim?.FisTuruKodu != "IRALIS")
+            throw new UserFriendlyException("Yalnızca Alış İrsaliyelerinden fatura oluşturulabilir.");
+
+        StokHareketleriM malKabulFisi = irsaliye.StokHareketleriM;
         if (malKabulFisi == null)
-            throw new UserFriendlyException("Mal Kabul fişi bulunamadı.");
-        if (malKabulFisi.FisTuruTanim?.FisTuruKodu != "STSAGR")
-            throw new UserFriendlyException("Yalnızca Satın Alma Mal Kabul Girişi fişlerinden fatura oluşturulabilir.");
+            throw new UserFriendlyException("İrsaliyenin bağlı bir stok hareket fişi bulunamadı.");
 
         // Performans: FaturaD tablosunun TAMAMINI çekmek yerine (tüm faturalar, tüm tedarikçiler)
-        // yalnızca BU Mal Kabul fişinin satır Oid'leriyle sınırlı bir IN sorgusu SQL'e itilir —
-        // sonuç kümesi bu fişin satır sayısıyla sınırlı kalır.
+        // yalnızca BU İrsaliyenin (stok hareket fişinin) satır Oid'leriyle sınırlı bir IN sorgusu
+        // SQL'e itilir — sonuç kümesi bu fişin satır sayısıyla sınırlı kalır.
         List<Guid> malKabulSatirOidleri = malKabulFisi.StokHareketleriDs.Select(x => x.Oid).ToList();
         HashSet<Guid> faturalananSatirOidleri = new XPQuery<FaturaD>(malKabulFisi.Session)
             .Where(f => f.KaynakStokHareketiD != null && malKabulSatirOidleri.Contains(f.KaynakStokHareketiD.Oid))
@@ -30,7 +34,7 @@ public sealed class FaturaKaydetServisi : IFaturaKaydetServisi
         // ÇİFTE-TIKLAMA GÜVENLİK AĞI: yukarıdaki sorgu yalnızca DB'ye zaten YAZILMIŞ FaturaD'leri
         // görür — "Fatura Oluştur" art arda iki kez tetiklenirse, PAYLAŞILAN ObjectSpace'te henüz
         // commit edilmemiş bir önceki taslağın satırları bu sorguda GÖRÜNMEZ. Aynı kök nedenli
-        // çifte-belge riskine karşı (bkz. SatinAlmaMalKabulServisi.MalKabulTaslagiOlustur,
+        // çifte-belge riskine karşı (bkz. SatinAlmaIrsaliyeServisi.IrsaliyeTaslagiOlustur,
         // docs/CHANGELOG.md 2026-08-13), ObjectSpace'teki BEKLEYEN (henüz kaydedilmemiş) FaturaD'ler
         // de dahil edilir — ikinci tetiklemede faturalanacakSatirlar boş çıkar, mevcut "zaten
         // faturalanmış" hatası devreye girer.
@@ -42,16 +46,14 @@ public sealed class FaturaKaydetServisi : IFaturaKaydetServisi
             .Where(x => !faturalananSatirOidleri.Contains(x.Oid))
             .ToList();
         if (faturalanacakSatirlar.Count == 0)
-            throw new UserFriendlyException("Bu Mal Kabul fişinin tüm satırları zaten faturalanmış.");
+            throw new UserFriendlyException("Bu İrsaliyenin tüm satırları zaten faturalanmış.");
 
-        // Kaynak Sipariş: ilk satırın KaynakBelgeOid'inden (SatinAlmaSiparisiD) geriye izlenir —
-        // Tedarikçi/Döviz bilgisi buradan miras alınır (Mal Kabul'ün kendisi Tedarikçi taşımaz).
-        SatinAlmaSiparisiD ilkSiparisSatiri = faturalanacakSatirlar[0].KaynakBelgeOid.HasValue
-            ? objectSpace.GetObjectByKey<SatinAlmaSiparisiD>(faturalanacakSatirlar[0].KaynakBelgeOid.Value)
-            : null;
-        SatinAlmaSiparisiM siparis = ilkSiparisSatiri?.SatinAlmaSiparisiM;
+        // Kaynak Sipariş artık doğrudan İrsaliye'den okunur — İrsaliye ayrı bir iş nesnesi olarak
+        // kurulmadan önce (bkz. docs/CHANGELOG.md 2026-08-14) bu bilgi StokHareketleriD.KaynakBelgeOid
+        // üzerinden geriye izlenerek bulunuyordu; artık gerek yok.
+        SatinAlmaSiparisiM siparis = irsaliye.KaynakSiparis;
         if (siparis == null)
-            throw new UserFriendlyException("Mal Kabul fişinin kaynak siparişi bulunamadı — fatura otomatik oluşturulamıyor.");
+            throw new UserFriendlyException("İrsaliyenin kaynak siparişi bulunamadı — fatura otomatik oluşturulamıyor.");
 
         FisTuruTanim fisTuru = objectSpace.FindObject<FisTuruTanim>(
             CriteriaOperator.Parse("FisTuruKodu = 'FAALIS'"));
@@ -70,6 +72,7 @@ public sealed class FaturaKaydetServisi : IFaturaKaydetServisi
         fatura.DovizTanim = siparis.DovizTanim;
         fatura.KaynakSiparisTipi = typeof(SatinAlmaSiparisiM);
         fatura.KaynakSiparisOid = siparis.Oid;
+        fatura.KaynakIrsaliye = irsaliye;
 
         foreach (StokHareketleriD satir in faturalanacakSatirlar)
         {

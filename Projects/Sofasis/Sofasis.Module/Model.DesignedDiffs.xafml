@@ -101,11 +101,15 @@
               <Item Id="@6a3f9e21-7b4c-4d8e-9a1f-2c5d8e7b3a4f" ViewId="SatinAlmaTeklifM_ListView" Index="1" IsNewNode="True" />
               <Item Id="@8d2c1f4a-3e6b-4a7c-8f9d-1b3c5e7a9d2f" Caption="Teklif Karşılaştırma" ViewId="SatinAlmaTeklifD_ListView" Index="2" IsNewNode="True" />
               <Item Id="@dad15a59-c79d-4446-8efa-2007c1d99e69" ViewId="SatinAlmaSiparisiM_ListView" Index="3" IsNewNode="True" />
-              <!-- SA-5: Faturalar burada AllowNew="False" — tek giriş noktası Mal Kabul ekranındaki
+              <!-- 2026-08-14: İrsaliyeler burada AllowNew="False" — tek giriş noktası Sipariş
+                   ekranındaki "İrsaliye Oluştur" aksiyonu (bkz. SatinAlmaIrsaliyeOlusturController),
+                   rastgele boş irsaliye oluşturmak KaynakSiparis bağlantısını atlar. -->
+              <Item Id="@e1b4a8f6-2c9d-4a5e-8b3f-6d1c9e4a7b2d" Caption="İrsaliyeler" ViewId="IrsaliyeM_ListView" Index="4" IsNewNode="True" />
+              <!-- SA-5: Faturalar burada AllowNew="False" — tek giriş noktası İrsaliye ekranındaki
                    "Fatura Oluştur" aksiyonu (bkz. FaturaOlusturController), rastgele boş fatura
                    oluşturmak KaynakSiparis bağlantısını (3'lü eşleştirme/Cari ayna için gerekli)
                    atlar. -->
-              <Item Id="@c4e8f2a6-1d9b-4a3e-8f6c-5b2d7e9a4c1f" Caption="Faturalar" ViewId="FaturaM_ListView" Index="4" IsNewNode="True" />
+              <Item Id="@c4e8f2a6-1d9b-4a3e-8f6c-5b2d7e9a4c1f" Caption="Faturalar" ViewId="FaturaM_ListView" Index="5" IsNewNode="True" />
             </Items>
           </Item>
         </Items>
@@ -168,6 +172,8 @@
           <Item Id="Event_ListView" Visible="False" />
           <Item Id="FaturaM_ListView" Removed="True" />
           <Item Id="FilteringCriterion_ListView" Removed="True" />
+          <Item Id="IrsaliyeD_ListView" Removed="True" />
+          <Item Id="IrsaliyeM_ListView" Removed="True" />
           <Item Id="FisTuruTanim_ListView" Removed="True" />
           <Item Id="FiyatListeSablonD_ListView" Removed="True" />
           <Item Id="FiyatListeSablonM_ListView" Removed="True" />
@@ -4817,23 +4823,27 @@
         <ColumnInfo Id="BelgeTarihi" PropertyName="BelgeTarihi" Index="4" IsNewNode="True" />
       </Columns>
     </ListView>
-    <!-- SA-4b: STSAGR (Satın Alma Mal Kabul Girişi) için 9. fiş-türü-özel ekran. Diğer 8 ekran
-         gibi StokHareketleriDs PropertyEditor'ında View= OVERRIDE EDİLMEZ — bu yüzden varsayılan
-         StokHareketleriM_StokHareketleriDs_ListView'e (kısıtlamasız: AllowNew/Delete/Unlink
-         varsayılan True) çözümlenir. Genel StokHareketleriM_DetailView (satır ~4201) BİLEREK
-         KULLANILMADI: o ekranın grid'i StokHareketleriMGenelKalemler_ListView'e sabitlenmiş
-         (AllowDelete="False") — Mal Kabul'ün kısmi teslimat akışı (kullanıcının taslak satırları
-         SİLEBİLMESİ gerekir) bununla çelişir. SatinAlmaMalKabulOlusturController bu View Id'yi
-         CreateDetailView(..., "SatinAlmaMalKabul_DetailView", false, ...) ile açıkça talep eder. -->
-    <DetailView Id="SatinAlmaMalKabul_DetailView" CaptionColon=":" EnableCaptionColon="True" CaptionLocation="Default" CaptionHorizontalAlignment="Default" CaptionVerticalAlignment="Default" CaptionWordWrap="Default" EnableLayoutGroupImages="True" CustomizationFormEnabled="True" RequiredFieldMark="*" ClassName="Sofasis.Module.BusinessObjects.StokHareketleriM" Caption="Mal Kabul Girişi" DefaultFocusedItem="DepoTanim" IsNewNode="True">
+    <!-- 2026-08-14: IRALIS (Alış İrsaliyesi) için özel ekran. İrsaliyeDs PropertyEditor'ında View=
+         OVERRIDE EDİLMEZ — bu yüzden varsayılan (kısıtlamasız: AllowNew/Delete/Unlink varsayılan
+         True) IrsaliyeM_IrsaliyeDs_ListView'e çözümlenir; kısmi teslimat akışı (kullanıcının
+         taslak satırları SİLEBİLMESİ gerekir) bunu gerektirir — bkz. StokHareketleriMGenelKalemler_
+         ListView'in AllowDelete="False" olma gerekçesiyle AYNI mantığın tersi.
+         SatinAlmaIrsaliyeOlusturController bu View Id'yi CreateDetailView(...,
+         "IrsaliyeM_DetailView", false, ...) ile açıkça talep eder. -->
+    <DetailView Id="IrsaliyeM_DetailView" CaptionColon=":" EnableCaptionColon="True" CaptionLocation="Default" CaptionHorizontalAlignment="Default" CaptionVerticalAlignment="Default" CaptionWordWrap="Default" EnableLayoutGroupImages="True" CustomizationFormEnabled="True" RequiredFieldMark="*" ClassName="Sofasis.Module.BusinessObjects.IrsaliyeM" Caption="İrsaliye" DefaultFocusedItem="DepoTanim" IsNewNode="True">
       <Items IsNewNode="True">
-        <PropertyEditor Id="FisNo" PropertyName="FisNo" IsNewNode="True" />
-        <PropertyEditor Id="FisTarihi" PropertyName="FisTarihi" IsNewNode="True" />
-        <PropertyEditor Id="FisTuruTanim" PropertyName="FisTuruTanim" IsNewNode="True" />
-        <PropertyEditor Id="BelgeNo" PropertyName="BelgeNo" IsNewNode="True" />
-        <PropertyEditor Id="BelgeTarihi" PropertyName="BelgeTarihi" IsNewNode="True" />
+        <PropertyEditor Id="IrsaliyeNo" PropertyName="IrsaliyeNo" IsNewNode="True" />
+        <PropertyEditor Id="IrsaliyeTarihi" PropertyName="IrsaliyeTarihi" IsNewNode="True" />
+        <PropertyEditor Id="Tedarikci" PropertyName="Tedarikci" IsNewNode="True" />
+        <PropertyEditor Id="KaynakSiparis" PropertyName="KaynakSiparis" IsNewNode="True" />
+        <PropertyEditor Id="TedarikciIrsaliyeNo" PropertyName="TedarikciIrsaliyeNo" IsNewNode="True" />
+        <PropertyEditor Id="TedarikciIrsaliyeTarihi" PropertyName="TedarikciIrsaliyeTarihi" IsNewNode="True" />
         <PropertyEditor Id="DepoTanim" PropertyName="DepoTanim" IsNewNode="True" />
-        <PropertyEditor Id="StokHareketleriDs" PropertyName="StokHareketleriDs" IsNewNode="True" />
+        <PropertyEditor Id="DovizTanim" PropertyName="DovizTanim" IsNewNode="True" />
+        <PropertyEditor Id="DovizKuru" PropertyName="DovizKuru" IsNewNode="True" />
+        <PropertyEditor Id="ToplamTutar" PropertyName="ToplamTutar" IsNewNode="True" />
+        <PropertyEditor Id="StokHareketleriM" PropertyName="StokHareketleriM" IsNewNode="True" />
+        <PropertyEditor Id="IrsaliyeDs" PropertyName="IrsaliyeDs" IsNewNode="True" />
         <PropertyEditor Id="CustomCode1" PropertyName="CustomCode1" IsNewNode="True" />
         <PropertyEditor Id="CustomCode2" PropertyName="CustomCode2" IsNewNode="True" />
         <PropertyEditor Id="Description" PropertyName="Description" IsNewNode="True" />
@@ -4846,40 +4856,82 @@
         <LayoutGroup Id="Main" Index="0" ShowCaption="False" RelativeSize="100" IsNewNode="True">
           <LayoutGroup Id="SimpleEditors" Index="0" ShowCaption="False" RelativeSize="100" IsNewNode="True">
             <TabbedGroup Id="Item1" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
-              <LayoutGroup Id="SatinAlmaMalKabulGenel" ShowCaption="True" Caption="Genel" Index="0" RelativeSize="100" IsNewNode="True">
-                <LayoutGroup Id="SatinAlmaMalKabul_Row1" ShowCaption="False" Direction="Horizontal" Index="0" RelativeSize="12" IsNewNode="True">
-                  <LayoutItem Id="FisNo" ViewItem="FisNo" Index="0" RelativeSize="34" IsNewNode="True" />
-                  <LayoutItem Id="FisTarihi" ViewItem="FisTarihi" Index="1" RelativeSize="33" IsNewNode="True" />
-                  <LayoutItem Id="DepoTanim" ViewItem="DepoTanim" Index="2" RelativeSize="33" IsNewNode="True" />
+              <LayoutGroup Id="IrsaliyeMGenel" ShowCaption="True" Caption="Genel" Index="0" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="IrsaliyeM_Row1" ShowCaption="False" Direction="Horizontal" Index="0" RelativeSize="12" IsNewNode="True">
+                  <LayoutItem Id="IrsaliyeNo" ViewItem="IrsaliyeNo" Index="0" RelativeSize="25" IsNewNode="True" />
+                  <LayoutItem Id="IrsaliyeTarihi" ViewItem="IrsaliyeTarihi" Index="1" RelativeSize="25" IsNewNode="True" />
+                  <LayoutItem Id="Tedarikci" ViewItem="Tedarikci" Index="2" RelativeSize="25" IsNewNode="True" />
+                  <LayoutItem Id="KaynakSiparis" ViewItem="KaynakSiparis" Index="3" RelativeSize="25" IsNewNode="True" />
                 </LayoutGroup>
-                <LayoutGroup Id="SatinAlmaMalKabul_Row2" ShowCaption="False" Direction="Horizontal" Index="1" RelativeSize="12" IsNewNode="True">
-                  <LayoutItem Id="BelgeNo" ViewItem="BelgeNo" Index="0" RelativeSize="50" IsNewNode="True" />
-                  <LayoutItem Id="BelgeTarihi" ViewItem="BelgeTarihi" Index="1" RelativeSize="50" IsNewNode="True" />
+                <LayoutGroup Id="IrsaliyeM_Row2" ShowCaption="False" Direction="Horizontal" Index="1" RelativeSize="12" IsNewNode="True">
+                  <LayoutItem Id="TedarikciIrsaliyeNo" ViewItem="TedarikciIrsaliyeNo" Index="0" RelativeSize="25" IsNewNode="True" />
+                  <LayoutItem Id="TedarikciIrsaliyeTarihi" ViewItem="TedarikciIrsaliyeTarihi" Index="1" RelativeSize="25" IsNewNode="True" />
+                  <LayoutItem Id="DepoTanim" ViewItem="DepoTanim" Index="2" RelativeSize="25" IsNewNode="True" />
+                  <LayoutItem Id="DovizTanim" ViewItem="DovizTanim" Index="3" RelativeSize="12" IsNewNode="True" />
+                  <LayoutItem Id="DovizKuru" ViewItem="DovizKuru" Index="4" RelativeSize="13" IsNewNode="True" />
                 </LayoutGroup>
-                <LayoutGroup Id="SatinAlmaMalKabul_KalemlerGroup" ShowCaption="True" Caption="Stok Kalemleri" Index="2" RelativeSize="76" IsNewNode="True">
-                  <LayoutItem Id="StokHareketleriDs" ViewItem="StokHareketleriDs" Index="0" RelativeSize="100" IsNewNode="True" />
+                <LayoutGroup Id="IrsaliyeM_KalemlerGroup" ShowCaption="True" Caption="İrsaliye Kalemleri" Index="2" RelativeSize="64" IsNewNode="True">
+                  <LayoutItem Id="IrsaliyeDs" ViewItem="IrsaliyeDs" Index="0" RelativeSize="100" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="IrsaliyeM_ToplamGroup" ShowCaption="False" Direction="Horizontal" Index="3" RelativeSize="12" IsNewNode="True">
+                  <LayoutItem Id="ToplamTutar" ViewItem="ToplamTutar" Index="0" RelativeSize="25" IsNewNode="True" />
+                  <LayoutItem Id="StokHareketleriM" ViewItem="StokHareketleriM" Index="1" RelativeSize="25" IsNewNode="True" />
                 </LayoutGroup>
               </LayoutGroup>
-              <LayoutGroup Id="SatinAlmaMalKabulOzelKodlar" ShowCaption="True" CaptionLocation="Top" Index="1" Caption="Özel Kodlar &amp; Açıklama" RelativeSize="100" IsNewNode="True">
+              <LayoutGroup Id="IrsaliyeMOzelKodlar" ShowCaption="True" CaptionLocation="Top" Index="1" Caption="Özel Kodlar &amp; Açıklama" RelativeSize="100" IsNewNode="True">
                 <LayoutItem Id="CustomCode1" ViewItem="CustomCode1" Index="0" RelativeSize="10" IsNewNode="True" />
                 <LayoutItem Id="CustomCode2" ViewItem="CustomCode2" Index="1" RelativeSize="10" IsNewNode="True" />
                 <LayoutItem Id="Description" ViewItem="Description" Index="2" RelativeSize="80" IsNewNode="True" />
               </LayoutGroup>
-              <LayoutGroup Id="SatinAlmaMalKabulDenetim" ShowCaption="True" CaptionLocation="Top" Direction="Horizontal" Index="2" Caption="Sistem Kayıt Bilgisi" RelativeSize="100" IsNewNode="True">
-                <LayoutGroup Id="SatinAlmaMalKabulDenetim_col1" ShowCaption="False" Index="0" RelativeSize="50" IsNewNode="True">
+              <LayoutGroup Id="IrsaliyeMDenetim" ShowCaption="True" CaptionLocation="Top" Direction="Horizontal" Index="2" Caption="Sistem Kayıt Bilgisi" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="IrsaliyeMDenetim_col1" ShowCaption="False" Index="0" RelativeSize="50" IsNewNode="True">
                   <LayoutItem Id="CreatedBy" ViewItem="CreatedBy" Index="0" RelativeSize="25" IsNewNode="True" />
                   <LayoutItem Id="ModifiedBy" ViewItem="ModifiedBy" Index="1" RelativeSize="75" IsNewNode="True" />
                 </LayoutGroup>
-                <LayoutGroup Id="SatinAlmaMalKabulDenetim_col2" ShowCaption="False" Index="1" RelativeSize="50" IsNewNode="True">
+                <LayoutGroup Id="IrsaliyeMDenetim_col2" ShowCaption="False" Index="1" RelativeSize="50" IsNewNode="True">
                   <LayoutItem Id="CreatedDate" ViewItem="CreatedDate" Index="0" RelativeSize="25" IsNewNode="True" />
                   <LayoutItem Id="ModifiedDate" ViewItem="ModifiedDate" Index="1" RelativeSize="75" IsNewNode="True" />
                 </LayoutGroup>
               </LayoutGroup>
             </TabbedGroup>
+            <LayoutGroup Id="IrsaliyeM" RelativeSize="100" Removed="True">
+              <LayoutItem Id="IrsaliyeNo" Removed="True" />
+              <LayoutItem Id="IrsaliyeTarihi" Removed="True" />
+              <LayoutItem Id="Tedarikci" Removed="True" />
+              <LayoutItem Id="KaynakSiparis" Removed="True" />
+              <LayoutItem Id="TedarikciIrsaliyeNo" Removed="True" />
+              <LayoutItem Id="TedarikciIrsaliyeTarihi" Removed="True" />
+              <LayoutItem Id="DepoTanim" Removed="True" />
+              <LayoutItem Id="DovizTanim" Removed="True" />
+              <LayoutItem Id="DovizKuru" Removed="True" />
+              <LayoutItem Id="ToplamTutar" Removed="True" />
+              <LayoutItem Id="StokHareketleriM" Removed="True" />
+              <LayoutItem Id="IrsaliyeDs" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="BaseClassWithAuditAndDescription" Caption="BaseClassWithAuditAndDescription" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CustomCode1" Removed="True" />
+              <LayoutItem Id="CustomCode2" Removed="True" />
+              <LayoutItem Id="Description" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="BaseClassWithAudit" Caption="BaseClassWithAudit" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CreatedDate" Removed="True" />
+              <LayoutItem Id="ModifiedBy" Removed="True" />
+              <LayoutItem Id="ModifiedDate" Removed="True" />
+              <LayoutItem Id="CreatedBy" Removed="True" />
+            </LayoutGroup>
           </LayoutGroup>
         </LayoutGroup>
       </Layout>
     </DetailView>
+    <ListView Id="IrsaliyeM_ListView" ClassName="Sofasis.Module.BusinessObjects.IrsaliyeM" Caption="İrsaliyeler" AllowNew="False" AllowDelete="False" IsNewNode="True">
+      <Columns IsNewNode="True">
+        <ColumnInfo Id="IrsaliyeNo" PropertyName="IrsaliyeNo" Index="0" IsNewNode="True" />
+        <ColumnInfo Id="IrsaliyeTarihi" PropertyName="IrsaliyeTarihi" Index="1" IsNewNode="True" />
+        <ColumnInfo Id="Tedarikci" PropertyName="Tedarikci" Index="2" IsNewNode="True" />
+        <ColumnInfo Id="KaynakSiparis" PropertyName="KaynakSiparis" Index="3" IsNewNode="True" />
+        <ColumnInfo Id="ToplamTutar" PropertyName="ToplamTutar" Index="4" IsNewNode="True" />
+      </Columns>
+    </ListView>
     <!-- SA-5: FaturaM tek DetailView'da hem FAALIS (Alış) hem FASTIS (Satış — gelecek faz) yönünü
          karşılar; hangi alanların görünür olduğu FisTuruTanim.FinansBorcAlacakTipi'ne göre (bkz.
          FaturaM.cs Appearance kriterleri) çalışma zamanında belirlenir. FaturaOlusturController bu
@@ -4888,7 +4940,9 @@
       <Items IsNewNode="True">
         <PropertyEditor Id="FaturaNo" PropertyName="FaturaNo" IsNewNode="True" />
         <PropertyEditor Id="FaturaTarihi" PropertyName="FaturaTarihi" IsNewNode="True" />
+        <PropertyEditor Id="FisTuruTanim" PropertyName="FisTuruTanim" IsNewNode="True" />
         <PropertyEditor Id="CariHesap" PropertyName="CariHesap" IsNewNode="True" />
+        <PropertyEditor Id="KaynakIrsaliye" PropertyName="KaynakIrsaliye" IsNewNode="True" />
         <PropertyEditor Id="TedarikciFaturaNo" PropertyName="TedarikciFaturaNo" IsNewNode="True" />
         <PropertyEditor Id="TedarikciFaturaTarihi" PropertyName="TedarikciFaturaTarihi" IsNewNode="True" />
         <PropertyEditor Id="DovizTanim" PropertyName="DovizTanim" IsNewNode="True" />
@@ -4916,10 +4970,11 @@
             <TabbedGroup Id="Item1" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
               <LayoutGroup Id="FaturaMGenel" ShowCaption="True" Caption="Genel" Index="0" RelativeSize="100" IsNewNode="True">
                 <LayoutGroup Id="FaturaM_Row1" ShowCaption="False" Direction="Horizontal" Index="0" RelativeSize="12" IsNewNode="True">
-                  <LayoutItem Id="FaturaNo" ViewItem="FaturaNo" Index="0" RelativeSize="25" IsNewNode="True" />
-                  <LayoutItem Id="FaturaTarihi" ViewItem="FaturaTarihi" Index="1" RelativeSize="25" IsNewNode="True" />
-                  <LayoutItem Id="CariHesap" ViewItem="CariHesap" Index="2" RelativeSize="25" IsNewNode="True" />
-                  <LayoutItem Id="Durum" ViewItem="Durum" Index="3" RelativeSize="25" IsNewNode="True" />
+                  <LayoutItem Id="FaturaNo" ViewItem="FaturaNo" Index="0" RelativeSize="20" IsNewNode="True" />
+                  <LayoutItem Id="FaturaTarihi" ViewItem="FaturaTarihi" Index="1" RelativeSize="20" IsNewNode="True" />
+                  <LayoutItem Id="CariHesap" ViewItem="CariHesap" Index="2" RelativeSize="20" IsNewNode="True" />
+                  <LayoutItem Id="KaynakIrsaliye" ViewItem="KaynakIrsaliye" Index="3" RelativeSize="20" IsNewNode="True" />
+                  <LayoutItem Id="Durum" ViewItem="Durum" Index="4" RelativeSize="20" IsNewNode="True" />
                 </LayoutGroup>
                 <LayoutGroup Id="FaturaM_Row2" ShowCaption="False" Direction="Horizontal" Index="1" RelativeSize="12" IsNewNode="True">
                   <LayoutItem Id="TedarikciFaturaNo" ViewItem="TedarikciFaturaNo" Index="0" RelativeSize="25" IsNewNode="True" />
@@ -4960,6 +5015,37 @@
                 </LayoutGroup>
               </LayoutGroup>
             </TabbedGroup>
+            <LayoutGroup Id="FaturaM" RelativeSize="100" Removed="True">
+              <LayoutItem Id="FaturaNo" Removed="True" />
+              <LayoutItem Id="FaturaTarihi" Removed="True" />
+              <LayoutItem Id="FisTuruTanim" Removed="True" />
+              <LayoutItem Id="CariHesap" Removed="True" />
+              <LayoutItem Id="KaynakIrsaliye" Removed="True" />
+              <LayoutItem Id="TedarikciFaturaNo" Removed="True" />
+              <LayoutItem Id="TedarikciFaturaTarihi" Removed="True" />
+              <LayoutItem Id="DovizTanim" Removed="True" />
+              <LayoutItem Id="DovizKuru" Removed="True" />
+              <LayoutItem Id="Durum" Removed="True" />
+              <LayoutItem Id="FaturaDs" Removed="True" />
+              <LayoutItem Id="KDVHaricToplam" Removed="True" />
+              <LayoutItem Id="KDVToplam" Removed="True" />
+              <LayoutItem Id="TevkifatToplam" Removed="True" />
+              <LayoutItem Id="ToplamTutar" Removed="True" />
+              <LayoutItem Id="OdenecekTutar" Removed="True" />
+              <LayoutItem Id="YerelToplamTutar" Removed="True" />
+              <LayoutItem Id="YerelOdenecekTutar" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="BaseClassWithAuditAndDescription" Caption="BaseClassWithAuditAndDescription" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CustomCode1" Removed="True" />
+              <LayoutItem Id="CustomCode2" Removed="True" />
+              <LayoutItem Id="Description" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="BaseClassWithAudit" Caption="BaseClassWithAudit" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CreatedDate" Removed="True" />
+              <LayoutItem Id="ModifiedBy" Removed="True" />
+              <LayoutItem Id="ModifiedDate" Removed="True" />
+              <LayoutItem Id="CreatedBy" Removed="True" />
+            </LayoutGroup>
           </LayoutGroup>
         </LayoutGroup>
       </Layout>

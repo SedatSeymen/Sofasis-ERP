@@ -5,25 +5,29 @@ using System.Collections.Generic;
 
 namespace Sofasis.Module.Controllers
 {
-    // Kök neden: SatinAlmaMalKabulOlusturController / FaturaOlusturController popup'ları,
+    // Kök neden: SatinAlmaIrsaliyeOlusturController / FaturaOlusturController popup'ları,
     // isRoot:false ile View.ObjectSpace'İ PAYLAŞARAK (ayrı/nested bir ObjectSpace AÇMADAN) yeni
-    // bir StokHareketleriM/FaturaM nesnesi oluşturur (2 adımlı commit deseni gereği — bkz. o
+    // bir IrsaliyeM/FaturaM nesnesi oluşturur (2 adımlı commit deseni gereği — bkz. o
     // controller'lardaki yorumlar). Bu popup'ın kendi "İptal" düğmesi (ModificationsController.
     // CancelAction), PAYLAŞILAN ObjectSpace'i geri almaz (Rollback ETMEZ) — çünkü bunu yapmak dış
-    // (Sipariş/Mal Kabul) ekranın KENDİ bekleyen değişikliklerini de silme riski taşırdı. Sonuç:
+    // (Sipariş/İrsaliye) ekranın KENDİ bekleyen değişikliklerini de silme riski taşırdı. Sonuç:
     // "İptal" tıklandığında oluşturulan nesne ObjectSpace'te "yeni" olarak asılı KALIR ve
     // kullanıcı SONRADAN başka bir işlemi başarıyla kaydettiğinde (örn. yeniden deneyip doğru
     // değerle kaydettiğinde) o eski/iptal edilmiş nesne de SESSİZCE aynı commit'e sürüklenir —
-    // hayalet (istenmeyen) Mal Kabul/Fatura kaydı oluşur (canlı testte kanıtlandı, bkz.
+    // hayalet (istenmeyen) İrsaliye/Fatura kaydı oluşur (canlı testte kanıtlandı, bkz.
     // docs/CHANGELOG.md). Bu controller, PAYLAŞILAN ObjectSpace kullanan popup ekranlarında
     // "İptal"e basıldığında o ekranın kök nesnesini (hâlâ yeniyse) ObjectSpace'ten AÇIKÇA siler —
-    // [Aggregated] ilişkili satırlar (StokHareketleriDs/FaturaDs) XPO'nun kendi cascade-delete
-    // davranışıyla otomatik silinir, ek kod gerekmez.
+    // [Aggregated] ilişkili satırlar (IrsaliyeDs/StokHareketleriDs/FaturaDs) XPO'nun kendi
+    // cascade-delete davranışıyla otomatik silinir, ek kod gerekmez. NOT: IrsaliyeM'in kendi
+    // ObjectSaving/OnSaving'inde AYRICA bire-bir bir StokHareketleriM taslağı da oluşturulmuş olur
+    // (bkz. SatinAlmaIrsaliyeServisi.IrsaliyeTaslagiOlustur) — İrsaliye silinince o da (henüz yeni/
+    // uncommitted olduğu için) ObjectSpace'te sahipsiz kalmaz, çünkü İrsaliye'nin KENDİSİ hiç
+    // commit edilmediyse StokHareketleriM de hiç commit edilmez (aynı transaction).
     public class PaylasimliObjectSpacePopupIptalTemizlikController : ViewController<DetailView>
     {
         static readonly HashSet<string> HedefViewIdleri = new HashSet<string>
         {
-            "SatinAlmaMalKabul_DetailView",
+            "IrsaliyeM_DetailView",
             "FaturaM_DetailView",
         };
 

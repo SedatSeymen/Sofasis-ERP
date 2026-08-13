@@ -59,6 +59,7 @@ namespace Sofasis.Module.BusinessObjects
         CariHesapTanim cariHesap;
         Type kaynakSiparisTipi;
         Guid? kaynakSiparisOid;
+        IrsaliyeM kaynakIrsaliye;
         string tedarikciFaturaNo;
         DateTime? tedarikciFaturaTarihi;
         DovizTanim dovizTanim;
@@ -133,6 +134,18 @@ namespace Sofasis.Module.BusinessObjects
         {
             get => kaynakSiparisOid;
             set => SetPropertyValue(nameof(KaynakSiparisOid), ref kaynakSiparisOid, value);
+        }
+
+        // Bu faturanın hangi İrsaliyeden (fiziksel sevkiyat belgesi) oluşturulduğu — izlenebilirlik
+        // amaçlı, salt-okunur. İrsaliye ayrı bir iş nesnesi olarak kurulunca eklendi (bkz.
+        // docs/CHANGELOG.md 2026-08-14); direkt referans yeterli, KaynakSiparisTipi/Oid'deki gibi
+        // polimorfik olmasına gerek yok (İrsaliye zaten yalnızca Satın Alma tarafında var).
+        [XafDisplayName("Kaynak İrsaliye")]
+        [Appearance("ED_FaturaM_KaynakIrsaliye", Enabled = false, Context = "Any")]
+        public IrsaliyeM KaynakIrsaliye
+        {
+            get => kaynakIrsaliye;
+            set => SetPropertyValue(nameof(KaynakIrsaliye), ref kaynakIrsaliye, value);
         }
 
         // Yalnız Borç (Alış) yönünde anlamlı — CariHesapHareketleri'ndeki Borç/Alacak alan gizleme

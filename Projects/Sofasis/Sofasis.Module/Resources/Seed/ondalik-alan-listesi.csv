@@ -90,4 +90,8 @@ FaturaM;TevkifatToplam;Tutar
 FaturaM;ToplamTutar;Tutar
 FaturaM;OdenecekTutar;Tutar
 FaturaM;YerelToplamTutar;Yerel
+IrsaliyeD;Miktar;Miktar
+IrsaliyeD;BirimFiyat;Tutar
+IrsaliyeD;ToplamTutar;Tutar
+IrsaliyeM;ToplamTutar;Tutar
 FaturaM;YerelOdenecekTutar;Yerel

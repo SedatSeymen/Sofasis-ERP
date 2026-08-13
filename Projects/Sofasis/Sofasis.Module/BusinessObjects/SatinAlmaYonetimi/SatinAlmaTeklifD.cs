@@ -14,6 +14,7 @@ namespace Sofasis.Module.BusinessObjects;
 // karşılaştırma ListView'indeki [Appearance] rengini tetiklemek için vardır (StokHareketleriD
 // üzerindeki MotorIslendi gibi salt-motor amaçlı bir bayrak, bu yüzden Browsable(false)).
 [DefaultClassOptions]
+[DefaultProperty("StokTanim")]
 [XafDisplayName("Satın Alma Teklif Kalemi")]
 [Appearance("SatinAlmaTeklifD_EnDusuk", AppearanceItemType = "ViewItem", TargetItems = "*",
     Criteria = "EnDusukFiyatMi = True", Context = "ListView", BackColor = "Green", FontColor = "White", Priority = 1)]
