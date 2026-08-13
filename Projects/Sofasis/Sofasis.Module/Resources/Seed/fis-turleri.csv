@@ -1,0 +1,58 @@
+Kod;Ad;FinansModulTipi;FinansBorcAlacakTipi;ViewName;StokHareketYonu
+CARITN;Cari Hesap Tanımlama;Cari;Yok;CariHesapTanim_DetailView;Yok
+STOKTN;Stok Tanımlama;Stok;Yok;StokTanim_DetailView;Yok
+HZMTTN;Hizmet Tanımlama;Stok;Yok;HizmetTanim_DetailView;Yok
+MSRFTN;Masraf Tanımlama;Stok;Yok;MasrafTanim_DetailView;Yok
+KASATN;Kasa Tanımlama;Kasa;Yok;KasaHesapTanim_DetailView;Yok
+BANKTN;Banka Tanımlama;Banka;Yok;BankaHesapTanim_DetailView;Yok
+URTMTN;Üretim Merkezi Tanımlama;Uretim;Yok;UretimMerkeziTanim_DetailView;Yok
+OPRSTN;Operasyon Tanımlama;Uretim;Yok;OperasyonTanim_DetailView;Yok
+ROTATN;Rota Tanımlama;Uretim;Yok;RotaTanimM_DetailView;Yok
+RCTETN;Reçete Tanımlama;Uretim;Yok;ReceteTanimM_DetailView;Yok
+SATALT;Satın Alma Talebi;SatinAlma;Yok;SatinAlmaTalebiM_DetailView;Yok
+SATEKL;Satın Alma Teklifi;SatinAlma;Yok;SatinAlmaTeklifM_DetailView;Yok
+SASPTN;Satın Alma Siparişi;SatinAlma;Yok;SatinAlmaSiparisiM_DetailView;Yok
+CAACLS;Cari Açılış Fişi;Cari;BorcAlacak;CariHesapAcilisFisi_ListView;Yok
+CATHSL;Cari Nakit Tahsilat;Cari;Alacak;CariHesapNakitTahsilat_ListView;Yok
+CAODME;Cari Nakit Ödeme;Cari;Borc;CariHesapNakitOdeme_ListView;Yok
+CABDKN;Cari Borç Dekontu;Cari;Borc;CariHesapBorcDekontu_ListView;Yok
+CAADKN;Cari Alacak Dekontu;Cari;Alacak;CariHesapAlacakDekontu_ListView;Yok
+CAVRMN;Cari Virman Fişi;Cari;BorcAlacak;;Yok
+KSACLS;Kasa Açılış Fişi;Kasa;BorcAlacak;KasaAcilisFisi_ListView;Yok
+KSTHSL;Kasa Tahsilat;Kasa;Borc;KasaTahsilatFisi_ListView;Yok
+KSODME;Kasa Ödeme;Kasa;Alacak;KasaOdemeFisi_ListView;Yok
+KSVRMN;Kasa Virman Fişi;Kasa;BorcAlacak;;Yok
+BNACLS;Banka Açılış Fişi;Banka;BorcAlacak;BankaAcilisFisi_ListView;Yok
+BNGLNH;Banka Gelen Havale;Banka;Borc;BankaGelenHavale_ListView;Yok
+BNGDNH;Banka Giden Havale;Banka;Alacak;BankaGidenHavale_ListView;Yok
+BNYATP;Banka Yatırılan Para;Banka;Borc;BankaYatirilanPara_ListView;Yok
+BNCEKP;Banka Çekilen Para;Banka;Alacak;BankaCekilenPara_ListView;Yok
+BNVRMN;Banka Virman Fişi;Banka;BorcAlacak;;Yok
+CKCGIR;Çek Girişi;Cek;Alacak;;Yok
+CKCCIK;Çek Çıkışı;Cek;Borc;;Yok
+CKCIRO;Çek Ciro;Cek;Borc;;Yok
+SNSGIR;Senet Girişi;Senet;Alacak;;Yok
+SNSCIK;Senet Çıkışı;Senet;Borc;;Yok
+SNCIRO;Senet Ciro;Senet;Borc;;Yok
+FAALIS;Alış Faturası;Fatura;Alacak;;Yok
+FAALID;Alış İade Faturası;Fatura;Borc;;Yok
+FASTIS;Satış Faturası;Fatura;Borc;;Yok
+FASTID;Satış İade Faturası;Fatura;Alacak;;Yok
+IRALIS;Alış İrsaliyesi;Fatura;Alacak;;Yok
+IRALID;Alış İade İrsaliyesi;Fatura;Borc;;Yok
+IRSTIS;Satış İrsaliyesi;Irsaliye;Borc;;Yok
+IRSTID;Satış İade İrsaliyesi;Irsaliye;Alacak;;Yok
+FAPKST;Perakende Satış Faturası;Irsaliye;Borc;;Yok
+FAPKSI;Perakende Satış İade Faturası;Irsaliye;Alacak;;Yok
+SPSTIS;Satış & Pazarlama Siparişi;Siparis;Borc;SatisSiparisM_DetailView;Yok
+STACLS;Stok Açılış Fişi;Stok;Yok;StokAcilisFisi_ListView;Giris
+STALIS;Stok Alış Girişi;Stok;Yok;StokAlisGirisi_ListView;Giris
+STURET;Üretim Girişi;Stok;Yok;StokUretimGirisi_ListView;Giris
+STSFAZ;Sayım Fazlası;Stok;Yok;StokSayimFazlasi_ListView;Giris
+STTRGR;Depo Transfer Girişi;Stok;Yok;;Giris
+STSTIS;Stok Satış Çıkışı;Stok;Yok;StokSatisCikisi_ListView;Cikis
+STURTK;Üretim Tüketimi;Stok;Yok;StokUretimTuketimi_ListView;Cikis
+STSEKS;Sayım Eksiği;Stok;Yok;StokSayimEksigi_ListView;Cikis
+STTRCK;Depo Transfer Çıkışı;Stok;Yok;;Cikis
+STFIRE;Fire / Zayiat;Stok;Yok;StokFireZayiat_ListView;Cikis
+STTRNS;Depo Transferi;Stok;Yok;;Yok

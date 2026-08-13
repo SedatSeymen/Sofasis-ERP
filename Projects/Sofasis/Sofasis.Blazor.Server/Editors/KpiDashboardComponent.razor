@@ -1,0 +1,70 @@
+@using DevExpress.ExpressApp.Blazor.Editors
+@using Sofasis.Module.BusinessObjects
+@using System.Globalization
+@using System.Linq
+@inject NavigationManager NavigationManager
+
+<div class="kpi-dashboard">
+
+    <div class="kpi-section-title">Satın Alma</div>
+    <div class="kpi-card-row">
+        <div class="kpi-card kpi-accent-amber" @onclick="@(() => Git("SatinAlmaTalebiM_ListView"))">
+            <div class="kpi-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="4" width="14" height="17" rx="2" /><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z" /><path d="M8 11h8M8 15h5" /></svg>
+            </div>
+            <div class="kpi-body">
+                <div class="kpi-label">Bekleyen Talep</div>
+                <div class="kpi-value">@BekleyenTalepSayisi.ToString("N0", TrCulture)<span class="kpi-unit">Onay Bekliyor</span></div>
+            </div>
+        </div>
+        <div class="kpi-card kpi-accent-purple" @onclick="@(() => Git("SatinAlmaTeklifM_ListView"))">
+            <div class="kpi-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h4l2-3 3 6 2-3h5" /><rect x="3" y="5" width="18" height="14" rx="2" /></svg>
+            </div>
+            <div class="kpi-body">
+                <div class="kpi-label">Bekleyen Teklif</div>
+                <div class="kpi-value">@BekleyenTeklifSayisi.ToString("N0", TrCulture)<span class="kpi-unit">Karar Bekliyor</span></div>
+            </div>
+        </div>
+        <div class="kpi-card kpi-accent-indigo" @onclick="@(() => Git("SatinAlmaSiparisiM_ListView"))">
+            <div class="kpi-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="7" width="14" height="10" rx="1" /><path d="M15 10h4l3 3v4h-7z" /><circle cx="6" cy="19" r="1.6" /><circle cx="17.5" cy="19" r="1.6" /></svg>
+            </div>
+            <div class="kpi-body">
+                <div class="kpi-label">Bekleyen Sipariş</div>
+                <div class="kpi-value">@BekleyenSiparisSayisi.ToString("N0", TrCulture)<span class="kpi-unit">Mal Kabul Bekliyor</span></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@code {
+    [CascadingParameter] public BlazorControlViewItem ViewItem { get; set; }
+
+    static readonly CultureInfo TrCulture = CultureInfo.GetCultureInfo("tr-TR");
+
+    int BekleyenTalepSayisi;
+    int BekleyenTeklifSayisi;
+    int BekleyenSiparisSayisi;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        VerileriYukle();
+    }
+
+    void VerileriYukle()
+    {
+        var os = ViewItem.ObjectSpace;
+
+        BekleyenTalepSayisi = os.GetObjectsQuery<SatinAlmaTalebiM>()
+            .Count(x => x.Durum == SatinAlmaTalepDurumu.OnayBekliyor);
+        BekleyenTeklifSayisi = os.GetObjectsQuery<SatinAlmaTeklifM>()
+            .Count(x => x.Durum == SatinAlmaTeklifDurumu.Beklemede || x.Durum == SatinAlmaTeklifDurumu.Alindi);
+        BekleyenSiparisSayisi = os.GetObjectsQuery<SatinAlmaSiparisiM>()
+            .Count(x => x.Durum == SatinAlmaSiparisDurumu.Verildi);
+    }
+
+    void Git(string listViewId) => NavigationManager.NavigateTo("/" + listViewId);
+}

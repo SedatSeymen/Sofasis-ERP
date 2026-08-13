@@ -1,0 +1,280 @@
+D:\SofasisERP\Projects\Sofasis\Sofasis.Blazor.Server\Properties\launchSettings.json içindeki başlatma ayarları kullanılıyor...
+info: DevExpress.AspNetCore.Reporting.Logger[0]
+      AspNetCoreThreadingTimerStoragesCleaner.StartCore
+      
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: https://localhost:5001
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5000
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: D:\SofasisERP\Projects\Sofasis\Sofasis.Blazor.Server
+fail: DevExpress.ExpressApp.Blazor.Components.XafErrorBoundaryComponent[0]
+      Handled exception occurs
+      DevExpress.ExpressApp.Actions.ActionExecutionException: The application cannot connect to the specified database, because the database doesn't exist, its version is older than that of the application or its schema does not match the ORM data model structure. To avoid this error, use one of the solutions from the https://www.devexpress.com/kb=T367835 KB Article.
+      
+      Inner exception: Şemanın güncellenmesi gerek. Sistem yöneticinizle irtibata geçin. Sql metni: 'Column 'DovizTanim' not found in table 'StokHareketleriD''
+       ---> DevExpress.ExpressApp.Actions.ActionExecutionException: The application cannot connect to the specified database, because the database doesn't exist, its version is older than that of the application or its schema does not match the ORM data model structure. To avoid this error, use one of the solutions from the https://www.devexpress.com/kb=T367835 KB Article.
+      
+      Inner exception: Şemanın güncellenmesi gerek. Sistem yöneticinizle irtibata geçin. Sql metni: 'Column 'DovizTanim' not found in table 'StokHareketleriD''
+       ---> System.InvalidOperationException: The application cannot connect to the specified database, because the database doesn't exist, its version is older than that of the application or its schema does not match the ORM data model structure. To avoid this error, use one of the solutions from the https://www.devexpress.com/kb=T367835 KB Article.
+      
+      Inner exception: Şemanın güncellenmesi gerek. Sistem yöneticinizle irtibata geçin. Sql metni: 'Column 'DovizTanim' not found in table 'StokHareketleriD''
+         at Sofasis.Blazor.Server.SofasisBlazorApplication.SofasisBlazorApplication_DatabaseVersionMismatch(Object sender, DatabaseVersionMismatchEventArgs e) in D:\SofasisERP\Projects\Sofasis\Sofasis.Blazor.Server\BlazorApplication.cs:line 68
+         at DevExpress.ExpressApp.XafApplication.OnDatabaseVersionMismatch(DatabaseVersionMismatchEventArgs args)
+         at DevExpress.ExpressApp.XafApplication.CheckCompatibilityCore()
+         at DevExpress.ExpressApp.XafApplication.CheckCompatibility()
+         at DevExpress.ExpressApp.XafApplication.Logon(PopupWindowShowActionExecuteEventArgs logonWindowArgs)
+         at DevExpress.ExpressApp.XafApplication.showLogonAction_OnExecute(Object sender, PopupWindowShowActionExecuteEventArgs args)
+         at DevExpress.ExpressApp.Actions.PopupWindowShowAction.RaiseExecute(ActionBaseEventArgs eventArgs)
+         at DevExpress.ExpressApp.Actions.ActionBase.ExecuteCore(Delegate handler, ActionBaseEventArgs eventArgs)
+         --- End of inner exception stack trace ---
+         at DevExpress.ExpressApp.Actions.ActionBase.OnHandleException(Exception e)
+         at DevExpress.ExpressApp.Actions.ActionBase.ExecuteCore(Delegate handler, ActionBaseEventArgs eventArgs)
+         at DevExpress.ExpressApp.Actions.PopupWindowShowAction.DoExecute(Window window)
+         at DevExpress.ExpressApp.Actions.PopupWindowShowAction.DialogController_Accepting(Object sender, DialogControllerAcceptingEventArgs e)
+         at DevExpress.ExpressApp.SystemModule.DialogController.Accept(SimpleActionExecuteEventArgs args)
+         at DevExpress.ExpressApp.SystemModule.DialogController.acceptAction_OnExecute(Object sender, SimpleActionExecuteEventArgs e)
+         at DevExpress.ExpressApp.Actions.SimpleAction.RaiseExecute(ActionBaseEventArgs eventArgs)
+         at DevExpress.ExpressApp.Actions.ActionBase.ExecuteCore(Delegate handler, ActionBaseEventArgs eventArgs)
+         --- End of inner exception stack trace ---
+         at DevExpress.ExpressApp.Actions.ActionBase.OnHandleException(Exception e)
+         at DevExpress.ExpressApp.Actions.ActionBase.ExecuteCore(Delegate handler, ActionBaseEventArgs eventArgs)
+         at DevExpress.ExpressApp.Actions.SimpleAction.DoExecute()
+         at DevExpress.ExpressApp.Templates.ActionControls.Binding.SimpleActionBinding.DoExecute(EventArgs e)
+         at DevExpress.ExpressApp.Templates.ActionControls.Binding.SimpleActionBinding.ActionControl_Execute(Object sender, EventArgs e)
+         at DevExpress.ExpressApp.Blazor.Templates.ActionControls.DxMappedSimpleActionControlBase`2.<ExecuteAsync>b__15_0()
+         at DevExpress.ExpressApp.Blazor.Templates.ActionControls.ActionControlBase.<>c__DisplayClass19_0.<<InvokeActionExecuteAsync>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at DevExpress.ExpressApp.Blazor.Services.ActionExecutorService.InvokeAsync(Func`1 execute, Func`1 confirm)
+         at DevExpress.Blazor.Base.DxToolbarItemBase.<OnInitialized>b__83_0(ToolbarItemClickEventArgs x)
+         at DevExpress.Blazor.Navigation.Internal.ToolbarItemModel.<>c__DisplayClass261_0.<<OnClick>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at DevExpress.Blazor.Navigation.Internal.ToolbarItemModel.OnClick(MouseEventArgs args)
+         at DevExpress.Blazor.Navigation.Internal.ToolbarItemBase.OnClick(MouseEventArgs args)
+         at Microsoft.AspNetCore.Components.ComponentBase.CallStateHasChangedOnAsyncCompletion(Task task)
+         at DevExpress.Blazor.Internal.DxButtonInternal.DoClick(MouseEventArgs mouseArgs)
+         at Microsoft.AspNetCore.Components.ComponentBase.CallStateHasChangedOnAsyncCompletion(Task task)
+         at Microsoft.AspNetCore.Components.RenderTree.Renderer.GetErrorHandledTask(Task taskToHandle, ComponentState owningComponentState)
+fail: DevExpress.ExpressApp.Blazor.Components.XafErrorBoundaryComponent[0]
+      Handled exception occurs
+      DevExpress.ExpressApp.Actions.ActionExecutionException: The application cannot connect to the specified database, because the database doesn't exist, its version is older than that of the application or its schema does not match the ORM data model structure. To avoid this error, use one of the solutions from the https://www.devexpress.com/kb=T367835 KB Article.
+      
+      Inner exception: Şemanın güncellenmesi gerek. Sistem yöneticinizle irtibata geçin. Sql metni: 'Column 'DovizTanim' not found in table 'StokHareketleriD''
+       ---> DevExpress.ExpressApp.Actions.ActionExecutionException: The application cannot connect to the specified database, because the database doesn't exist, its version is older than that of the application or its schema does not match the ORM data model structure. To avoid this error, use one of the solutions from the https://www.devexpress.com/kb=T367835 KB Article.
+      
+      Inner exception: Şemanın güncellenmesi gerek. Sistem yöneticinizle irtibata geçin. Sql metni: 'Column 'DovizTanim' not found in table 'StokHareketleriD''
+       ---> System.InvalidOperationException: The application cannot connect to the specified database, because the database doesn't exist, its version is older than that of the application or its schema does not match the ORM data model structure. To avoid this error, use one of the solutions from the https://www.devexpress.com/kb=T367835 KB Article.
+      
+      Inner exception: Şemanın güncellenmesi gerek. Sistem yöneticinizle irtibata geçin. Sql metni: 'Column 'DovizTanim' not found in table 'StokHareketleriD''
+         at Sofasis.Blazor.Server.SofasisBlazorApplication.SofasisBlazorApplication_DatabaseVersionMismatch(Object sender, DatabaseVersionMismatchEventArgs e) in D:\SofasisERP\Projects\Sofasis\Sofasis.Blazor.Server\BlazorApplication.cs:line 68
+         at DevExpress.ExpressApp.XafApplication.OnDatabaseVersionMismatch(DatabaseVersionMismatchEventArgs args)
+         at DevExpress.ExpressApp.XafApplication.CheckCompatibilityCore()
+         at DevExpress.ExpressApp.XafApplication.CheckCompatibility()
+         at DevExpress.ExpressApp.XafApplication.Logon(PopupWindowShowActionExecuteEventArgs logonWindowArgs)
+         at DevExpress.ExpressApp.XafApplication.showLogonAction_OnExecute(Object sender, PopupWindowShowActionExecuteEventArgs args)
+         at DevExpress.ExpressApp.Actions.PopupWindowShowAction.RaiseExecute(ActionBaseEventArgs eventArgs)
+         at DevExpress.ExpressApp.Actions.ActionBase.ExecuteCore(Delegate handler, ActionBaseEventArgs eventArgs)
+         --- End of inner exception stack trace ---
+         at DevExpress.ExpressApp.Actions.ActionBase.OnHandleException(Exception e)
+         at DevExpress.ExpressApp.Actions.ActionBase.ExecuteCore(Delegate handler, ActionBaseEventArgs eventArgs)
+         at DevExpress.ExpressApp.Actions.PopupWindowShowAction.DoExecute(Window window)
+         at DevExpress.ExpressApp.Actions.PopupWindowShowAction.DialogController_Accepting(Object sender, DialogControllerAcceptingEventArgs e)
+         at DevExpress.ExpressApp.SystemModule.DialogController.Accept(SimpleActionExecuteEventArgs args)
+         at DevExpress.ExpressApp.SystemModule.DialogController.acceptAction_OnExecute(Object sender, SimpleActionExecuteEventArgs e)
+         at DevExpress.ExpressApp.Actions.SimpleAction.RaiseExecute(ActionBaseEventArgs eventArgs)
+         at DevExpress.ExpressApp.Actions.ActionBase.ExecuteCore(Delegate handler, ActionBaseEventArgs eventArgs)
+         --- End of inner exception stack trace ---
+         at DevExpress.ExpressApp.Actions.ActionBase.OnHandleException(Exception e)
+         at DevExpress.ExpressApp.Actions.ActionBase.ExecuteCore(Delegate handler, ActionBaseEventArgs eventArgs)
+         at DevExpress.ExpressApp.Actions.SimpleAction.DoExecute()
+         at DevExpress.ExpressApp.Templates.ActionControls.Binding.SimpleActionBinding.DoExecute(EventArgs e)
+         at DevExpress.ExpressApp.Templates.ActionControls.Binding.SimpleActionBinding.ActionControl_Execute(Object sender, EventArgs e)
+         at DevExpress.ExpressApp.Blazor.Templates.ActionControls.DxMappedSimpleActionControlBase`2.<ExecuteAsync>b__15_0()
+         at DevExpress.ExpressApp.Blazor.Templates.ActionControls.ActionControlBase.<>c__DisplayClass19_0.<<InvokeActionExecuteAsync>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at DevExpress.ExpressApp.Blazor.Services.ActionExecutorService.InvokeAsync(Func`1 execute, Func`1 confirm)
+         at DevExpress.Blazor.Base.DxToolbarItemBase.<OnInitialized>b__83_0(ToolbarItemClickEventArgs x)
+         at DevExpress.Blazor.Navigation.Internal.ToolbarItemModel.<>c__DisplayClass261_0.<<OnClick>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at DevExpress.Blazor.Navigation.Internal.ToolbarItemModel.OnClick(MouseEventArgs args)
+         at DevExpress.Blazor.Navigation.Internal.ToolbarItemBase.OnClick(MouseEventArgs args)
+         at Microsoft.AspNetCore.Components.ComponentBase.CallStateHasChangedOnAsyncCompletion(Task task)
+         at DevExpress.Blazor.Internal.DxButtonInternal.DoClick(MouseEventArgs mouseArgs)
+         at Microsoft.AspNetCore.Components.ComponentBase.CallStateHasChangedOnAsyncCompletion(Task task)
+         at Microsoft.AspNetCore.Components.RenderTree.Renderer.GetErrorHandledTask(Task taskToHandle, ComponentState owningComponentState)
+fail: DevExpress.ExpressApp.Blazor.Components.XafErrorBoundaryComponent[0]
+      Handled exception occurs
+      DevExpress.ExpressApp.Actions.ActionExecutionException: The application cannot connect to the specified database, because the database doesn't exist, its version is older than that of the application or its schema does not match the ORM data model structure. To avoid this error, use one of the solutions from the https://www.devexpress.com/kb=T367835 KB Article.
+      
+      Inner exception: Şemanın güncellenmesi gerek. Sistem yöneticinizle irtibata geçin. Sql metni: 'Column 'DovizTanim' not found in table 'StokHareketleriD''
+       ---> DevExpress.ExpressApp.Actions.ActionExecutionException: The application cannot connect to the specified database, because the database doesn't exist, its version is older than that of the application or its schema does not match the ORM data model structure. To avoid this error, use one of the solutions from the https://www.devexpress.com/kb=T367835 KB Article.
+      
+      Inner exception: Şemanın güncellenmesi gerek. Sistem yöneticinizle irtibata geçin. Sql metni: 'Column 'DovizTanim' not found in table 'StokHareketleriD''
+       ---> System.InvalidOperationException: The application cannot connect to the specified database, because the database doesn't exist, its version is older than that of the application or its schema does not match the ORM data model structure. To avoid this error, use one of the solutions from the https://www.devexpress.com/kb=T367835 KB Article.
+      
+      Inner exception: Şemanın güncellenmesi gerek. Sistem yöneticinizle irtibata geçin. Sql metni: 'Column 'DovizTanim' not found in table 'StokHareketleriD''
+         at Sofasis.Blazor.Server.SofasisBlazorApplication.SofasisBlazorApplication_DatabaseVersionMismatch(Object sender, DatabaseVersionMismatchEventArgs e) in D:\SofasisERP\Projects\Sofasis\Sofasis.Blazor.Server\BlazorApplication.cs:line 68
+         at DevExpress.ExpressApp.XafApplication.OnDatabaseVersionMismatch(DatabaseVersionMismatchEventArgs args)
+         at DevExpress.ExpressApp.XafApplication.CheckCompatibilityCore()
+         at DevExpress.ExpressApp.XafApplication.CheckCompatibility()
+         at DevExpress.ExpressApp.XafApplication.Logon(PopupWindowShowActionExecuteEventArgs logonWindowArgs)
+         at DevExpress.ExpressApp.XafApplication.showLogonAction_OnExecute(Object sender, PopupWindowShowActionExecuteEventArgs args)
+         at DevExpress.ExpressApp.Actions.PopupWindowShowAction.RaiseExecute(ActionBaseEventArgs eventArgs)
+         at DevExpress.ExpressApp.Actions.ActionBase.ExecuteCore(Delegate handler, ActionBaseEventArgs eventArgs)
+         --- End of inner exception stack trace ---
+         at DevExpress.ExpressApp.Actions.ActionBase.OnHandleException(Exception e)
+         at DevExpress.ExpressApp.Actions.ActionBase.ExecuteCore(Delegate handler, ActionBaseEventArgs eventArgs)
+         at DevExpress.ExpressApp.Actions.PopupWindowShowAction.DoExecute(Window window)
+         at DevExpress.ExpressApp.Actions.PopupWindowShowAction.DialogController_Accepting(Object sender, DialogControllerAcceptingEventArgs e)
+         at DevExpress.ExpressApp.SystemModule.DialogController.Accept(SimpleActionExecuteEventArgs args)
+         at DevExpress.ExpressApp.SystemModule.DialogController.acceptAction_OnExecute(Object sender, SimpleActionExecuteEventArgs e)
+         at DevExpress.ExpressApp.Actions.SimpleAction.RaiseExecute(ActionBaseEventArgs eventArgs)
+         at DevExpress.ExpressApp.Actions.ActionBase.ExecuteCore(Delegate handler, ActionBaseEventArgs eventArgs)
+         --- End of inner exception stack trace ---
+         at DevExpress.ExpressApp.Actions.ActionBase.OnHandleException(Exception e)
+         at DevExpress.ExpressApp.Actions.ActionBase.ExecuteCore(Delegate handler, ActionBaseEventArgs eventArgs)
+         at DevExpress.ExpressApp.Actions.SimpleAction.DoExecute()
+         at DevExpress.ExpressApp.Templates.ActionControls.Binding.SimpleActionBinding.DoExecute(EventArgs e)
+         at DevExpress.ExpressApp.Templates.ActionControls.Binding.SimpleActionBinding.ActionControl_Execute(Object sender, EventArgs e)
+         at DevExpress.ExpressApp.Blazor.Templates.ActionControls.DxMappedSimpleActionControlBase`2.<ExecuteAsync>b__15_0()
+         at DevExpress.ExpressApp.Blazor.Templates.ActionControls.ActionControlBase.<>c__DisplayClass19_0.<<InvokeActionExecuteAsync>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at DevExpress.ExpressApp.Blazor.Services.ActionExecutorService.InvokeAsync(Func`1 execute, Func`1 confirm)
+         at DevExpress.Blazor.Base.DxToolbarItemBase.<OnInitialized>b__83_0(ToolbarItemClickEventArgs x)
+         at DevExpress.Blazor.Navigation.Internal.ToolbarItemModel.<>c__DisplayClass261_0.<<OnClick>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at DevExpress.Blazor.Navigation.Internal.ToolbarItemModel.OnClick(MouseEventArgs args)
+         at DevExpress.Blazor.Navigation.Internal.ToolbarItemBase.OnClick(MouseEventArgs args)
+         at Microsoft.AspNetCore.Components.ComponentBase.CallStateHasChangedOnAsyncCompletion(Task task)
+         at DevExpress.Blazor.Internal.DxButtonInternal.DoClick(MouseEventArgs mouseArgs)
+         at Microsoft.AspNetCore.Components.ComponentBase.CallStateHasChangedOnAsyncCompletion(Task task)
+         at Microsoft.AspNetCore.Components.RenderTree.Renderer.GetErrorHandledTask(Task taskToHandle, ComponentState owningComponentState)
+fail: DevExpress.ExpressApp.Blazor.Components.XafErrorBoundaryComponent[0]
+      Handled exception occurs
+      DevExpress.ExpressApp.Actions.ActionExecutionException: The application cannot connect to the specified database, because the database doesn't exist, its version is older than that of the application or its schema does not match the ORM data model structure. To avoid this error, use one of the solutions from the https://www.devexpress.com/kb=T367835 KB Article.
+      
+      Inner exception: Şemanın güncellenmesi gerek. Sistem yöneticinizle irtibata geçin. Sql metni: 'Column 'DovizTanim' not found in table 'StokHareketleriD''
+       ---> DevExpress.ExpressApp.Actions.ActionExecutionException: The application cannot connect to the specified database, because the database doesn't exist, its version is older than that of the application or its schema does not match the ORM data model structure. To avoid this error, use one of the solutions from the https://www.devexpress.com/kb=T367835 KB Article.
+      
+      Inner exception: Şemanın güncellenmesi gerek. Sistem yöneticinizle irtibata geçin. Sql metni: 'Column 'DovizTanim' not found in table 'StokHareketleriD''
+       ---> System.InvalidOperationException: The application cannot connect to the specified database, because the database doesn't exist, its version is older than that of the application or its schema does not match the ORM data model structure. To avoid this error, use one of the solutions from the https://www.devexpress.com/kb=T367835 KB Article.
+      
+      Inner exception: Şemanın güncellenmesi gerek. Sistem yöneticinizle irtibata geçin. Sql metni: 'Column 'DovizTanim' not found in table 'StokHareketleriD''
+         at Sofasis.Blazor.Server.SofasisBlazorApplication.SofasisBlazorApplication_DatabaseVersionMismatch(Object sender, DatabaseVersionMismatchEventArgs e) in D:\SofasisERP\Projects\Sofasis\Sofasis.Blazor.Server\BlazorApplication.cs:line 68
+         at DevExpress.ExpressApp.XafApplication.OnDatabaseVersionMismatch(DatabaseVersionMismatchEventArgs args)
+         at DevExpress.ExpressApp.XafApplication.CheckCompatibilityCore()
+         at DevExpress.ExpressApp.XafApplication.CheckCompatibility()
+         at DevExpress.ExpressApp.XafApplication.Logon(PopupWindowShowActionExecuteEventArgs logonWindowArgs)
+         at DevExpress.ExpressApp.XafApplication.showLogonAction_OnExecute(Object sender, PopupWindowShowActionExecuteEventArgs args)
+         at DevExpress.ExpressApp.Actions.PopupWindowShowAction.RaiseExecute(ActionBaseEventArgs eventArgs)
+         at DevExpress.ExpressApp.Actions.ActionBase.ExecuteCore(Delegate handler, ActionBaseEventArgs eventArgs)
+         --- End of inner exception stack trace ---
+         at DevExpress.ExpressApp.Actions.ActionBase.OnHandleException(Exception e)
+         at DevExpress.ExpressApp.Actions.ActionBase.ExecuteCore(Delegate handler, ActionBaseEventArgs eventArgs)
+         at DevExpress.ExpressApp.Actions.PopupWindowShowAction.DoExecute(Window window)
+         at DevExpress.ExpressApp.Actions.PopupWindowShowAction.DialogController_Accepting(Object sender, DialogControllerAcceptingEventArgs e)
+         at DevExpress.ExpressApp.SystemModule.DialogController.Accept(SimpleActionExecuteEventArgs args)
+         at DevExpress.ExpressApp.SystemModule.DialogController.acceptAction_OnExecute(Object sender, SimpleActionExecuteEventArgs e)
+         at DevExpress.ExpressApp.Actions.SimpleAction.RaiseExecute(ActionBaseEventArgs eventArgs)
+         at DevExpress.ExpressApp.Actions.ActionBase.ExecuteCore(Delegate handler, ActionBaseEventArgs eventArgs)
+         --- End of inner exception stack trace ---
+         at DevExpress.ExpressApp.Actions.ActionBase.OnHandleException(Exception e)
+         at DevExpress.ExpressApp.Actions.ActionBase.ExecuteCore(Delegate handler, ActionBaseEventArgs eventArgs)
+         at DevExpress.ExpressApp.Actions.SimpleAction.DoExecute()
+         at DevExpress.ExpressApp.Templates.ActionControls.Binding.SimpleActionBinding.DoExecute(EventArgs e)
+         at DevExpress.ExpressApp.Templates.ActionControls.Binding.SimpleActionBinding.ActionControl_Execute(Object sender, EventArgs e)
+         at DevExpress.ExpressApp.Blazor.Templates.ActionControls.DxMappedSimpleActionControlBase`2.<ExecuteAsync>b__15_0()
+         at DevExpress.ExpressApp.Blazor.Templates.ActionControls.ActionControlBase.<>c__DisplayClass19_0.<<InvokeActionExecuteAsync>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at DevExpress.ExpressApp.Blazor.Services.ActionExecutorService.InvokeAsync(Func`1 execute, Func`1 confirm)
+         at DevExpress.Blazor.Base.DxToolbarItemBase.<OnInitialized>b__83_0(ToolbarItemClickEventArgs x)
+         at DevExpress.Blazor.Navigation.Internal.ToolbarItemModel.<>c__DisplayClass261_0.<<OnClick>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at DevExpress.Blazor.Navigation.Internal.ToolbarItemModel.OnClick(MouseEventArgs args)
+         at DevExpress.Blazor.Navigation.Internal.ToolbarItemBase.OnClick(MouseEventArgs args)
+         at Microsoft.AspNetCore.Components.ComponentBase.CallStateHasChangedOnAsyncCompletion(Task task)
+         at DevExpress.Blazor.Internal.DxButtonInternal.DoClick(MouseEventArgs mouseArgs)
+         at Microsoft.AspNetCore.Components.ComponentBase.CallStateHasChangedOnAsyncCompletion(Task task)
+         at Microsoft.AspNetCore.Components.RenderTree.Renderer.GetErrorHandledTask(Task taskToHandle, ComponentState owningComponentState)
+fail: DevExpress.ExpressApp.Blazor.Components.XafErrorBoundaryComponent[0]
+      Handled exception occurs
+      DevExpress.ExpressApp.Actions.ActionExecutionException: The application cannot connect to the specified database, because the database doesn't exist, its version is older than that of the application or its schema does not match the ORM data model structure. To avoid this error, use one of the solutions from the https://www.devexpress.com/kb=T367835 KB Article.
+      
+      Inner exception: Şemanın güncellenmesi gerek. Sistem yöneticinizle irtibata geçin. Sql metni: 'Column 'DovizTanim' not found in table 'StokHareketleriD''
+       ---> DevExpress.ExpressApp.Actions.ActionExecutionException: The application cannot connect to the specified database, because the database doesn't exist, its version is older than that of the application or its schema does not match the ORM data model structure. To avoid this error, use one of the solutions from the https://www.devexpress.com/kb=T367835 KB Article.
+      
+      Inner exception: Şemanın güncellenmesi gerek. Sistem yöneticinizle irtibata geçin. Sql metni: 'Column 'DovizTanim' not found in table 'StokHareketleriD''
+       ---> System.InvalidOperationException: The application cannot connect to the specified database, because the database doesn't exist, its version is older than that of the application or its schema does not match the ORM data model structure. To avoid this error, use one of the solutions from the https://www.devexpress.com/kb=T367835 KB Article.
+      
+      Inner exception: Şemanın güncellenmesi gerek. Sistem yöneticinizle irtibata geçin. Sql metni: 'Column 'DovizTanim' not found in table 'StokHareketleriD''
+         at Sofasis.Blazor.Server.SofasisBlazorApplication.SofasisBlazorApplication_DatabaseVersionMismatch(Object sender, DatabaseVersionMismatchEventArgs e) in D:\SofasisERP\Projects\Sofasis\Sofasis.Blazor.Server\BlazorApplication.cs:line 68
+         at DevExpress.ExpressApp.XafApplication.OnDatabaseVersionMismatch(DatabaseVersionMismatchEventArgs args)
+         at DevExpress.ExpressApp.XafApplication.CheckCompatibilityCore()
+         at DevExpress.ExpressApp.XafApplication.CheckCompatibility()
+         at DevExpress.ExpressApp.XafApplication.Logon(PopupWindowShowActionExecuteEventArgs logonWindowArgs)
+         at DevExpress.ExpressApp.XafApplication.showLogonAction_OnExecute(Object sender, PopupWindowShowActionExecuteEventArgs args)
+         at DevExpress.ExpressApp.Actions.PopupWindowShowAction.RaiseExecute(ActionBaseEventArgs eventArgs)
+         at DevExpress.ExpressApp.Actions.ActionBase.ExecuteCore(Delegate handler, ActionBaseEventArgs eventArgs)
+         --- End of inner exception stack trace ---
+         at DevExpress.ExpressApp.Actions.ActionBase.OnHandleException(Exception e)
+         at DevExpress.ExpressApp.Actions.ActionBase.ExecuteCore(Delegate handler, ActionBaseEventArgs eventArgs)
+         at DevExpress.ExpressApp.Actions.PopupWindowShowAction.DoExecute(Window window)
+         at DevExpress.ExpressApp.Actions.PopupWindowShowAction.DialogController_Accepting(Object sender, DialogControllerAcceptingEventArgs e)
+         at DevExpress.ExpressApp.SystemModule.DialogController.Accept(SimpleActionExecuteEventArgs args)
+         at DevExpress.ExpressApp.SystemModule.DialogController.acceptAction_OnExecute(Object sender, SimpleActionExecuteEventArgs e)
+         at DevExpress.ExpressApp.Actions.SimpleAction.RaiseExecute(ActionBaseEventArgs eventArgs)
+         at DevExpress.ExpressApp.Actions.ActionBase.ExecuteCore(Delegate handler, ActionBaseEventArgs eventArgs)
+         --- End of inner exception stack trace ---
+         at DevExpress.ExpressApp.Blazor.Components.ActionShortcutComponent.OnAfterRenderAsync(Boolean firstRender)
+         at Microsoft.AspNetCore.Components.RenderTree.Renderer.GetErrorHandledTask(Task taskToHandle, ComponentState owningComponentState)
+fail: DevExpress.ExpressApp.Blazor.Components.XafErrorBoundaryComponent[0]
+      Handled exception occurs
+      DevExpress.ExpressApp.Actions.ActionExecutionException: The application cannot connect to the specified database, because the database doesn't exist, its version is older than that of the application or its schema does not match the ORM data model structure. To avoid this error, use one of the solutions from the https://www.devexpress.com/kb=T367835 KB Article.
+      
+      Inner exception: Şemanın güncellenmesi gerek. Sistem yöneticinizle irtibata geçin. Sql metni: 'Column 'DovizTanim' not found in table 'StokHareketleriD''
+       ---> DevExpress.ExpressApp.Actions.ActionExecutionException: The application cannot connect to the specified database, because the database doesn't exist, its version is older than that of the application or its schema does not match the ORM data model structure. To avoid this error, use one of the solutions from the https://www.devexpress.com/kb=T367835 KB Article.
+      
+      Inner exception: Şemanın güncellenmesi gerek. Sistem yöneticinizle irtibata geçin. Sql metni: 'Column 'DovizTanim' not found in table 'StokHareketleriD''
+       ---> System.InvalidOperationException: The application cannot connect to the specified database, because the database doesn't exist, its version is older than that of the application or its schema does not match the ORM data model structure. To avoid this error, use one of the solutions from the https://www.devexpress.com/kb=T367835 KB Article.
+      
+      Inner exception: Şemanın güncellenmesi gerek. Sistem yöneticinizle irtibata geçin. Sql metni: 'Column 'DovizTanim' not found in table 'StokHareketleriD''
+         at Sofasis.Blazor.Server.SofasisBlazorApplication.SofasisBlazorApplication_DatabaseVersionMismatch(Object sender, DatabaseVersionMismatchEventArgs e) in D:\SofasisERP\Projects\Sofasis\Sofasis.Blazor.Server\BlazorApplication.cs:line 68
+         at DevExpress.ExpressApp.XafApplication.OnDatabaseVersionMismatch(DatabaseVersionMismatchEventArgs args)
+         at DevExpress.ExpressApp.XafApplication.CheckCompatibilityCore()
+         at DevExpress.ExpressApp.XafApplication.CheckCompatibility()
+         at DevExpress.ExpressApp.XafApplication.Logon(PopupWindowShowActionExecuteEventArgs logonWindowArgs)
+         at DevExpress.ExpressApp.XafApplication.showLogonAction_OnExecute(Object sender, PopupWindowShowActionExecuteEventArgs args)
+         at DevExpress.ExpressApp.Actions.PopupWindowShowAction.RaiseExecute(ActionBaseEventArgs eventArgs)
+         at DevExpress.ExpressApp.Actions.ActionBase.ExecuteCore(Delegate handler, ActionBaseEventArgs eventArgs)
+         --- End of inner exception stack trace ---
+         at DevExpress.ExpressApp.Actions.ActionBase.OnHandleException(Exception e)
+         at DevExpress.ExpressApp.Actions.ActionBase.ExecuteCore(Delegate handler, ActionBaseEventArgs eventArgs)
+         at DevExpress.ExpressApp.Actions.PopupWindowShowAction.DoExecute(Window window)
+         at DevExpress.ExpressApp.Actions.PopupWindowShowAction.DialogController_Accepting(Object sender, DialogControllerAcceptingEventArgs e)
+         at DevExpress.ExpressApp.SystemModule.DialogController.Accept(SimpleActionExecuteEventArgs args)
+         at DevExpress.ExpressApp.SystemModule.DialogController.acceptAction_OnExecute(Object sender, SimpleActionExecuteEventArgs e)
+         at DevExpress.ExpressApp.Actions.SimpleAction.RaiseExecute(ActionBaseEventArgs eventArgs)
+         at DevExpress.ExpressApp.Actions.ActionBase.ExecuteCore(Delegate handler, ActionBaseEventArgs eventArgs)
+         --- End of inner exception stack trace ---
+         at DevExpress.ExpressApp.Actions.ActionBase.OnHandleException(Exception e)
+         at DevExpress.ExpressApp.Actions.ActionBase.ExecuteCore(Delegate handler, ActionBaseEventArgs eventArgs)
+         at DevExpress.ExpressApp.Actions.SimpleAction.DoExecute()
+         at DevExpress.ExpressApp.Templates.ActionControls.Binding.SimpleActionBinding.DoExecute(EventArgs e)
+         at DevExpress.ExpressApp.Templates.ActionControls.Binding.SimpleActionBinding.ActionControl_Execute(Object sender, EventArgs e)
+         at DevExpress.ExpressApp.Blazor.Templates.ActionControls.DxMappedSimpleActionControlBase`2.<ExecuteAsync>b__15_0()
+         at DevExpress.ExpressApp.Blazor.Templates.ActionControls.ActionControlBase.<>c__DisplayClass19_0.<<InvokeActionExecuteAsync>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at DevExpress.ExpressApp.Blazor.Services.ActionExecutorService.InvokeAsync(Func`1 execute, Func`1 confirm)
+         at DevExpress.Blazor.Base.DxToolbarItemBase.<OnInitialized>b__83_0(ToolbarItemClickEventArgs x)
+         at DevExpress.Blazor.Navigation.Internal.ToolbarItemModel.<>c__DisplayClass261_0.<<OnClick>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at DevExpress.Blazor.Navigation.Internal.ToolbarItemModel.OnClick(MouseEventArgs args)
+         at DevExpress.Blazor.Navigation.Internal.ToolbarItemBase.OnClick(MouseEventArgs args)
+         at Microsoft.AspNetCore.Components.ComponentBase.CallStateHasChangedOnAsyncCompletion(Task task)
+         at DevExpress.Blazor.Internal.DxButtonInternal.DoClick(MouseEventArgs mouseArgs)
+         at Microsoft.AspNetCore.Components.ComponentBase.CallStateHasChangedOnAsyncCompletion(Task task)
+         at Microsoft.AspNetCore.Components.RenderTree.Renderer.GetErrorHandledTask(Task taskToHandle, ComponentState owningComponentState)

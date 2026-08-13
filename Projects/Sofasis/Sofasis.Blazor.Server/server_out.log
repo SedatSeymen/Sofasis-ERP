@@ -1,0 +1,13 @@
+info: DevExpress.AspNetCore.Reporting.Logger[0]
+      AspNetCoreThreadingTimerStoragesCleaner.StartCore
+      
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5000
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Production
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: D:\SofasisERP\Projects\Sofasis\Sofasis.Blazor.Server
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.

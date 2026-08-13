@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XtraReportsLayoutSerializer SerializerVersion="26.1.3.0" Ref="1" ControlType="Sofasis.Module.Reports.KasaBankaHareketMakbuzuReport, Sofasis.Module, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Landscape="true" Margins="30, 30, 100, 100" PaperKind="A5" PageWidthF="826.77167" PageHeightF="582.6772" Version="26.1" DataSource="#Ref-0">
+  <Bands>
+    <Item1 Ref="2" ControlType="TopMarginBand" />
+    <Item2 Ref="3" ControlType="DetailBand" HeightF="377">
+      <Controls>
+        <Item1 Ref="4" ControlType="XRLabel" Text="[FisTuruTanim.FisTuruAdi]" TextAlignment="TopCenter" SizeF="700,32" LocationFloat="0,0" Font="Arial, 17pt, style=Bold" Borders="None" />
+        <Item2 Ref="5" ControlType="XRLabel" Text="Fiş No:" TextAlignment="TopRight" SizeF="179,22" LocationFloat="0,65" Font="Arial, 11pt, style=Bold" Borders="None" />
+        <Item3 Ref="6" ControlType="XRLabel" SizeF="145,22" LocationFloat="185,65" Font="Arial, 11pt" Borders="None">
+          <ExpressionBindings>
+            <Item1 Ref="7" EventName="BeforePrint" PropertyName="Text" Expression="[FisNo]" />
+          </ExpressionBindings>
+        </Item3>
+        <Item4 Ref="8" ControlType="XRLabel" Text="Fiş Tarihi:" TextAlignment="TopRight" SizeF="99,22" LocationFloat="430,65" Font="Arial, 11pt, style=Bold" Borders="None" />
+        <Item5 Ref="9" ControlType="XRLabel" SizeF="220,22" LocationFloat="535,65" Font="Arial, 11pt" Borders="None">
+          <ExpressionBindings>
+            <Item1 Ref="10" EventName="BeforePrint" PropertyName="Text" Expression="FormatString('{0:dd.MM.yyyy}', [FisTarihi])" />
+          </ExpressionBindings>
+        </Item5>
+        <Item6 Ref="11" ControlType="XRLabel" Text="Belge No:" TextAlignment="TopRight" SizeF="179,22" LocationFloat="0,89" Font="Arial, 11pt, style=Bold" Borders="None" />
+        <Item7 Ref="12" ControlType="XRLabel" SizeF="145,22" LocationFloat="185,89" Font="Arial, 11pt" Borders="None">
+          <ExpressionBindings>
+            <Item1 Ref="13" EventName="BeforePrint" PropertyName="Text" Expression="[BelgeNo]" />
+          </ExpressionBindings>
+        </Item7>
+        <Item8 Ref="14" ControlType="XRLabel" Text="Belge Tarihi:" TextAlignment="TopRight" SizeF="99,22" LocationFloat="430,89" Font="Arial, 11pt, style=Bold" Borders="None" />
+        <Item9 Ref="15" ControlType="XRLabel" SizeF="220,22" LocationFloat="535,89" Font="Arial, 11pt" Borders="None">
+          <ExpressionBindings>
+            <Item1 Ref="16" EventName="BeforePrint" PropertyName="Text" Expression="FormatString('{0:dd.MM.yyyy}', [BelgeTarihi])" />
+          </ExpressionBindings>
+        </Item9>
+        <Item10 Ref="17" ControlType="XRLabel" Text="Sayın:" TextAlignment="TopRight" SizeF="179,22" LocationFloat="0,125" Font="Arial, 11pt, style=Bold" Borders="None" />
+        <Item11 Ref="18" ControlType="XRLabel" SizeF="475,22" LocationFloat="185,125" Font="Arial, 11pt" Borders="None">
+          <ExpressionBindings>
+            <Item1 Ref="19" EventName="BeforePrint" PropertyName="Text" Expression="[CariHesapTanim.CariHesapAdi]" />
+          </ExpressionBindings>
+        </Item11>
+        <Item12 Ref="20" ControlType="XRLabel" Text="Kasa / Banka Hesabı:" TextAlignment="TopRight" SizeF="179,22" LocationFloat="0,155" Font="Arial, 11pt, style=Bold" Borders="None" />
+        <Item13 Ref="21" ControlType="XRLabel" SizeF="475,22" LocationFloat="185,155" Font="Arial, 11pt" Borders="None">
+          <ExpressionBindings>
+            <Item1 Ref="22" EventName="BeforePrint" PropertyName="Text" Expression="[KasaBankaTanim.HesapAdi]" />
+          </ExpressionBindings>
+        </Item13>
+        <Item14 Ref="23" ControlType="XRLabel" Text="Tutar:" TextAlignment="TopRight" SizeF="179,22" LocationFloat="0,191" Font="Arial, 11pt, style=Bold" Borders="None" />
+        <Item15 Ref="24" ControlType="XRLabel" SizeF="300,22" LocationFloat="185,191" Font="Arial, 14pt, style=Bold" Borders="None" />
+        <Item16 Ref="25" ControlType="XRLabel" Text="Yalnız:" TextAlignment="TopRight" SizeF="179,22" LocationFloat="0,221" Font="Arial, 11pt, style=Bold" Borders="None" />
+        <Item17 Ref="26" ControlType="XRLabel" SizeF="475,22" LocationFloat="185,221" Font="Arial, 11pt, style=Italic" Borders="None" />
+        <Item18 Ref="27" ControlType="XRLabel" Text="Açıklama:" TextAlignment="TopRight" SizeF="179,22" LocationFloat="0,255" Font="Arial, 11pt, style=Bold" Borders="None" />
+        <Item19 Ref="28" ControlType="XRLabel" SizeF="475,22" LocationFloat="185,255" Font="Arial, 11pt" Borders="None">
+          <ExpressionBindings>
+            <Item1 Ref="29" EventName="BeforePrint" PropertyName="Text" Expression="[Description]" />
+          </ExpressionBindings>
+        </Item19>
+        <Item20 Ref="30" ControlType="XRLabel" Text="Düzenleyen:" TextAlignment="TopRight" SizeF="179,22" LocationFloat="0,291" Font="Arial, 11pt, style=Bold" Borders="None" />
+        <Item21 Ref="31" ControlType="XRLabel" SizeF="145,22" LocationFloat="185,291" Font="Arial, 11pt" Borders="None">
+          <ExpressionBindings>
+            <Item1 Ref="32" EventName="BeforePrint" PropertyName="Text" Expression="[CreatedBy.UserName]" />
+          </ExpressionBindings>
+        </Item21>
+        <Item22 Ref="33" ControlType="XRLabel" Text="Tarih:" TextAlignment="TopRight" SizeF="99,22" LocationFloat="430,291" Font="Arial, 11pt, style=Bold" Borders="None" />
+        <Item23 Ref="34" ControlType="XRLabel" SizeF="220,22" LocationFloat="535,291" Font="Arial, 11pt" Borders="None">
+          <ExpressionBindings>
+            <Item1 Ref="35" EventName="BeforePrint" PropertyName="Text" Expression="FormatString('{0:dd.MM.yyyy}', [CreatedDate])" />
+          </ExpressionBindings>
+        </Item23>
+        <Item24 Ref="36" ControlType="XRLine" SizeF="280,2" LocationFloat="0,345" />
+        <Item25 Ref="37" ControlType="XRLine" SizeF="280,2" LocationFloat="360,345" />
+        <Item26 Ref="38" ControlType="XRLabel" Text="Teslim Eden" TextAlignment="TopCenter" SizeF="280,20" LocationFloat="0,351" Font="Arial, 11pt" Borders="None" />
+        <Item27 Ref="39" ControlType="XRLabel" Text="Teslim Alan" TextAlignment="TopCenter" SizeF="280,20" LocationFloat="360,351" Font="Arial, 11pt" Borders="None" />
+      </Controls>
+    </Item2>
+    <Item3 Ref="40" ControlType="BottomMarginBand" />
+  </Bands>
+  <ComponentStorage>
+    <Item1 Ref="0" ObjectTypeName="Sofasis.Module.BusinessObjects.KasaBankaHareketleri" ObjectType="DevExpress.Persistent.Base.ReportsV2.CollectionDataSource,DevExpress.Persistent.Base.v26.1" TopReturnedRecords="0">
+      <Sorting Ref="41" />
+    </Item1>
+  </ComponentStorage>
+</XtraReportsLayoutSerializer>

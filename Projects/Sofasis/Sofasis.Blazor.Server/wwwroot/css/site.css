@@ -1,0 +1,70 @@
+html, body {
+    height: 100%;
+}
+
+app {
+    display: block;
+    height: 100%;
+}
+
+.header-logo {
+    flex-shrink: 0;
+    background-color: currentColor;
+    /* NOT (2026-08-01): CSS url() referanslari ASP.NET Core'un static web
+       assets surum/hash mekanizmasindan GECMIYOR (o mekanizma yalniz
+       Razor/tag-helper baglamlarinda calisir) - bu yuzden Logo.svg
+       degistiginde tarayicilarin ONCEDEN onbellege aldigi eski dosyayi
+       sert yenileme (Ctrl+Shift+R) bile atlamayabilir. Elle bir "?v="
+       surum etiketi eklendi; dosya bir daha degisirse bu sayiyi artir. */
+    -webkit-mask: url('../images/Logo.svg?v=2');
+    mask: url('../images/Logo.svg?v=2');
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    /* Logo.svg'nin gercek en-boy orani (135:54 = 2.5:1) korunuyor -
+       DevExpress'in varsayilan kare kutusu (28x24) bu oranda genisletildi,
+       yoksa mask-size:contain olsa bile dar kutu logoyu kucultup
+       metni okunmaz hale getirirdi. */
+    width: 115px;
+    height: 44px;
+}
+
+/* Splash ekranindaki DevExpress "loading-image-wrapper" dairesi 120x120px;
+   varsayilan .loading-image kurali gorseli 46x30px'e SABITLIYOR (eski XAF
+   glyph'inin olcusu) - yeni Sofasis splash gorseli (150x150 viewBox, ikon +
+   "SOFASIS" yaziligi) bu dar kutuya orantisiz sikisip bulanik/bozuk
+   gorunurdu. object-fit:contain ile gercek en-boy orani korunarak dairenin
+   icine (120px'in %80'i) net ve ortali sigdiriliyor. */
+.loading-image {
+    width: 112px;
+    height: 112px;
+    object-fit: contain;
+}
+
+#blazor-error-ui {
+    background: inherit;
+    bottom: 0;
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 100001;
+}
+
+/* ============================================================
+   Liste gorunumlerinde (ListView) metne gore arama kutusunu
+   SAGDAN SOLA hizala. ShowFindPanel ile gelen DevExpress DxGrid
+   arama kutusu, grid toolbar (flex) icinde varsayilan olarak
+   saga yaslanir; order:-1 ile en basa alinir ve margin-inline-end:auto
+   ile sonrasindaki ogeler saga itilir. [class*="search-box"] yedegi,
+   olasi sinif adi varyasyonlarini da kapsar.
+   ============================================================ */
+.dxbl-grid-search-box,
+.dxbl-grid [class*="search-box"] {
+    order: -1 !important;
+    margin-inline-start: 0 !important;
+    margin-inline-end: auto !important;
+}

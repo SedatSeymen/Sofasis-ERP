@@ -1,0 +1,15 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="EasyTest" />
+    <BuildType Name="Release" />
+  </Configurations>
+  <Project Path="Sofasis/Sofasis.Blazor.Server/Sofasis.Blazor.Server.csproj" />
+  <Project Path="Sofasis/Sofasis.Module/Sofasis.Module.csproj" />
+  <Folder Name="/Sofasis/">
+    <Project Path="Sofasis/Sofasis.Module.Tests/Sofasis.Module.Tests.csproj">
+      <BuildType Solution="EasyTest|*" Project="Debug" />
+    </Project>
+  </Folder>
+  <Project Path="Sofasis/FileSystemData/FileSystemData.csproj" />
+</Solution>

@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application>
+  <Options UIType="SingleWindowSDI"
+         FormStyle="Ribbon"
+         RestoreTabbedMdiLayout="True"
+         ShowTabImage="True"
+	 VirtualScrollingEnabled="True">
+  </Options>
+  <NavigationItems NavigationStyle="Accordion" />
+</Application>

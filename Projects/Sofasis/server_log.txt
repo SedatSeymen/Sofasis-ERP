@@ -1,0 +1,37 @@
+D:\SofasisERP\Projects\Sofasis\Sofasis.Blazor.Server\Properties\launchSettings.json içindeki başlatma ayarları kullanılıyor...
+info: DevExpress.AspNetCore.Reporting.Logger[0]
+      AspNetCoreThreadingTimerStoragesCleaner.StartCore
+      
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: https://localhost:5001
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5000
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: D:\SofasisERP\Projects\Sofasis\Sofasis.Blazor.Server
+fail: DevExpress.ExpressApp.Blazor.Services.ExceptionService[0]
+      Handled exception occurs
+      DevExpress.ExpressApp.UserFriendlyException: Lütfen giriş için birim maliyeti sıfırdan büyük giriniz.
+         at Sofasis.Module.BusinessObjects.StokHareketleriD.ObjectSaving() in D:\SofasisERP\Projects\Sofasis\Sofasis.Module\BusinessObjects\StokYonetimi\StokHareketleriD.cs:line 180
+         at Sofasis.Module.BusinessObjects.BaseClass.OnSaving() in D:\SofasisERP\Projects\Sofasis\Sofasis.Module\BusinessObjects\Base\BaseClass.cs:line 172
+         at Sofasis.Module.BusinessObjects.BaseClassWithAudit.OnSaving() in D:\SofasisERP\Projects\Sofasis\Sofasis.Module\BusinessObjects\Base\BaseClassWithAudit.cs:line 45
+         at Sofasis.Module.BusinessObjects.BaseClassWithAuditAndDescription.OnSaving() in D:\SofasisERP\Projects\Sofasis\Sofasis.Module\BusinessObjects\Base\BaseClassWithAuditAndDescription.cs:line 42
+         at DevExpress.Xpo.PersistentBase.DevExpress.Xpo.IXPObject.OnSaving()
+         at DevExpress.Xpo.Session.TriggerObjectSaving(Object theObject)
+         at DevExpress.Xpo.Session.PreProcessSavedList()
+         at DevExpress.Xpo.Session.BeginFlushChanges()
+         at DevExpress.Xpo.Session.FlushChanges()
+         at DevExpress.Xpo.Session.<CommitTransaction>b__334_0()
+         at DevExpress.Xpo.Logger.LogManager.Log(String category, LogHandlerVoid handler, MessageHandler`1 createMessageHandler, ExceptionHandler exceptionHandler)
+         at DevExpress.Xpo.Session.CommitTransaction()
+         at DevExpress.Xpo.UnitOfWork.CommitChanges()
+         at DevExpress.ExpressApp.Xpo.XPObjectSpace.DoCommit()
+         at DevExpress.ExpressApp.Xpo.XPNestedObjectSpace.DoCommit()
+         at DevExpress.ExpressApp.BaseObjectSpace.CommitChanges()
+         at DevExpress.ExpressApp.Blazor.SystemModule.BlazorModificationsController.Save(SimpleActionExecuteEventArgs args)
+         at DevExpress.ExpressApp.SystemModule.ModificationsController.saveAction_OnExecute(Object sender, SimpleActionExecuteEventArgs e)
+         at DevExpress.ExpressApp.Actions.SimpleAction.RaiseExecute(ActionBaseEventArgs eventArgs)
+         at DevExpress.ExpressApp.Actions.ActionBase.ExecuteCore(Delegate handler, ActionBaseEventArgs eventArgs)

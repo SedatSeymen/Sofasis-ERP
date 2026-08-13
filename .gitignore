@@ -1,0 +1,39 @@
+# Build artifacts
+[Bb]in/
+[Oo]bj/
+[Bb]uild/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# DevExpress
+FileSystemData/
+
+# Test results
+TestResults/
+[Cc]overage/
+
+# Backups (proje yedekleme kuralı: ayrı zip'ler olarak alınır, repoya girmez)
+Backup/
+
+# Playwright / MCP artifacts
+.playwright-mcp/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# NuGet
+*.nupkg
+packages/
+.nuget/
+
+# Rider/VSCode
+*.swp

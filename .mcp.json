@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "xaf-custom-editors": {
+      "command": "npx",
+      "args": ["-y", "@devexpress/mcp-server-xaf-custom-editors"]
+    },
+    "xaf-security-system": {
+      "command": "npx",
+      "args": ["-y", "@devexpress/mcp-server-xaf-security-system"]
+    },
+    "xaf-dashboards": {
+      "command": "npx",
+      "args": ["-y", "@devexpress/mcp-server-xaf-dashboards-integration"]
+    }
+  }
+}

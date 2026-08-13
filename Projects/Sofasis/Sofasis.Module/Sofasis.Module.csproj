@@ -1,0 +1,57 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <CheckEolTargetFramework>false</CheckEolTargetFramework>
+    <Deterministic>true</Deterministic>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Configurations>Debug;Release;EasyTest</Configurations>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Model.DesignedDiffs.xafml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Model.DesignedDiffs.xafml" />
+  </ItemGroup>
+  <!-- Seed verileri: CSV'ler gömülü kaynak olarak assembly'e girer (dosya yolu bağımlılığı yok). -->
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Seed\*.csv" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="33.*" />
+    <PackageReference Include="DevExpress.ExpressApp" Version="26.1.3" />
+    <PackageReference Include="DevExpress.ExpressApp.AuditTrail.Xpo" Version="26.1.3" />
+    <PackageReference Include="DevExpress.ExpressApp.CloneObject" Version="26.1.3" />
+    <PackageReference Include="DevExpress.ExpressApp.CodeAnalysis" Version="26.1.3" />
+    <PackageReference Include="DevExpress.ExpressApp.ConditionalAppearance" Version="26.1.3" />
+    <PackageReference Include="DevExpress.ExpressApp.Dashboards" Version="26.1.3" />
+    <PackageReference Include="DevExpress.ExpressApp.Notifications" Version="26.1.3" />
+    <PackageReference Include="DevExpress.ExpressApp.Office" Version="26.1.3" />
+    <PackageReference Include="DevExpress.ExpressApp.ReportsV2" Version="26.1.3" />
+    <PackageReference Include="DevExpress.ExpressApp.Scheduler" Version="26.1.3" />
+    <PackageReference Include="DevExpress.ExpressApp.Security" Version="26.1.3" />
+    <PackageReference Include="DevExpress.ExpressApp.Security.Xpo" Version="26.1.3" />
+    <PackageReference Include="DevExpress.ExpressApp.StateMachine" Version="26.1.3" />
+    <PackageReference Include="DevExpress.ExpressApp.Validation" Version="26.1.3" />
+    <PackageReference Include="DevExpress.ExpressApp.ViewVariantsModule" Version="26.1.3" />
+    <PackageReference Include="DevExpress.ExpressApp.Xpo" Version="26.1.3" />
+    <PackageReference Include="DevExpress.Persistent.Base" Version="26.1.3" />
+    <PackageReference Include="DevExpress.Persistent.BaseImpl.Xpo" Version="26.1.3" />
+    <PackageReference Include="Azure.Identity" Version="1.17.1" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.18.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FileSystemData\FileSystemData.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="UnusableNodes.xml">
+      <DependentUpon>Model.DesignedDiffs.xafml</DependentUpon>
+    </None>
+    <None Update="UnusableNodes1.xml">
+      <DependentUpon>Model.DesignedDiffs.xafml</DependentUpon>
+    </None>
+  </ItemGroup>
+</Project>
