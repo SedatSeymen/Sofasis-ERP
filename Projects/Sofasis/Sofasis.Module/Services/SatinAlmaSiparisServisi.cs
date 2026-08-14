@@ -69,4 +69,15 @@ public sealed class SatinAlmaSiparisServisi : ISatinAlmaSiparisServisi
 
         return siparisler;
     }
+
+    public void IptalEt(SatinAlmaSiparisiM siparis)
+    {
+        if (siparis == null)
+            throw new UserFriendlyException("Sipariş bulunamadı.");
+        if (siparis.Durum != SatinAlmaSiparisDurumu.Verildi)
+            throw new UserFriendlyException(
+                "Yalnızca henüz hiç teslimat/mal kabul almamış (\"Verildi\" durumundaki) Siparişler iptal edilebilir.");
+
+        siparis.Durum = SatinAlmaSiparisDurumu.IptalEdildi;
+    }
 }

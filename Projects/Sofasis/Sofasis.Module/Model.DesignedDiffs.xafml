@@ -4843,6 +4843,7 @@
         <PropertyEditor Id="DovizKuru" PropertyName="DovizKuru" IsNewNode="True" />
         <PropertyEditor Id="ToplamTutar" PropertyName="ToplamTutar" IsNewNode="True" />
         <PropertyEditor Id="StokHareketleriM" PropertyName="StokHareketleriM" IsNewNode="True" />
+        <PropertyEditor Id="KaynakIrsaliye" PropertyName="KaynakIrsaliye" IsNewNode="True" />
         <PropertyEditor Id="IrsaliyeDs" PropertyName="IrsaliyeDs" IsNewNode="True" />
         <PropertyEditor Id="CustomCode1" PropertyName="CustomCode1" IsNewNode="True" />
         <PropertyEditor Id="CustomCode2" PropertyName="CustomCode2" IsNewNode="True" />
@@ -4857,25 +4858,28 @@
           <LayoutGroup Id="SimpleEditors" Index="0" ShowCaption="False" RelativeSize="100" IsNewNode="True">
             <TabbedGroup Id="Item1" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
               <LayoutGroup Id="IrsaliyeMGenel" ShowCaption="True" Caption="Genel" Index="0" RelativeSize="100" IsNewNode="True">
-                <LayoutGroup Id="IrsaliyeM_Row1" ShowCaption="False" Direction="Horizontal" Index="0" RelativeSize="12" IsNewNode="True">
-                  <LayoutItem Id="IrsaliyeNo" ViewItem="IrsaliyeNo" Index="0" RelativeSize="25" IsNewNode="True" />
-                  <LayoutItem Id="IrsaliyeTarihi" ViewItem="IrsaliyeTarihi" Index="1" RelativeSize="25" IsNewNode="True" />
-                  <LayoutItem Id="Tedarikci" ViewItem="Tedarikci" Index="2" RelativeSize="25" IsNewNode="True" />
-                  <LayoutItem Id="KaynakSiparis" ViewItem="KaynakSiparis" Index="3" RelativeSize="25" IsNewNode="True" />
+                <LayoutGroup Id="IrsaliyeM_Row1" ShowCaption="False" Direction="Horizontal" Index="0" RelativeSize="10" IsNewNode="True">
+                  <LayoutItem Id="IrsaliyeNo" ViewItem="IrsaliyeNo" Index="0" RelativeSize="33" IsNewNode="True" />
+                  <LayoutItem Id="IrsaliyeTarihi" ViewItem="IrsaliyeTarihi" Index="1" RelativeSize="33" IsNewNode="True" />
+                  <LayoutItem Id="Tedarikci" ViewItem="Tedarikci" Index="2" RelativeSize="34" IsNewNode="True" />
                 </LayoutGroup>
-                <LayoutGroup Id="IrsaliyeM_Row2" ShowCaption="False" Direction="Horizontal" Index="1" RelativeSize="12" IsNewNode="True">
-                  <LayoutItem Id="TedarikciIrsaliyeNo" ViewItem="TedarikciIrsaliyeNo" Index="0" RelativeSize="25" IsNewNode="True" />
-                  <LayoutItem Id="TedarikciIrsaliyeTarihi" ViewItem="TedarikciIrsaliyeTarihi" Index="1" RelativeSize="25" IsNewNode="True" />
-                  <LayoutItem Id="DepoTanim" ViewItem="DepoTanim" Index="2" RelativeSize="25" IsNewNode="True" />
-                  <LayoutItem Id="DovizTanim" ViewItem="DovizTanim" Index="3" RelativeSize="12" IsNewNode="True" />
-                  <LayoutItem Id="DovizKuru" ViewItem="DovizKuru" Index="4" RelativeSize="13" IsNewNode="True" />
+                <LayoutGroup Id="IrsaliyeM_Row2" ShowCaption="False" Direction="Horizontal" Index="1" RelativeSize="10" IsNewNode="True">
+                  <LayoutItem Id="KaynakSiparis" ViewItem="KaynakSiparis" Index="0" RelativeSize="33" IsNewNode="True" />
+                  <LayoutItem Id="TedarikciIrsaliyeNo" ViewItem="TedarikciIrsaliyeNo" Index="1" RelativeSize="33" IsNewNode="True" />
+                  <LayoutItem Id="TedarikciIrsaliyeTarihi" ViewItem="TedarikciIrsaliyeTarihi" Index="2" RelativeSize="34" IsNewNode="True" />
                 </LayoutGroup>
-                <LayoutGroup Id="IrsaliyeM_KalemlerGroup" ShowCaption="True" Caption="İrsaliye Kalemleri" Index="2" RelativeSize="64" IsNewNode="True">
+                <LayoutGroup Id="IrsaliyeM_Row3" ShowCaption="False" Direction="Horizontal" Index="2" RelativeSize="10" IsNewNode="True">
+                  <LayoutItem Id="DepoTanim" ViewItem="DepoTanim" Index="0" RelativeSize="33" IsNewNode="True" />
+                  <LayoutItem Id="DovizTanim" ViewItem="DovizTanim" Index="1" RelativeSize="33" IsNewNode="True" />
+                  <LayoutItem Id="DovizKuru" ViewItem="DovizKuru" Index="2" RelativeSize="34" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="IrsaliyeM_KalemlerGroup" ShowCaption="True" Caption="İrsaliye Kalemleri" Index="3" RelativeSize="58" IsNewNode="True">
                   <LayoutItem Id="IrsaliyeDs" ViewItem="IrsaliyeDs" Index="0" RelativeSize="100" IsNewNode="True" />
                 </LayoutGroup>
-                <LayoutGroup Id="IrsaliyeM_ToplamGroup" ShowCaption="False" Direction="Horizontal" Index="3" RelativeSize="12" IsNewNode="True">
+                <LayoutGroup Id="IrsaliyeM_ToplamGroup" ShowCaption="False" Direction="Horizontal" Index="4" RelativeSize="12" IsNewNode="True">
                   <LayoutItem Id="ToplamTutar" ViewItem="ToplamTutar" Index="0" RelativeSize="25" IsNewNode="True" />
                   <LayoutItem Id="StokHareketleriM" ViewItem="StokHareketleriM" Index="1" RelativeSize="25" IsNewNode="True" />
+                  <LayoutItem Id="KaynakIrsaliye" ViewItem="KaynakIrsaliye" Index="2" RelativeSize="25" IsNewNode="True" />
                 </LayoutGroup>
               </LayoutGroup>
               <LayoutGroup Id="IrsaliyeMOzelKodlar" ShowCaption="True" CaptionLocation="Top" Index="1" Caption="Özel Kodlar &amp; Açıklama" RelativeSize="100" IsNewNode="True">
@@ -4906,6 +4910,7 @@
               <LayoutItem Id="DovizKuru" Removed="True" />
               <LayoutItem Id="ToplamTutar" Removed="True" />
               <LayoutItem Id="StokHareketleriM" Removed="True" />
+              <LayoutItem Id="KaynakIrsaliye" Removed="True" />
               <LayoutItem Id="IrsaliyeDs" Removed="True" />
             </LayoutGroup>
             <LayoutGroup Id="BaseClassWithAuditAndDescription" Caption="BaseClassWithAuditAndDescription" RelativeSize="100" Removed="True">
@@ -4943,6 +4948,7 @@
         <PropertyEditor Id="FisTuruTanim" PropertyName="FisTuruTanim" IsNewNode="True" />
         <PropertyEditor Id="CariHesap" PropertyName="CariHesap" IsNewNode="True" />
         <PropertyEditor Id="KaynakIrsaliye" PropertyName="KaynakIrsaliye" IsNewNode="True" />
+        <PropertyEditor Id="KaynakFatura" PropertyName="KaynakFatura" IsNewNode="True" />
         <PropertyEditor Id="TedarikciFaturaNo" PropertyName="TedarikciFaturaNo" IsNewNode="True" />
         <PropertyEditor Id="TedarikciFaturaTarihi" PropertyName="TedarikciFaturaTarihi" IsNewNode="True" />
         <PropertyEditor Id="DovizTanim" PropertyName="DovizTanim" IsNewNode="True" />
@@ -4969,23 +4975,26 @@
           <LayoutGroup Id="SimpleEditors" Index="0" ShowCaption="False" RelativeSize="100" IsNewNode="True">
             <TabbedGroup Id="Item1" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
               <LayoutGroup Id="FaturaMGenel" ShowCaption="True" Caption="Genel" Index="0" RelativeSize="100" IsNewNode="True">
-                <LayoutGroup Id="FaturaM_Row1" ShowCaption="False" Direction="Horizontal" Index="0" RelativeSize="12" IsNewNode="True">
-                  <LayoutItem Id="FaturaNo" ViewItem="FaturaNo" Index="0" RelativeSize="20" IsNewNode="True" />
-                  <LayoutItem Id="FaturaTarihi" ViewItem="FaturaTarihi" Index="1" RelativeSize="20" IsNewNode="True" />
-                  <LayoutItem Id="CariHesap" ViewItem="CariHesap" Index="2" RelativeSize="20" IsNewNode="True" />
-                  <LayoutItem Id="KaynakIrsaliye" ViewItem="KaynakIrsaliye" Index="3" RelativeSize="20" IsNewNode="True" />
-                  <LayoutItem Id="Durum" ViewItem="Durum" Index="4" RelativeSize="20" IsNewNode="True" />
+                <LayoutGroup Id="FaturaM_Row1" ShowCaption="False" Direction="Horizontal" Index="0" RelativeSize="10" IsNewNode="True">
+                  <LayoutItem Id="FaturaNo" ViewItem="FaturaNo" Index="0" RelativeSize="25" IsNewNode="True" />
+                  <LayoutItem Id="FaturaTarihi" ViewItem="FaturaTarihi" Index="1" RelativeSize="25" IsNewNode="True" />
+                  <LayoutItem Id="CariHesap" ViewItem="CariHesap" Index="2" RelativeSize="25" IsNewNode="True" />
+                  <LayoutItem Id="Durum" ViewItem="Durum" Index="3" RelativeSize="25" IsNewNode="True" />
                 </LayoutGroup>
-                <LayoutGroup Id="FaturaM_Row2" ShowCaption="False" Direction="Horizontal" Index="1" RelativeSize="12" IsNewNode="True">
-                  <LayoutItem Id="TedarikciFaturaNo" ViewItem="TedarikciFaturaNo" Index="0" RelativeSize="25" IsNewNode="True" />
-                  <LayoutItem Id="TedarikciFaturaTarihi" ViewItem="TedarikciFaturaTarihi" Index="1" RelativeSize="25" IsNewNode="True" />
-                  <LayoutItem Id="DovizTanim" ViewItem="DovizTanim" Index="2" RelativeSize="25" IsNewNode="True" />
-                  <LayoutItem Id="DovizKuru" ViewItem="DovizKuru" Index="3" RelativeSize="25" IsNewNode="True" />
+                <LayoutGroup Id="FaturaM_Row2" ShowCaption="False" Direction="Horizontal" Index="1" RelativeSize="10" IsNewNode="True">
+                  <LayoutItem Id="KaynakIrsaliye" ViewItem="KaynakIrsaliye" Index="0" RelativeSize="33" IsNewNode="True" />
+                  <LayoutItem Id="KaynakFatura" ViewItem="KaynakFatura" Index="1" RelativeSize="33" IsNewNode="True" />
+                  <LayoutItem Id="TedarikciFaturaNo" ViewItem="TedarikciFaturaNo" Index="2" RelativeSize="34" IsNewNode="True" />
                 </LayoutGroup>
-                <LayoutGroup Id="FaturaM_KalemlerGroup" ShowCaption="True" Caption="Fatura Kalemleri" Index="2" RelativeSize="52" IsNewNode="True">
+                <LayoutGroup Id="FaturaM_Row3" ShowCaption="False" Direction="Horizontal" Index="2" RelativeSize="10" IsNewNode="True">
+                  <LayoutItem Id="TedarikciFaturaTarihi" ViewItem="TedarikciFaturaTarihi" Index="0" RelativeSize="33" IsNewNode="True" />
+                  <LayoutItem Id="DovizTanim" ViewItem="DovizTanim" Index="1" RelativeSize="33" IsNewNode="True" />
+                  <LayoutItem Id="DovizKuru" ViewItem="DovizKuru" Index="2" RelativeSize="34" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="FaturaM_KalemlerGroup" ShowCaption="True" Caption="Fatura Kalemleri" Index="3" RelativeSize="46" IsNewNode="True">
                   <LayoutItem Id="FaturaDs" ViewItem="FaturaDs" Index="0" RelativeSize="100" IsNewNode="True" />
                 </LayoutGroup>
-                <LayoutGroup Id="FaturaM_ToplamlarGroup" ShowCaption="True" Caption="Toplamlar" Direction="Horizontal" Index="3" RelativeSize="24" IsNewNode="True">
+                <LayoutGroup Id="FaturaM_ToplamlarGroup" ShowCaption="True" Caption="Toplamlar" Direction="Horizontal" Index="4" RelativeSize="24" IsNewNode="True">
                   <LayoutGroup Id="FaturaM_Toplamlar_col1" ShowCaption="False" Index="0" RelativeSize="50" IsNewNode="True">
                     <LayoutItem Id="KDVHaricToplam" ViewItem="KDVHaricToplam" Index="0" RelativeSize="25" IsNewNode="True" />
                     <LayoutItem Id="KDVToplam" ViewItem="KDVToplam" Index="1" RelativeSize="25" IsNewNode="True" />
@@ -5021,6 +5030,7 @@
               <LayoutItem Id="FisTuruTanim" Removed="True" />
               <LayoutItem Id="CariHesap" Removed="True" />
               <LayoutItem Id="KaynakIrsaliye" Removed="True" />
+              <LayoutItem Id="KaynakFatura" Removed="True" />
               <LayoutItem Id="TedarikciFaturaNo" Removed="True" />
               <LayoutItem Id="TedarikciFaturaTarihi" Removed="True" />
               <LayoutItem Id="DovizTanim" Removed="True" />

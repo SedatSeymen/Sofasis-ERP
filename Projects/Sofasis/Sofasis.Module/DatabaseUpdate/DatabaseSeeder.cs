@@ -105,9 +105,12 @@ public class DatabaseSeeder
             }
             else
             {
-                // ViewName ve Borç/Alacak yönü CSV ile güncel tutulur (mevzuat/muhasebe
-                // düzeltmesi sonradan CSV'ye yansıtılırsa var olan kayıtlara da işlensin diye).
+                // ViewName, Borç/Alacak yönü ve modül tipi CSV ile güncel tutulur (mevzuat/muhasebe
+                // düzeltmesi sonradan CSV'ye yansıtılırsa var olan kayıtlara da işlensin diye — daha
+                // önce FinansModulTipi bu listede unutulmuştu, IRALIS/IRALID'in ADR-017 düzeltmesi
+                // CSV'de yapılmasına rağmen DB'ye hiç yansımamıştı, 4-ajan turunda bulundu).
                 e.ViewName = r.ViewName;
+                e.FinansModulTipi = r.FinansModulTipi;
                 e.FinansBorcAlacakTipi = r.FinansBorcAlacakTipi;
                 e.StokHareketYonu = r.StokHareketYonu;
             }

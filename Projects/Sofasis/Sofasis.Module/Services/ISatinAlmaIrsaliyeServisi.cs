@@ -13,4 +13,13 @@ public interface ISatinAlmaIrsaliyeServisi
     // İrsaliye gerçekten kaydedilirken (Committing) çağrılır: Sipariş satırlarının
     // TeslimEdilenMiktar'ını artırır, Sipariş Durum'unu günceller.
     void TeslimatiIsle(IrsaliyeM irsaliye);
+
+    // Orijinal (İRALIS) bir İrsaliye'nin TÜM satırlarını (v1: yalnızca TAM iade, kısmi iade YOK —
+    // YAGNI) ters çeviren, HENÜZ KAYDEDİLMEMİŞ bir İade İrsaliyesi (IRALID) taslağı (+ bire-bir bağlı
+    // Çıkış yönlü StokHareketleriM/D taslağı, STSAIC fiş türü) oluşturur.
+    IrsaliyeM IadeTaslagiOlustur(IObjectSpace objectSpace, IrsaliyeM orijinalIrsaliye);
+
+    // İade İrsaliyesi gerçekten kaydedilirken (Committing) çağrılır: Sipariş satırlarının
+    // TeslimEdilenMiktar'ını AZALTIR, Sipariş Durum'unu yeniden değerlendirir.
+    void IadeyiIsle(IrsaliyeM iadeIrsaliyesi);
 }

@@ -1,6 +1,7 @@
 using DevExpress.ExpressApp;
 using Sofasis.Module.BusinessObjects;
 using Sofasis.Module.Services;
+using System;
 using System.ComponentModel;
 
 namespace Sofasis.Module.Controllers
@@ -9,11 +10,14 @@ namespace Sofasis.Module.Controllers
     // "Kaydet"e basıldığında bu, PAYLAŞILAN ObjectSpace'i yalnızca dış (Sipariş) ObjectSpace'e
     // MERGE eder — GERÇEK DB commit'i yalnızca dış ekranın KENDİ "Kaydet"i ile olur (2 adımlı
     // commit deseni). Bu yüzden servis çağrısı burada DEĞİL, paylaşılan ObjectSpace'in Committing
-    // event'inde yapılır.
+    // event'inde yapılır. IRALIS (normal İrsaliye → TeslimatiIsle) ve IRALID (İade İrsaliyesi →
+    // IadeyiIsle) İKİSİNİ de kapsar — StokHareketleriM'in TEK sınıfla Giriş/Çıkış yönetmesiyle aynı
+    // desen (ADR-017): ayrı bir "IrsaliyeIadeKaydetController" AÇILMADI.
     public class IrsaliyeKaydetController : ObjectViewController<DetailView, IrsaliyeM>
     {
         readonly ISatinAlmaIrsaliyeServisi irsaliyeServisi = new SatinAlmaIrsaliyeServisi();
         IrsaliyeM irsaliyeFisi;
+        bool iade;
         IObjectSpace abonelikObjectSpace;
 
         protected override void OnActivated()
@@ -26,11 +30,14 @@ namespace Sofasis.Module.Controllers
             // de tetiklenip TeslimatiIsle'i İKİNCİ kez çalıştırır — KalanMiktar zaten 0 olduğundan
             // yanlış "kalan miktardan fazla" hatası fırlatır (canlı testte yakalandı, bkz.
             // docs/CHANGELOG.md 2026-08-14).
-            if (ViewCurrentObject?.FisTuruTanim?.FisTuruKodu == "IRALIS" && ObjectSpace.IsNewObject(ViewCurrentObject))
+            string fisTuruKodu = ViewCurrentObject?.FisTuruTanim?.FisTuruKodu;
+            if ((fisTuruKodu == "IRALIS" || fisTuruKodu == "IRALID") && ObjectSpace.IsNewObject(ViewCurrentObject))
             {
                 irsaliyeFisi = ViewCurrentObject;
+                iade = fisTuruKodu == "IRALID";
                 abonelikObjectSpace = View.ObjectSpace;
                 abonelikObjectSpace.Committing += ObjectSpace_Committing;
+                abonelikObjectSpace.Committed += ObjectSpace_Committed;
             }
         }
 
@@ -45,8 +52,24 @@ namespace Sofasis.Module.Controllers
 
         void ObjectSpace_Committing(object sender, CancelEventArgs e)
         {
+            // ⚠ Abonelikten BURADA ÇIKILMAZ (4-ajan turunda bulundu): IadeyiIsle/TeslimatiIsle
+            // gerçek bir throw fırlatabilir (ör. "kalan miktardan fazla" doğrulaması). Unsubscribe
+            // servis çağrısından ÖNCE yapılırsa, commit başarısız olup kullanıcı tekrar Kaydet'e
+            // bastığında artık kimse dinlemiyor — belge, iş mantığı HİÇ ÇALIŞMADAN DB'ye yazılabilir
+            // (Sipariş TeslimEdilenMiktar/Durum güncellenmeden). Unsubscribe yalnızca Committed'da
+            // (gerçekten başarılı commit sonrası) yapılır — böylece başarısız denemeler güvenle
+            // yeniden denenebilir, ama başarılı bir commit sonrası aynı View'de tetiklenecek
+            // ALAKASIZ bir sonraki commit'te (ADR-017'nin orijinal bug'ı) ikinci kez çalışmaz.
+            if (iade)
+                irsaliyeServisi.IadeyiIsle(irsaliyeFisi);
+            else
+                irsaliyeServisi.TeslimatiIsle(irsaliyeFisi);
+        }
+
+        void ObjectSpace_Committed(object sender, EventArgs e)
+        {
             abonelikObjectSpace.Committing -= ObjectSpace_Committing;
-            irsaliyeServisi.TeslimatiIsle(irsaliyeFisi);
+            abonelikObjectSpace.Committed -= ObjectSpace_Committed;
         }
     }
 }

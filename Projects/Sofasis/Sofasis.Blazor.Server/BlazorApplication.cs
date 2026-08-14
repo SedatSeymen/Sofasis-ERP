@@ -18,6 +18,45 @@ namespace Sofasis.Blazor.Server
             ApplicationName = "Sofasis";
             CheckCompatibilityType = DevExpress.ExpressApp.CheckCompatibilityType.DatabaseSchema;
             DatabaseVersionMismatch += SofasisBlazorApplication_DatabaseVersionMismatch;
+            CustomProcessShortcut += SofasisBlazorApplication_CustomProcessShortcut;
+        }
+
+        // Tarayıcı adres çubuğunda/sekmesinde silinmiş bir kayda ait eski bir DetailView linki
+        // (ör. test verisi temizliği sonrası) kalmışsa, XAF açılışta bu shortcut'ı StartupNavigationItem'dan
+        // ÖNCE işlemeye çalışır ve nesne bulunamayınca UserFriendlyException ile kullanıcıyı hata
+        // ekranında bırakır — Gösterge Paneli'ne hiç ulaşılamaz. Nesne gerçekten yoksa sessizce
+        // Gösterge Paneli'ne düş; nesne varsa (Handled=false) normal akışa karışma.
+        void SofasisBlazorApplication_CustomProcessShortcut(object sender, DevExpress.ExpressApp.CustomProcessShortcutEventArgs e)
+        {
+            ViewShortcut shortcut = e.Shortcut;
+            if (string.IsNullOrEmpty(shortcut.ObjectKey) || !Guid.TryParse(shortcut.ObjectKey, out Guid key))
+                return;
+
+            // URL route'undan (ViewID/ObjectKey) gelen shortcut'ta ObjectClassName genelde BOŞ olur —
+            // gerçek CLR tipi shortcut.ObjectClass'tan değil, ViewId'nin Model node'undaki ModelClass'tan
+            // çözümlenmeli (DevExpress dokümantasyonundaki resmi desen).
+            Type objectType = shortcut.ObjectClass;
+            if (objectType == null && !string.IsNullOrEmpty(shortcut.ViewId))
+            {
+                objectType = (FindModelView(shortcut.ViewId) as DevExpress.ExpressApp.Model.IModelDetailView)?.ModelClass?.TypeInfo?.Type;
+            }
+            if (objectType == null)
+                return;
+
+            IObjectSpace objectSpace = CreateObjectSpace(objectType);
+            if (objectSpace.GetObjectByKey(objectType, key) == null)
+            {
+                // Bu objectSpace'in sahipliği CreateDashboardView'e devredilir — View kendi
+                // Dispose'unda temizler, burada Dispose EDİLMEZ.
+                e.View = CreateDashboardView(objectSpace, "AnaDashboard_DashboardView", true);
+                e.Handled = true;
+            }
+            else
+            {
+                // 4-ajan turunda bulundu: nesne bulunduğunda (asıl yaygın senaryo — her normal
+                // derin-link açılışı) bu objectSpace hiç kullanılmadan terk ediliyordu — sızıntı.
+                objectSpace.Dispose();
+            }
         }
         // ASP.NET Core Blazor uygulamaları varsayılan olarak "son giriş parametreleri" saklama
         // nesnesi oluşturmaz; bu nedenle LastLogonParametersRead hiç tetiklenmez (bkz. DevExpress

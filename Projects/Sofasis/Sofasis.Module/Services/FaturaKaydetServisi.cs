@@ -31,17 +31,12 @@ public sealed class FaturaKaydetServisi : IFaturaKaydetServisi
             .Select(f => f.KaynakStokHareketiD.Oid)
             .ToHashSet();
 
-        // ÇİFTE-TIKLAMA GÜVENLİK AĞI: yukarıdaki sorgu yalnızca DB'ye zaten YAZILMIŞ FaturaD'leri
-        // görür — "Fatura Oluştur" art arda iki kez tetiklenirse, PAYLAŞILAN ObjectSpace'te henüz
-        // commit edilmemiş bir önceki taslağın satırları bu sorguda GÖRÜNMEZ. Aynı kök nedenli
-        // çifte-belge riskine karşı (bkz. SatinAlmaIrsaliyeServisi.IrsaliyeTaslagiOlustur,
-        // docs/CHANGELOG.md 2026-08-13), ObjectSpace'teki BEKLEYEN (henüz kaydedilmemiş) FaturaD'ler
-        // de dahil edilir — ikinci tetiklemede faturalanacakSatirlar boş çıkar, mevcut "zaten
-        // faturalanmış" hatası devreye girer.
-        foreach (FaturaD bekleyen in objectSpace.ModifiedObjects.OfType<FaturaD>())
-            if (bekleyen.KaynakStokHareketiD != null)
-                faturalananSatirOidleri.Add(bekleyen.KaynakStokHareketiD.Oid);
-
+        // NOT: Burada daha önce ObjectSpace.ModifiedObjects taramasına dayanan bir "çifte-tıklama
+        // güvenlik ağı" vardı (bekleyen/commit edilmemiş FaturaD'leri de "faturalanmış" sayan) —
+        // kaldırıldı (canlı testte kullanıcı ve 4-ajan turunda bağımsız doğrulandı, bkz.
+        // docs/CHANGELOG.md 2026-08-14 ve SatinAlmaIrsaliyeServisi.IrsaliyeTaslagiOlustur'daki aynı
+        // gerekçe) — kullanıcı bir taslağı yarım bırakıp View'dan ayrılırsa bu kontrol İrsaliyeyi
+        // SÜRESİZ "tüm satırları zaten faturalanmış" durumuna kilitliyordu.
         var faturalanacakSatirlar = malKabulFisi.StokHareketleriDs
             .Where(x => !faturalananSatirOidleri.Contains(x.Oid))
             .ToList();
@@ -94,5 +89,52 @@ public sealed class FaturaKaydetServisi : IFaturaKaydetServisi
         }
 
         return fatura;
+    }
+
+    // v1: yalnızca TAM iade (kısmi iade YOK — YAGNI, ADR-017'de dokümante edildi).
+    public FaturaM IadeTaslagiOlustur(IObjectSpace objectSpace, FaturaM orijinalFatura)
+    {
+        if (orijinalFatura == null)
+            throw new UserFriendlyException("Fatura bulunamadı.");
+        if (orijinalFatura.FisTuruTanim?.FisTuruKodu != "FAALIS")
+            throw new UserFriendlyException("Yalnızca normal (İade olmayan) Alış Faturaları iade edilebilir.");
+
+        FaturaM mevcutIade = objectSpace.FindObject<FaturaM>(
+            new BinaryOperator(nameof(FaturaM.KaynakFatura), orijinalFatura));
+        if (mevcutIade != null)
+            throw new UserFriendlyException($"Bu Fatura zaten '{mevcutIade.FaturaNo}' ile iade edilmiş.");
+
+        // NOT: ModifiedObjects tabanlı "çifte-tıklama güvenlik ağı" burada da kaldırıldı — bkz.
+        // FaturaTaslagiOlustur'daki gerekçe.
+        FisTuruTanim iadeFisTuru = objectSpace.FindObject<FisTuruTanim>(
+            CriteriaOperator.Parse("FisTuruKodu = 'FAALID'"));
+        if (iadeFisTuru == null)
+            throw new UserFriendlyException("FAALID (Alış İade Faturası) fiş türü tanımlı değil — sistem yöneticinizle irtibata geçin.");
+
+        FaturaM iade = objectSpace.CreateObject<FaturaM>();
+        iade.FisTuruTanim = iadeFisTuru;
+        iade.KaynakFatura = orijinalFatura;
+        iade.CariHesap = orijinalFatura.CariHesap;
+        iade.DovizTanim = orijinalFatura.DovizTanim;
+        // 4-ajan turunda bulundu: bu alanlar set edilmeden Sipariş Durum'u Fatura İade sonrası
+        // "Faturalandı"da yanlışlıkla kalıyordu — FaturaM.KaynakSiparisDurumunuGuncelle() bu
+        // alanlar olmadan hiçbir şey yapmıyor (bkz. o metodun guard'ı).
+        iade.KaynakSiparisTipi = orijinalFatura.KaynakSiparisTipi;
+        iade.KaynakSiparisOid = orijinalFatura.KaynakSiparisOid;
+
+        foreach (FaturaD orijinalSatir in orijinalFatura.FaturaDs)
+        {
+            FaturaD iadeSatir = objectSpace.CreateObject<FaturaD>();
+            iadeSatir.FaturaM = iade;
+            iadeSatir.StokTanim = orijinalSatir.StokTanim;
+            iadeSatir.Miktar = orijinalSatir.Miktar;
+            iadeSatir.BirimFiyat = orijinalSatir.BirimFiyat;
+            iadeSatir.KDVTanim = orijinalSatir.KDVTanim;
+            iadeSatir.TevkifatTanim = orijinalSatir.TevkifatTanim;
+            // KaynakStokHareketiD BİLİNÇLİ OLARAK boş bırakılır — orijinal satır zaten kendi
+            // StokHareketleriD'sine bağlı (Unique index), İade Faturasının stok etkisi yok.
+        }
+
+        return iade;
     }
 }

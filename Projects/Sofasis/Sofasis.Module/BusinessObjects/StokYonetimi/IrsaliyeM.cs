@@ -2,6 +2,7 @@ using DevExpress.Data.Filtering;
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.ConditionalAppearance;
 using DevExpress.ExpressApp.DC;
+using DevExpress.ExpressApp.Editors;
 using DevExpress.Persistent.Base;
 using DevExpress.Persistent.Validation;
 using DevExpress.Xpo;
@@ -51,6 +52,7 @@ namespace Sofasis.Module.BusinessObjects
         SatinAlmaSiparisiM kaynakSiparis;
         string tedarikciIrsaliyeNo;
         DateTime? tedarikciIrsaliyeTarihi;
+        IrsaliyeM kaynakIrsaliye;
         DepoTanim depoTanim;
         DovizTanim dovizTanim;
         decimal? dovizKuru;
@@ -127,6 +129,29 @@ namespace Sofasis.Module.BusinessObjects
         {
             get => tedarikciIrsaliyeTarihi;
             set => SetPropertyValue(nameof(TedarikciIrsaliyeTarihi), ref tedarikciIrsaliyeTarihi, value);
+        }
+
+        // Yalnızca İADE türünde (IRALID) dolu — orijinal (iade edilen) İrsaliye'ye referans. Normal
+        // İrsaliye'de (IRALIS) hep null. [Indexed(Unique=true)]: bir İrsaliye yalnızca BİR KEZ iade
+        // edilebilir (DB seviyesi garanti — FaturaD.KaynakStokHareketiD ile aynı desen; bu turda
+        // öğrenilen ders gereği şema güncellemesi sonrası is_unique=1 olduğu SQL ile ayrıca
+        // doğrulanmalı, XPO var olan bir index'i sonradan UNIQUE'e çevirmiyor).
+        [Indexed(Unique = true)]
+        [XafDisplayName("Kaynak İrsaliye (İade)")]
+        [Appearance("ED_IrsaliyeM_KaynakIrsaliye", Enabled = false, Context = "Any")]
+        // Kendine-referans veren (IrsaliyeM->IrsaliyeM) bir lookup, DevExpress XAF Blazor'da NULL
+        // iken editör kontrolünü hiç render ETMİYOR (yalnızca başlık/caption kalıyor, canlı testte
+        // kanıtlandı — "birçok detay öğesi ufak ve görünmüyor" kullanıcı bulgusu). Normal (İade
+        // olmayan) İrsaliye'de bu alan HER ZAMAN null olduğundan, en pragmatik/güvenli çözüm: null
+        // iken alanı tamamen gizlemek (yalnızca gerçek İade belgesinde, dolu haldeyken görünür).
+        [Appearance("Hide_IrsaliyeM_KaynakIrsaliye", Visibility = ViewItemVisibility.Hide,
+            TargetItems = "KaynakIrsaliye", Criteria = "KaynakIrsaliye is null", Context = "DetailView")]
+        [RuleRequiredField("RuleRequired_IrsaliyeM_KaynakIrsaliye", DefaultContexts.Save,
+            "İade İrsaliyesinde Kaynak İrsaliye zorunludur.", TargetCriteria = "FisTuruTanim.FisTuruKodu = 'IRALID'")]
+        public IrsaliyeM KaynakIrsaliye
+        {
+            get => kaynakIrsaliye;
+            set => SetPropertyValue(nameof(KaynakIrsaliye), ref kaynakIrsaliye, value);
         }
 
         [XafDisplayName("Depo")]

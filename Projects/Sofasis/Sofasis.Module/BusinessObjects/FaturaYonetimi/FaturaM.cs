@@ -30,14 +30,17 @@ namespace Sofasis.Module.BusinessObjects
     // karıştırmasın diye).
     // Yön uyumu: DataSourceCriteria CariHesap seçimini BİLEREK geniş tutuyor (Tedarikçi/Müşteri/
     // MüşteriTedarikci hepsi seçilebilir — TEK sınıf hem Alış hem Satış yönünü kapsadığından).
-    // Ama Borç (Alış) faturasında Müşteri, Alacak (Satış) faturasında Tedarikçi seçilmesi muhasebe
-    // hatasıdır (CariHesapHareketleri.Rule_CariHesapHareketleri_KasaDovizUyumu ile birebir aynı
-    // save-time doğrulama deseni) — CariHesapTanim.OnDeleting'in aksine burada UI'da değil, kayıt
-    // anında engellenir.
+    // Ama Alış ailesi (FAALIS/FAALID) faturasında Müşteri, Satış ailesi (FASTIS/FASTID) faturasında
+    // Tedarikçi seçilmesi muhasebe hatasıdır (CariHesapHareketleri.Rule_CariHesapHareketleri_KasaDovizUyumu
+    // ile birebir aynı save-time doğrulama deseni) — CariHesapTanim.OnDeleting'in aksine burada UI'da
+    // değil, kayıt anında engellenir. ⚠ FisTuruTanim.FinansBorcAlacakTipi'NE GÖRE DEĞİL, FisTuruKodu'na
+    // göre kontrol edilir: İade'de (FAALID/FASTID) muhasebe yönü BİLEREK tersine döner (ADR-017) ama
+    // karşı taraf (Tedarikçi/Müşteri) AYNI kalır — FinansBorcAlacakTipi kullanılsaydı İade Faturası
+    // kendi Cari'sini "yanlış tip" diye reddederdi (canlı testte yakalandı, bkz. CHANGELOG).
     [RuleCriteria("Rule_FaturaM_CariYonUyumu", DefaultContexts.Save,
-        "(FisTuruTanim Is Null Or FisTuruTanim.FinansBorcAlacakTipi <> 1 Or CariHesap Is Null Or CariHesap.CariHesapTipi = 'Tedarikci' Or CariHesap.CariHesapTipi = 'MüşteriTedarikci') " +
-        "And (FisTuruTanim Is Null Or FisTuruTanim.FinansBorcAlacakTipi <> 2 Or CariHesap Is Null Or CariHesap.CariHesapTipi = 'Musteri' Or CariHesap.CariHesapTipi = 'MüşteriTedarikci')",
-        "Alış (Borç) faturasında Tedarikçi/Müşteri-Tedarikçi, Satış (Alacak) faturasında Müşteri/Müşteri-Tedarikçi tipinde bir Cari Hesap seçilmelidir.")]
+        "(FisTuruTanim Is Null Or Not (FisTuruTanim.FisTuruKodu = 'FAALIS' Or FisTuruTanim.FisTuruKodu = 'FAALID') Or CariHesap Is Null Or CariHesap.CariHesapTipi = 'Tedarikci' Or CariHesap.CariHesapTipi = 'MüşteriTedarikci') " +
+        "And (FisTuruTanim Is Null Or Not (FisTuruTanim.FisTuruKodu = 'FASTIS' Or FisTuruTanim.FisTuruKodu = 'FASTID') Or CariHesap Is Null Or CariHesap.CariHesapTipi = 'Musteri' Or CariHesap.CariHesapTipi = 'MüşteriTedarikci')",
+        "Alış (FAALIS/FAALID) faturasında Tedarikçi/Müşteri-Tedarikçi, Satış (FASTIS/FASTID) faturasında Müşteri/Müşteri-Tedarikçi tipinde bir Cari Hesap seçilmelidir.")]
     public class FaturaM : BaseClassWithAuditAndDescription
     {
         public FaturaM(Session session)
@@ -60,6 +63,7 @@ namespace Sofasis.Module.BusinessObjects
         Type kaynakSiparisTipi;
         Guid? kaynakSiparisOid;
         IrsaliyeM kaynakIrsaliye;
+        FaturaM kaynakFatura;
         string tedarikciFaturaNo;
         DateTime? tedarikciFaturaTarihi;
         DovizTanim dovizTanim;
@@ -148,12 +152,39 @@ namespace Sofasis.Module.BusinessObjects
             set => SetPropertyValue(nameof(KaynakIrsaliye), ref kaynakIrsaliye, value);
         }
 
-        // Yalnız Borç (Alış) yönünde anlamlı — CariHesapHareketleri'ndeki Borç/Alacak alan gizleme
-        // deseniyle birebir (FinansBorcAlacakTipi: Yok=0,Borc=1,Alacak=2,BorcAlacak=3).
+        // Yalnızca İADE türünde (FAALID) dolu — orijinal (iade edilen) Faturaya referans. Normal
+        // Faturada (FAALIS) hep null. [Indexed(Unique=true)]: bir Fatura yalnızca BİR KEZ iade
+        // edilebilir. İade Faturasının kendi satırları KaynakStokHareketiD taşımaz (stok etkisi YOK,
+        // yalnızca KDV/Tevkifat/Cari muhasebe etkisini tersine çevirir — FisTuruTanim.FinansBorcAlacakTipi
+        // FAALID için Alacak olduğundan CariAynaKaydiOlustur otomatik ters yönde kayıt üretir, kod
+        // değişikliği gerekmez).
+        [Indexed(Unique = true)]
+        [XafDisplayName("Kaynak Fatura (İade)")]
+        [Appearance("ED_FaturaM_KaynakFatura", Enabled = false, Context = "Any")]
+        // Kendine-referans veren (FaturaM->FaturaM) bir lookup, DevExpress XAF Blazor'da NULL iken
+        // editör kontrolünü hiç render ETMİYOR (yalnızca başlık/caption kalıyor, canlı testte
+        // kanıtlandı). Normal (İade olmayan) Faturada bu alan HER ZAMAN null olduğundan, en
+        // pragmatik/güvenli çözüm: null iken alanı tamamen gizlemek (yalnızca gerçek İade
+        // Faturasında, dolu haldeyken görünür).
+        [Appearance("Hide_FaturaM_KaynakFatura", Visibility = ViewItemVisibility.Hide,
+            TargetItems = "KaynakFatura", Criteria = "KaynakFatura is null", Context = "DetailView")]
+        [RuleRequiredField("RuleRequired_FaturaM_KaynakFatura", DefaultContexts.Save,
+            "İade Faturasında Kaynak Fatura zorunludur.", TargetCriteria = "FisTuruTanim.FisTuruKodu = 'FAALID'")]
+        public FaturaM KaynakFatura
+        {
+            get => kaynakFatura;
+            set => SetPropertyValue(nameof(KaynakFatura), ref kaynakFatura, value);
+        }
+
+        // Yalnız Alış ailesinde (FAALIS/FAALID) anlamlı. ⚠ FisTuruTanim.FinansBorcAlacakTipi'NE GÖRE
+        // DEĞİL FisTuruKodu'na göre kontrol edilir (4-ajan turunda bulundu, Rule_FaturaM_CariYonUyumu
+        // ile aynı ders): Cari yönü Netsis/Logo/Mikro standardına (FAALIS/FAALID=Alacak,
+        // FASTIS/FASTID=Borc) çevrildikten sonra FinansBorcAlacakTipi artık "Alış mı Satış mı"
+        // sorusuna cevap vermiyor, yalnızca muhasebe yönünü taşıyor.
         [Size(32)]
         [XafDisplayName("Tedarikçi Fatura No")]
         [Appearance("SH_FaturaM_TedarikciFaturaNo", Visibility = ViewItemVisibility.Hide,
-            TargetItems = "TedarikciFaturaNo", Criteria = "FisTuruTanim.FinansBorcAlacakTipi != 1", Context = "Any")]
+            TargetItems = "TedarikciFaturaNo", Criteria = "Not (FisTuruTanim.FisTuruKodu = 'FAALIS' Or FisTuruTanim.FisTuruKodu = 'FAALID')", Context = "Any")]
         public string TedarikciFaturaNo
         {
             get => tedarikciFaturaNo;
@@ -162,7 +193,7 @@ namespace Sofasis.Module.BusinessObjects
 
         [XafDisplayName("Tedarikçi Fatura Tarihi")]
         [Appearance("SH_FaturaM_TedarikciFaturaTarihi", Visibility = ViewItemVisibility.Hide,
-            TargetItems = "TedarikciFaturaTarihi", Criteria = "FisTuruTanim.FinansBorcAlacakTipi != 1", Context = "Any")]
+            TargetItems = "TedarikciFaturaTarihi", Criteria = "Not (FisTuruTanim.FisTuruKodu = 'FAALIS' Or FisTuruTanim.FisTuruKodu = 'FAALID')", Context = "Any")]
         public DateTime? TedarikciFaturaTarihi
         {
             get => tedarikciFaturaTarihi;
@@ -418,12 +449,35 @@ namespace Sofasis.Module.BusinessObjects
         // Yalnız Alış (Borç) yönünde ve yalnız SatinAlmaSiparisiM kaynaklıyken çalışır — kaynağa
         // bağlı TÜM Mal Kabul satırları (bu fatura dahil) artık bir FaturaD'ye sahipse Durum
         // Faturalandı'ya geçer (kısmi teslimatta N Mal Kabul'ün HEPSİ faturalanana kadar geçmez).
+        // FAALID (İade Faturası) kaydında TERS yöne çalışır — bkz. altdaki dal.
         void KaynakSiparisDurumunuGuncelle()
         {
             if (KaynakSiparisTipi != typeof(SatinAlmaSiparisiM) || KaynakSiparisOid == null) return;
 
             SatinAlmaSiparisiM siparis = Session.GetObjectByKey<SatinAlmaSiparisiM>(KaynakSiparisOid.Value);
             if (siparis == null) return;
+
+            string fisTuruKodu = FisTuruTanim?.FisTuruKodu;
+            if (fisTuruKodu == "FAALID")
+            {
+                // 4-ajan turunda bulundu: Fatura İade edildiğinde (İrsaliye henüz iade edilmemiş
+                // olabilir) Sipariş Durum'u "Faturalandı"da yanlışlıkla kalıyordu — bu satırların
+                // İadeyle artık faturalanmamış sayılması gerekir. SatinAlmaIrsaliyeServisi.IadeyiIsle
+                // ile AYNI hicTeslimatYok/tamamiTeslimEdildi mantığı (TeslimEdilenMiktar bu akışta
+                // DEĞİŞMEZ, yalnızca faturalama durumu geri alınır — teslimat durumuna göre doğru
+                // Durum'u yeniden hesaplar).
+                if (siparis.Durum != SatinAlmaSiparisDurumu.Faturalandi) return;
+
+                bool hicTeslimatYok = siparis.SatinAlmaSiparisiDs.All(x => x.TeslimEdilenMiktar <= 0);
+                bool tamamiTeslimEdildi = siparis.SatinAlmaSiparisiDs.All(x => x.KalanMiktar <= 0);
+                siparis.Durum = hicTeslimatYok
+                    ? SatinAlmaSiparisDurumu.Verildi
+                    : tamamiTeslimEdildi
+                        ? SatinAlmaSiparisDurumu.MalKabulYapildi
+                        : SatinAlmaSiparisDurumu.KismiTeslimAlindi;
+                return;
+            }
+            if (fisTuruKodu != "FAALIS") return;
 
             // Performans: StokHareketleriD/FaturaD tablolarının TAMAMINI (tüm siparişler/faturalar)
             // belleğe çekmek yerine, bu siparişin satır Oid'leriyle sınırlı bir IN filtresi doğrudan

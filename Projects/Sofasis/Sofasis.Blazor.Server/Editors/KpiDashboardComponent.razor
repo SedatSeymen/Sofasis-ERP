@@ -35,6 +35,15 @@
                 <div class="kpi-value">@BekleyenSiparisSayisi.ToString("N0", TrCulture)<span class="kpi-unit">Mal Kabul Bekliyor</span></div>
             </div>
         </div>
+        <div class="kpi-card kpi-accent-emerald" @onclick="@(() => Git("FaturaM_ListView"))">
+            <div class="kpi-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="1" /><path d="M8 7h8M8 11h8M8 15h5" /></svg>
+            </div>
+            <div class="kpi-body">
+                <div class="kpi-label">Bekleyen Fatura</div>
+                <div class="kpi-value">@BekleyenFaturaSayisi.ToString("N0", TrCulture)<span class="kpi-unit">Faturalama Bekliyor</span></div>
+            </div>
+        </div>
     </div>
 
 </div>
@@ -47,6 +56,7 @@
     int BekleyenTalepSayisi;
     int BekleyenTeklifSayisi;
     int BekleyenSiparisSayisi;
+    int BekleyenFaturaSayisi;
 
     protected override void OnInitialized()
     {
@@ -62,8 +72,15 @@
             .Count(x => x.Durum == SatinAlmaTalepDurumu.OnayBekliyor);
         BekleyenTeklifSayisi = os.GetObjectsQuery<SatinAlmaTeklifM>()
             .Count(x => x.Durum == SatinAlmaTeklifDurumu.Beklemede || x.Durum == SatinAlmaTeklifDurumu.Alindi);
+        // Kısmi teslim alınmış siparişler de hâlâ eylem gerektirir (kalan miktar Mal Kabul
+        // bekliyor) — yalnız Verildi sayılması yanıltıcıydı (4-ajan turunda bulundu).
         BekleyenSiparisSayisi = os.GetObjectsQuery<SatinAlmaSiparisiM>()
-            .Count(x => x.Durum == SatinAlmaSiparisDurumu.Verildi);
+            .Count(x => x.Durum == SatinAlmaSiparisDurumu.Verildi || x.Durum == SatinAlmaSiparisDurumu.KismiTeslimAlindi);
+        // Mal Kabulü tamamlanmış (İrsaliyesi girilmiş) ama henüz faturalanmamış Siparişler —
+        // Sipariş.Durum, ilgili İrsaliye'nin Fatura'sı kaydedildiğinde IFaturaKaydetServisi
+        // tarafından Faturalandi'ye çekilir (bkz. ADR-017).
+        BekleyenFaturaSayisi = os.GetObjectsQuery<SatinAlmaSiparisiM>()
+            .Count(x => x.Durum == SatinAlmaSiparisDurumu.MalKabulYapildi);
     }
 
     void Git(string listViewId) => NavigationManager.NavigateTo("/" + listViewId);
