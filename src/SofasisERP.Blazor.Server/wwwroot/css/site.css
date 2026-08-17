@@ -10,14 +10,38 @@ app {
 .header-logo {
     flex-shrink: 0;
     background-color: currentColor;
-    -webkit-mask: url('../images/Logo.svg');
-    mask: url('../images/Logo.svg');
+    /* NOT: CSS url() referansları ASP.NET Core'un static web assets
+       sürüm/hash mekanizmasından GEÇMİYOR (o mekanizma yalnız Razor/tag-helper
+       bağlamlarında çalışır) - bu yüzden Logo.svg değiştiğinde tarayıcıların
+       önceden önbelleğe aldığı eski dosyayı sert yenileme (Ctrl+Shift+R) bile
+       atlamayabilir. Elle bir "?v=" sürüm etiketi eklendi; dosya bir daha
+       değişirse bu sayıyı artır. */
+    -webkit-mask: url('../images/Logo.svg?v=2');
+    mask: url('../images/Logo.svg?v=2');
     -webkit-mask-position: center;
     mask-position: center;
     -webkit-mask-repeat: no-repeat;
     mask-repeat: no-repeat;
-    width: 28px;
-    height: 24px;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    /* Logo.svg'nin gerçek en-boy oranı (135:54 = 2.5:1) korunuyor -
+       DevExpress'in varsayılan kare kutusu (28x24) bu oranda genişletildi,
+       yoksa mask-size:contain olsa bile dar kutu logoyu küçültüp metni
+       okunmaz hale getirirdi. */
+    width: 115px;
+    height: 44px;
+}
+
+/* Splash ekranındaki DevExpress "loading-image-wrapper" dairesi 120x120px;
+   varsayılan .loading-image kuralı görseli 46x30px'e SABİTLİYOR (eski XAF
+   glyph'inin ölçüsü) - Sofasis splash görseli (150x150 viewBox, ikon +
+   yazı) bu dar kutuya orantısız sıkışıp bulanık/bozuk görünürdü.
+   object-fit:contain ile gerçek en-boy oranı korunarak dairenin içine
+   (120px'in %80'i) net ve ortalı sığdırılıyor. */
+.loading-image {
+    width: 112px;
+    height: 112px;
+    object-fit: contain;
 }
 
 #blazor-error-ui {
