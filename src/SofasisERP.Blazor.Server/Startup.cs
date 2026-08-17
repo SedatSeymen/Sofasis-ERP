@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 using DevExpress.ExpressApp.Xpo;
 using SofasisERP.Blazor.Server.Services;
+using SofasisERP.Module.Services;
 
 namespace SofasisERP.Blazor.Server;
 
@@ -28,6 +29,12 @@ public class Startup {
         services.AddServerSideBlazor();
         services.AddHttpContextAccessor();
         services.AddScoped<CircuitHandler, CircuitHandlerProxy>();
+
+        // Döviz kuru: TCMB'den çekme + güncelleme servisleri, ve process başına
+        // TEK çalışan periyodik arka plan worker'ı (bkz. DovizKuruGuncellemeWorker).
+        services.AddScoped<IDovizKuruService, TcmbDovizKuruService>();
+        services.AddScoped<IDovizKuruGuncellemeServisi, DovizKuruGuncellemeServisi>();
+        services.AddHostedService<DovizKuruGuncellemeWorker>();
         services.AddXaf(Configuration, builder => {
             builder.UseApplication<SofasisERPBlazorApplication>();
             builder.Modules
