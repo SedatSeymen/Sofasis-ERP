@@ -1000,3 +1000,63 @@ Her yeni karar:
 7. kullanıcı etkisi
 
 şeklinde değerlendirilip gerektiğinde ADR olarak kaydedilecektir.
+
+---
+
+# 45. İlk Domain Karar Kapısının Kapanışı (2026-08-17)
+
+Bu bölüm, §42'de tanımlanan "ilk gerçek domain karar kapısı"nın (ürün + modül + uyumluluk + konfigürasyon + stok ilişkisi) 2026-08-17'de kullanıcıyla yapılan kapsamlı bir tasarım oturumu sonucunda nasıl kapandığını kayıt altına alır. Edition stratejisi için bkz. `PRODUCT_EDITIONS.md`; DetailView/servis konvansiyonları için bkz. `docs/architecture/00_DetailView_ve_Servis_Konvansiyonlari.md`.
+
+## 45.1 Hedef sektör
+
+Uygulama tamamen **koltuk üreten firmalar** için tasarlanır (genel mobilya değil, spesifik olarak koltuk üreticileri).
+
+## 45.2 Kavramsal domain modeli
+
+Nedensel sıralama: Model tanımlanır → üretilir → reçetesi çıkarılır → maliyet hesaplanır → satış fiyatı belirlenir → satışa açılır → sipariş/satınalma döngüsü bu temel üzerinde işler.
+
+1. **Model** — paylaşılan modül havuzunun sahibi olan üst çatı (ör. "Kiev"). **Kendisi doğrudan satılmaz.** `ModelAdi`, `ModelKodu`, `Resim`.
+2. **Modül** — atomik üretilebilir/satılabilir birim, bağımsız satılabilir (§6). `ModulTipi`: TekKollu(Sol/Sağ), Köşe, Sabit, Kutu (ses/LED içerebilir), Üçlü, Berjer/Tekli; Ölçü (75/85cm).
+3. **Mekanizma** — ayrı bir "Tanım" varlığı DEĞİL; fiziksel bir bileşen/hammadde olarak `StokTanim` + üç seviyeli Stok Tipi/Grup/Alt Grup hiyerarşisiyle çözülür (bkz. §45.4). Üretim/Reçete katmanında (Enterprise) bir StokKalemi; Basic/Pro'da (Reçete yok) mekanizma farkı zaten farklı StokKalemi/Konfigürasyon kaydı (farklı stok kodu/fiyat) olarak var olur.
+4. **Konfigürasyon** — **fiilen satılan birim**. Model'in paylaşılan modül havuzundan belirli bir dizilim/altküme kullanır, ama katalogda kendi adı/fiyatı/stok koduyla ayrı bir ürün gibi görünür (ör. "Kiev Takım", "Kiev Köşe"). `FormTipi`: Köşe/Takım — Konfigürasyon'un bir alanıdır, ayrı bir varlık DEĞİLDİR (bkz. §45.5 karar geçmişi). Uyumluluk kuralları (§31.4) burada uygulanır; StokKonfigürasyonu ≠ ÜretimKonfigürasyonu (§7).
+5. **Stok Kalemi** — hem atomik Modül hem Konfigürasyon seviyesinde var olur; üç seviyeli hiyerarşiyle sınıflanır (bkz. §45.4). `Resim` alanı zorunlu. `StokTipi=Mamul` ise `Model` referansı zorunludur (Sipariş ekranında modele göre filtreleme/arama için).
+6. **Reçete (BOM)** — Model/Modül **üretildikten SONRA** çıkarılır; bu keyfi bir tercih değil zorunluluktur: model ilk üretilmeye başladığında hangi malzemeden ne kadar kullanılacağı henüz bilinmez. İlk üretim reçetesiz/provizyon olarak başlar → gerçek malzeme tüketimi kayıt altına alınır → bu kayıtlardan resmi Reçete türetilir. Satır türü: Jenerik hammadde (ör. standart tabaka sünger, dansiteye göre) / Modele özel bileşen (ör. özel kesim sünger) — §12 "alternatif komponent". **Açık nokta:** ilk (provizyon) üretimdeki tüketimin teknik kayıt mekanizması henüz netleşmedi (Faz 6/Üretim öncesi kapatılacak).
+7. **Maliyet & Satış Fiyatı** — maliyet reçeteden hesaplanır, satış fiyatı maliyetten türetilir.
+8. **Sipariş** — Kaynak: Yurtiçi/Yurtdışı; Amaç: Stok/Tamir (tamir siparişinin Model→Reçete→Maliyet zincirine bağlanışı henüz netleşmedi); Kanal: WhatsApp/Mail/Mağaza. Yurtdışı siparişte kapsamlı bir proforma süreci devreye girer. `Resim` alanı zorunlu (özellikle köşede özel ölçü isteyen müşteri için) + özel ölçü girişi desteklenir.
+
+**Satış birimi esnekliği:** Her modül tek başına stok kalemi olarak satılabilir, ya da bir konfigürasyon/set içinde satılabilir (§6, §35) — hammaddeye kadar genişler (ör. satın alınan kumaş doğrudan satılabilir; reçetede standart 4 kırlent varken müşteri ekstra kırlent isteyebilir).
+
+**Ayak** — koltuk siparişinde önemli bir belirteç: `AyakTipi` (Ahşap/Metal), `KasaliMi` (oturum altında saklama kasası var/yok), `AyakRengi`. Mekanizma'nın aksine kendi `AyakTanim` varlığı olarak kalır (kullanıcı kararı).
+
+## 45.3 Satınalma / Malzeme Tedarik Akışı
+
+Malzemeler genelde bir **fiş** (mal kabul belgesi) ile gelir. Ay sonunda tedarikçi bu fişlerle ilgili toplu fatura keser; bazen doğrudan fatura ya da irsaliye gönderir — üç senaryo: (1) fiş → sonradan aylık toplu fatura, (2) doğrudan fatura, (3) doğrudan irsaliye. **Stok girişi FATURAYA değil, FİŞ'in sisteme işlenmesine bağlıdır.** `StokHareketi`'nin kaynak belgesi Fatura değil, Fiş/İrsaliyedir; fatura ayrı zamanlı, ayrı bir mali belgedir (bir fatura birden fazla fişi kapsayabilir).
+
+## 45.4 Stok Kodlama (üç seviyeli, Tekdüzen STİLİNDE — gerçek hesap planına bağlı değil)
+
+`StokTipiTanim` → `StokGrupTanim` → `StokAltGrupTanim`, üçü de TABLO (enum değil — muhasebe tarafından yönetilebilir olması için). Her seviyenin `Kod` alanı **kümülatif/tam kodu** taşır:
+
+- `StokTipiTanim.Kod` = "150" (ör. Hammadde)
+- `StokGrupTanim.GrupKodu` = "150.01" (ör. Sünger)
+- `StokAltGrupTanim.AltGrupKodu` = "150.01.01" (ör. "30 Dansite Sünger")
+- `StokKodu` = `AltGrupKodu + "." + SiraNumarasi` (4 haneli) → ör. **"150.01.01.0001"**
+
+Bu, **Tekdüzen Hesap Planı'nın noktalı-hiyerarşik numaralandırma STİLİNDEN** esinlenir ama gerçek muhasebe hesap planına BAĞLANMAZ (Tekdüzen çok kaba taneli — SKU seviyesinde ayrım gücü yok; muhasebe/Tekdüzen entegrasyonu kapsamı [[project_faz5_muhasebe_kapsam_karari]] ayrıca, mali müşavire sorularak netleştirilecek).
+
+`StokTipiTanim`/`StokGrupTanim`/`StokAltGrupTanim` tanımlama ekranları **yalnızca muhasebe rolüne açıktır** — genel "basit kullanıcı" arayüz kısıtının istisnasıdır.
+
+**Ertelenen fikir:** Her stok grubu için dinamik "Stok Özellik" seti + konfigüratörle kod üretme fikri değerlendirildi, ilk sürüm için ertelendi (Faz 1'i hızlı bitirmek, henüz kanıtlanmış ihtiyaç olmaması) — sabit hiyerarşinin üzerine ileride opsiyonel bir katman olarak eklenebilir, geriye dönük kırılma riski düşük.
+
+## 45.5 Form (Köşe/Takım) — karar geçmişi
+
+İlk tasarımda Form, Model'in altında ayrı bir varlık (`ModelFormu`) olarak önerildi. Kullanıcının somut Kiev örneği (aynı 85cm oturum modülünün hem Takım'da hem sağ kolu çıkarıp köşeye eklenen dizilimde kullanılması — modüller formlar arası paylaşılıyor, her form kendi modül listesini sahiplenmiyor) üzerine bu karar geri alındı. **Nihai karar: Form ayrı bir varlık DEĞİL — Konfigürasyon'un bir alanı (`FormTipi`: Köşe/Takım)** (bkz. §45.2 madde 4).
+
+## 45.6 Finans / Ön Muhasebe
+
+- **Ödeme/tahsilat seçenekleri:** Nakit, Kredi Kartı, Kredi Kartına Taksit, Çek/Senet (`OdemeSekli` enum).
+- **Cari hesap ekstre/tahsilat döngüsü (B2B):** Ayın 1-30'u arasında ürün alan firmaya ayın 2-4'ü arasında ekstre gönderilir, 7-10'u arasında anlaşılan şartlara göre ödeme istenir — periyodik bir süreç olarak modellenir.
+- **E-posta entegrasyonu (sistem geneli zorunlu):** Sistemde tanımlı müşteri/tedarikçilere otomatik mail atılabilmesi gerekir (ekstre, proforma, sipariş onayı gibi süreçlerin altyapısı) — merkezi bir `IEPostaGonderimServisi`, ilgili modüller bunu çağırır.
+
+## 45.7 Ekran ve Menü Standardizasyonu
+
+En temel kural: standart ekran tip ve şablonları — bir ekranı/menüyü anlayan tümünü anlamalı (hedef kullanıcı profili ilkokul/ortaokul/lise mezunu). Ekranlar DevExpress XAF Blazor'un native ListView/DetailView/Popup/Report yapıları temel alınarak standardize edilir; genel/soyut UI kuralları XAF'ın kendi bileşen davranışının üstüne gereksiz özel katman olarak eklenmez. Navigasyon: her iş alanı yalnızca standart "Tanımlar" ve "Hareketler" alt-gruplarını kullanır. DetailView sekme deseni ve numaralandırma servisi için bkz. `docs/architecture/00_DetailView_ve_Servis_Konvansiyonlari.md`.
