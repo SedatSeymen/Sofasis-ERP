@@ -104,4 +104,4 @@ Model.xafml.bak
 
 # Playwright MCP test artifacts
 .playwright-mcp/
-*.png
+/*.png
