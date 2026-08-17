@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34309.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SofasisERP.Blazor.Server", "SofasisERP.Blazor.Server\SofasisERP.Blazor.Server.csproj", "{185993B9-6E79-4517-BE95-BC905368BF06}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SofasisERP.Module", "SofasisERP.Module\SofasisERP.Module.csproj", "{82456A76-FC51-4A2D-BA2A-BD89B3F01AFF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		EasyTest|Any CPU = EasyTest|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{185993B9-6E79-4517-BE95-BC905368BF06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{185993B9-6E79-4517-BE95-BC905368BF06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{185993B9-6E79-4517-BE95-BC905368BF06}.EasyTest|Any CPU.ActiveCfg = EasyTest|Any CPU
+		{185993B9-6E79-4517-BE95-BC905368BF06}.EasyTest|Any CPU.Build.0 = EasyTest|Any CPU
+		{185993B9-6E79-4517-BE95-BC905368BF06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{185993B9-6E79-4517-BE95-BC905368BF06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82456A76-FC51-4A2D-BA2A-BD89B3F01AFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82456A76-FC51-4A2D-BA2A-BD89B3F01AFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82456A76-FC51-4A2D-BA2A-BD89B3F01AFF}.EasyTest|Any CPU.ActiveCfg = EasyTest|Any CPU
+		{82456A76-FC51-4A2D-BA2A-BD89B3F01AFF}.EasyTest|Any CPU.Build.0 = EasyTest|Any CPU
+		{82456A76-FC51-4A2D-BA2A-BD89B3F01AFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82456A76-FC51-4A2D-BA2A-BD89B3F01AFF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {71B689A1-6A38-4900-AC01-3C405A3F7035}
+	EndGlobalSection
+EndGlobal
