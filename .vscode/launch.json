@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "SofasisERP.Blazor.Server (F5 Debug)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/src/SofasisERP.Blazor.Server/bin/Debug/net10.0/SofasisERP.Blazor.Server.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/src/SofasisERP.Blazor.Server",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "console": "internalConsole"
+        }
+    ]
+}
