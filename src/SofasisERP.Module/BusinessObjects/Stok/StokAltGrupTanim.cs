@@ -11,16 +11,17 @@
  */
 
 using DevExpress.ExpressApp;
+using DevExpress.ExpressApp.ConditionalAppearance;
 using DevExpress.ExpressApp.DC;
 using DevExpress.Persistent.Base;
 using DevExpress.Persistent.Validation;
 using DevExpress.Xpo;
+using SofasisERP.Module.Services;
 using System.ComponentModel;
 using System.Linq;
 
 namespace SofasisERP.Module.BusinessObjects;
 
-[DefaultClassOptions]
 [DefaultProperty(nameof(StokAltGrupAdi))]
 [XafDisplayName("Stok Alt Grup Tanımlama")]
 public class StokAltGrupTanim : BaseClassWithAuditAndDescription
@@ -31,6 +32,7 @@ public class StokAltGrupTanim : BaseClassWithAuditAndDescription
     string stokAltGrupKodu;
     string stokAltGrupAdi;
 
+    [Association("StokGrupTanim-StokAltGrupTanims")]
     [RuleRequiredField("RuleRequired_StokAltGrupTanim_StokGrupTanim", DefaultContexts.Save, "Lütfen Stok Grubunu Seçiniz...")]
     [XafDisplayName("Stok Grubu")]
     public StokGrupTanim StokGrupTanim
@@ -39,9 +41,12 @@ public class StokAltGrupTanim : BaseClassWithAuditAndDescription
         set => SetPropertyValue(nameof(StokGrupTanim), ref stokGrupTanim, value);
     }
 
+    // Kullanıcı kararı: elle girilmez — StokGrupTanim.StokGrupKodu + 2 haneli sıra
+    // numarasıyla OnSaving'de otomatik üretilir (ör. "150.01" -> "150.01.01"). Bkz.
+    // StokKoduJeneratoru.SonrakiStokAltGrupKodu.
     [Size(30)]
     [Indexed(Unique = true)]
-    [RuleRequiredField("RuleRequired_StokAltGrupTanim_StokAltGrupKodu", DefaultContexts.Save, "Lütfen Stok Alt Grup Kodunu Giriniz...")]
+    [Appearance("ED_StokAltGrupTanim_StokAltGrupKodu", Enabled = false, Context = "DetailView")]
     [XafDisplayName("Stok Alt Grup Kodu")]
     public string StokAltGrupKodu
     {
@@ -56,6 +61,16 @@ public class StokAltGrupTanim : BaseClassWithAuditAndDescription
     {
         get => stokAltGrupAdi;
         set => SetPropertyValue(nameof(StokAltGrupAdi), ref stokAltGrupAdi, value);
+    }
+
+    protected override void OnSaving()
+    {
+        if (Session.IsNewObject(this) && string.IsNullOrEmpty(StokAltGrupKodu) && StokGrupTanim != null)
+        {
+            IStokKoduJeneratoru jenerator = new StokKoduJeneratoru();
+            StokAltGrupKodu = jenerator.SonrakiStokAltGrupKodu(Session, StokGrupTanim);
+        }
+        base.OnSaving();
     }
 
     protected override void OnDeleting()

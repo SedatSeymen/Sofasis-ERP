@@ -1,0 +1,23 @@
+Kod;Ad;Varsayilan;Sembol
+TRY;Türk Lirası;true;₺
+USD;Amerikan Doları;false;$
+EUR;Avrupa Para Birimi;false;€
+GBP;İngiliz Para Birimi;false;£
+AUD;Avustralya Doları;false;A$
+DKK;Danimarka Kronu;false;kr
+CHF;İsviçre Frangı;false;Fr
+SEK;İsveç Kronu;false;kr
+CAD;Kanada Doları;false;C$
+KWD;Kuveyt Dinarı;false;KD
+NOK;Norveç Kronu;false;kr
+SAR;Suudi Arabistan Riyali;false;SR
+JPY;Japon Yeni;false;¥
+RON;Rumen Leyi;false;lei
+RUB;Rus Rublesi;false;₽
+CNY;Çin Yuanı;false;¥
+PKR;Pakistan Rupisi;false;₨
+QAR;Katar Riyali;false;QR
+KRW;Güney Kore Wonu;false;₩
+AZN;Azerbaycan Manatı;false;₼
+AED;BAE Dirhemi;false;AED
+KZT;Kazakistan Tengesi;false;₸

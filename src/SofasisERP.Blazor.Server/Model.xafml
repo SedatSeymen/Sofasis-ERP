@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application>
-  <Options UIType="TabbedMDI"
+  <Options UIType="SingleWindowSDI"
          FormStyle="Ribbon"
          RestoreTabbedMdiLayout="True"
          ShowTabImage="True"

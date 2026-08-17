@@ -16,14 +16,7 @@ public class Updater : ModuleUpdater {
     }
     public override void UpdateDatabaseAfterUpdateSchema() {
         base.UpdateDatabaseAfterUpdateSchema();
-        //string name = "MyName";
-        //DomainObject1 theObject = ObjectSpace.FirstOrDefault<DomainObject1>(u => u.Name == name);
-        //if(theObject == null) {
-        //    theObject = ObjectSpace.CreateObject<DomainObject1>();
-        //    theObject.Name = name;
-        //}
-
-        //ObjectSpace.CommitChanges(); //Uncomment this line to persist created object(s).
+        new DatabaseSeeder(ObjectSpace).Seed();
     }
     public override void UpdateDatabaseBeforeUpdateSchema() {
         base.UpdateDatabaseBeforeUpdateSchema();

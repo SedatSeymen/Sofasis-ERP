@@ -45,6 +45,18 @@ public sealed class NumberSequenceService : INumberSequenceService
         return (int)generator.NextSequence;
     }
 
+    public string SonrakiNumara(Session session, string sequenceAnahtari, FisTuruTanim fisTuruTanim, DateTime belgeTarihi)
+    {
+        if (fisTuruTanim == null)
+            throw new ArgumentNullException(nameof(fisTuruTanim));
+
+        string tarihSegmenti = belgeTarihi.ToString("yyMMdd");
+        string kriter = $"{fisTuruTanim.FisTuruKodu}-{tarihSegmenti}";
+        SequenceGenerator generator = BulYadaOlustur(session, sequenceAnahtari, kriter);
+        generator.NextSequence++;
+        return $"{fisTuruTanim.FisTuruKodu}-{tarihSegmenti}{generator.NextSequence:D3}";
+    }
+
     static SequenceGenerator BulYadaOlustur(Session session, string sequenceAnahtari, string kriter)
     {
         ConcurrentDictionary<string, SequenceGenerator> cache = sessionCache.GetOrCreateValue(session);

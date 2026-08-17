@@ -75,7 +75,14 @@ public class Startup {
             app.UseHsts();
         }
         app.UseHttpsRedirection();
-        app.UseRequestLocalization();
+        // Türkçe dil paketi (bin/tr) etkin olsun diye kültür tr-TR'ye sabitlendi
+        // (appsettings.json'daki DevExpress:ExpressApp:Languages ile birlikte).
+        var desteklenenKulturler = new[] { new System.Globalization.CultureInfo("tr-TR") };
+        app.UseRequestLocalization(new Microsoft.AspNetCore.Builder.RequestLocalizationOptions {
+            DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("tr-TR"),
+            SupportedCultures = desteklenenKulturler,
+            SupportedUICultures = desteklenenKulturler
+        });
         app.UseStaticFiles();
         app.UseRouting();
         app.UseXaf();

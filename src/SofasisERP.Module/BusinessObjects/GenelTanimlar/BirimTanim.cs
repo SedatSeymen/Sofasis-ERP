@@ -6,8 +6,9 @@
  * Son Güncelleme   : 08/17/2026
  * Son Güncelleyen  : Sedat Seymen
  * Açıklama         : Ölçü birimi tanımı (Adet, Kg, Metre vb.) — eski projeden
- *                    uyarlandı; FisTuruTanim'e bağlı IFisTuruVarsayilanHedefi
- *                    arayüzü bu projede henüz mevcut olmadığından çıkarıldı.
+ *                    uyarlandı. FisTuruTanim bazlı varsayılan değer hedefi
+ *                    olarak seçilebilmesi için IFisTuruVarsayilanHedefi arayüzü
+ *                    uygulanır.
  * ****************************************************************************
  */
 
@@ -22,7 +23,7 @@ namespace SofasisERP.Module.BusinessObjects;
 [DefaultProperty(nameof(BirimAdi))]
 [DefaultClassOptions]
 [XafDisplayName("Birim Tanımlama")]
-public class BirimTanim : BaseClassWithAudit
+public class BirimTanim : BaseClassWithAudit, IFisTuruVarsayilanHedefi
 {
     public BirimTanim(Session session) : base(session) { }
 

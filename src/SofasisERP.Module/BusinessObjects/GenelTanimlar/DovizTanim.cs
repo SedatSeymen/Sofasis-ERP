@@ -5,8 +5,9 @@
  * Oluşturan        : Sedat Seymen
  * Son Güncelleme   : 08/17/2026
  * Son Güncelleyen  : Sedat Seymen
- * Açıklama         : Para birimi tanımı — eski projeden uyarlandı; FisTuruTanim'e
- *                    bağlı IFisTuruVarsayilanHedefi arayüzü çıkarıldı.
+ * Açıklama         : Para birimi tanımı — eski projeden uyarlandı. FisTuruTanim
+ *                    bazlı varsayılan değer hedefi olarak seçilebilmesi için
+ *                    IFisTuruVarsayilanHedefi arayüzü uygulanır.
  * ****************************************************************************
  */
 
@@ -23,7 +24,7 @@ namespace SofasisERP.Module.BusinessObjects;
 [DefaultProperty(nameof(DovizKodu))]
 [DefaultClassOptions]
 [XafDisplayName("Döviz Tanımlama")]
-public class DovizTanim : BaseClassWithAudit
+public class DovizTanim : BaseClassWithAudit, IFisTuruVarsayilanHedefi
 {
     public DovizTanim(Session session) : base(session) { }
 

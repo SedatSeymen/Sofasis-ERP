@@ -1,8 +1,875 @@
-﻿<?xml version="1.0" ?>
+<?xml version="1.0" ?>
 <Application Title="SofasisERP">
   <Options>
     <LayoutManagerOptions RequiredFieldMark="*" />
   </Options>
   <Views>
+    <!-- Denetim (audit) sekmesi her DetailView'da EN SONDA — eski projeden aynen taşınan
+         kanıtlanmış desen (bkz. Brain/Mimari/00_DetailView_ve_Servis_Konvansiyonlari.md).
+         [DetailViewLayoutAttribute] Blazor'da çalışmadığı için elle Layout XML'i yazılır.
+
+         Standart kurallar (2026-08-17, kullanıcı kararı — tüm ekranlarda uygulanır):
+         1) Kod alanı olan sınıflarda alan/kolon sırası HER ZAMAN Kod, Ad ile başlar (FK'ler sonra).
+         2) Sınıfın kendi alan sayısı <=5 ise DetailView'ın Genel sekmesi TEK KOLON (satır başına
+            tek alan) düzenlenir; >5 ise çift/çoklu sütun gruplama serbesttir.
+         3) Resim alanı olan sınıflarda Resim, Genel ile Özel Kodlar & Açıklama arasında AYRI
+            bir sekmede gösterilir; Genel sekmesinin içine gömülmez. -->
+    <DetailView Id="ModelTanim_DetailView" IsNewNode="True">
+      <Layout IsNewNode="True">
+        <LayoutGroup Id="Main" RelativeSize="100" IsNewNode="True">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="100" IsNewNode="True">
+            <TabbedGroup Id="Tabs" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
+              <LayoutGroup Id="Genel" Caption="Genel" Direction="Vertical" Index="0" RelativeSize="100" IsNewNode="True">
+                <LayoutItem Id="ModelAdi" ViewItem="ModelAdi" Index="0" RelativeSize="50" IsNewNode="True" />
+                <LayoutItem Id="ModelAdiIngilizce" ViewItem="ModelAdiIngilizce" Index="1" RelativeSize="50" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutGroup Id="ResimGrubu" Caption="Resim" Direction="Vertical" Index="1" RelativeSize="100" IsNewNode="True">
+                <LayoutItem Id="Resim" ViewItem="Resim" Index="0" RelativeSize="100" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutGroup Id="OzelKodlar" Caption="Özel Kodlar &amp; Açıklama" Direction="Vertical" Index="2" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="ModelTanim_Row2" ShowCaption="False" Direction="Horizontal" Index="0" RelativeSize="20" IsNewNode="True">
+                  <LayoutItem Id="CustomCode1" ViewItem="CustomCode1" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="CustomCode2" ViewItem="CustomCode2" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutItem Id="Description" ViewItem="Description" Index="1" RelativeSize="80" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutGroup Id="Denetim" Caption="Denetim" Direction="Horizontal" Index="3" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="ModelTanim_Denetim_col1" ShowCaption="False" Index="0" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedBy" ViewItem="CreatedBy" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedBy" ViewItem="ModifiedBy" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="ModelTanim_Denetim_col2" ShowCaption="False" Index="1" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedDate" ViewItem="CreatedDate" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedDate" ViewItem="ModifiedDate" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+              </LayoutGroup>
+            </TabbedGroup>
+            <LayoutGroup Id="BaseClassWithAuditAndDescription" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CustomCode1" Removed="True" />
+              <LayoutItem Id="CustomCode2" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="BaseClassWithAudit" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CreatedBy" Removed="True" />
+              <LayoutItem Id="ModifiedBy" Removed="True" />
+              <LayoutItem Id="CreatedDate" Removed="True" />
+              <LayoutItem Id="ModifiedDate" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="SizeableEditors" Removed="True">
+              <LayoutItem Id="Description" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="ModelTanim" RelativeSize="100" Removed="True">
+              <LayoutItem Id="ModelAdi" Removed="True" />
+              <LayoutItem Id="ModelAdiIngilizce" Removed="True" />
+              <LayoutItem Id="Resim" Removed="True" />
+            </LayoutGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <DetailView Id="StokTipiTanim_DetailView" IsNewNode="True">
+      <Layout IsNewNode="True">
+        <LayoutGroup Id="Main" RelativeSize="100" IsNewNode="True">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="100" IsNewNode="True">
+            <TabbedGroup Id="Tabs" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
+              <LayoutGroup Id="Genel" Caption="Genel" Direction="Vertical" Index="0" RelativeSize="100" IsNewNode="True">
+                <LayoutItem Id="StokTipiKodu" ViewItem="StokTipiKodu" Index="0" RelativeSize="34" IsNewNode="True" />
+                <LayoutItem Id="StokTipiAdi" ViewItem="StokTipiAdi" Index="1" RelativeSize="33" IsNewNode="True" />
+                <LayoutItem Id="MamulMu" ViewItem="MamulMu" Index="2" RelativeSize="33" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutGroup Id="OzelKodlar" Caption="Özel Kodlar &amp; Açıklama" Direction="Vertical" Index="1" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="StokTipiTanim_Row2" ShowCaption="False" Direction="Horizontal" Index="0" RelativeSize="20" IsNewNode="True">
+                  <LayoutItem Id="CustomCode1" ViewItem="CustomCode1" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="CustomCode2" ViewItem="CustomCode2" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutItem Id="Description" ViewItem="Description" Index="1" RelativeSize="80" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutGroup Id="Denetim" Caption="Denetim" Direction="Horizontal" Index="2" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="StokTipiTanim_Denetim_col1" ShowCaption="False" Index="0" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedBy" ViewItem="CreatedBy" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedBy" ViewItem="ModifiedBy" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="StokTipiTanim_Denetim_col2" ShowCaption="False" Index="1" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedDate" ViewItem="CreatedDate" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedDate" ViewItem="ModifiedDate" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+              </LayoutGroup>
+            </TabbedGroup>
+            <LayoutGroup Id="BaseClassWithAuditAndDescription" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CustomCode1" Removed="True" />
+              <LayoutItem Id="CustomCode2" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="BaseClassWithAudit" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CreatedBy" Removed="True" />
+              <LayoutItem Id="ModifiedBy" Removed="True" />
+              <LayoutItem Id="CreatedDate" Removed="True" />
+              <LayoutItem Id="ModifiedDate" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="SizeableEditors" Removed="True">
+              <LayoutItem Id="Description" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="StokTipiTanim" RelativeSize="100" Removed="True">
+              <LayoutItem Id="StokTipiKodu" Removed="True" />
+              <LayoutItem Id="StokTipiAdi" Removed="True" />
+              <LayoutItem Id="MamulMu" Removed="True" />
+            </LayoutGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <DetailView Id="StokGrupTanim_DetailView" IsNewNode="True">
+      <Layout IsNewNode="True">
+        <LayoutGroup Id="Main" RelativeSize="100" IsNewNode="True">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="100" IsNewNode="True">
+            <TabbedGroup Id="Tabs" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
+              <LayoutGroup Id="Genel" Caption="Genel" Direction="Vertical" Index="0" RelativeSize="100" IsNewNode="True">
+                <LayoutItem Id="StokTipiTanim" ViewItem="StokTipiTanim" Index="0" RelativeSize="50" IsNewNode="True" />
+                <LayoutGroup Id="StokGrupTanim_Row1" ShowCaption="False" Direction="Horizontal" Index="1" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="StokGrupKodu" ViewItem="StokGrupKodu" Index="0" RelativeSize="30" IsNewNode="True" />
+                  <LayoutItem Id="StokGrupAdi" ViewItem="StokGrupAdi" Index="1" RelativeSize="70" IsNewNode="True" />
+                </LayoutGroup>
+              </LayoutGroup>
+              <LayoutGroup Id="OzelKodlar" Caption="Özel Kodlar &amp; Açıklama" Direction="Vertical" Index="1" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="StokGrupTanim_Row2" ShowCaption="False" Direction="Horizontal" Index="0" RelativeSize="20" IsNewNode="True">
+                  <LayoutItem Id="CustomCode1" ViewItem="CustomCode1" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="CustomCode2" ViewItem="CustomCode2" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutItem Id="Description" ViewItem="Description" Index="1" RelativeSize="80" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutGroup Id="Denetim" Caption="Denetim" Direction="Horizontal" Index="2" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="StokGrupTanim_Denetim_col1" ShowCaption="False" Index="0" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedBy" ViewItem="CreatedBy" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedBy" ViewItem="ModifiedBy" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="StokGrupTanim_Denetim_col2" ShowCaption="False" Index="1" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedDate" ViewItem="CreatedDate" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedDate" ViewItem="ModifiedDate" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+              </LayoutGroup>
+            </TabbedGroup>
+            <LayoutGroup Id="BaseClassWithAuditAndDescription" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CustomCode1" Removed="True" />
+              <LayoutItem Id="CustomCode2" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="BaseClassWithAudit" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CreatedBy" Removed="True" />
+              <LayoutItem Id="ModifiedBy" Removed="True" />
+              <LayoutItem Id="CreatedDate" Removed="True" />
+              <LayoutItem Id="ModifiedDate" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="SizeableEditors" Removed="True">
+              <LayoutItem Id="Description" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="StokGrupTanim" RelativeSize="100" Removed="True">
+              <LayoutItem Id="StokTipiTanim" Removed="True" />
+              <LayoutItem Id="StokGrupKodu" Removed="True" />
+              <LayoutItem Id="StokGrupAdi" Removed="True" />
+            </LayoutGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <DetailView Id="StokAltGrupTanim_DetailView" IsNewNode="True">
+      <Layout IsNewNode="True">
+        <LayoutGroup Id="Main" RelativeSize="100" IsNewNode="True">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="100" IsNewNode="True">
+            <TabbedGroup Id="Tabs" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
+              <LayoutGroup Id="Genel" Caption="Genel" Direction="Vertical" Index="0" RelativeSize="100" IsNewNode="True">
+                <LayoutItem Id="StokGrupTanim" ViewItem="StokGrupTanim" Index="0" RelativeSize="50" IsNewNode="True" />
+                <LayoutGroup Id="StokAltGrupTanim_Row1" ShowCaption="False" Direction="Horizontal" Index="1" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="StokAltGrupKodu" ViewItem="StokAltGrupKodu" Index="0" RelativeSize="30" IsNewNode="True" />
+                  <LayoutItem Id="StokAltGrupAdi" ViewItem="StokAltGrupAdi" Index="1" RelativeSize="70" IsNewNode="True" />
+                </LayoutGroup>
+              </LayoutGroup>
+              <LayoutGroup Id="OzelKodlar" Caption="Özel Kodlar &amp; Açıklama" Direction="Vertical" Index="1" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="StokAltGrupTanim_Row2" ShowCaption="False" Direction="Horizontal" Index="0" RelativeSize="20" IsNewNode="True">
+                  <LayoutItem Id="CustomCode1" ViewItem="CustomCode1" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="CustomCode2" ViewItem="CustomCode2" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutItem Id="Description" ViewItem="Description" Index="1" RelativeSize="80" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutGroup Id="Denetim" Caption="Denetim" Direction="Horizontal" Index="2" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="StokAltGrupTanim_Denetim_col1" ShowCaption="False" Index="0" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedBy" ViewItem="CreatedBy" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedBy" ViewItem="ModifiedBy" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="StokAltGrupTanim_Denetim_col2" ShowCaption="False" Index="1" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedDate" ViewItem="CreatedDate" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedDate" ViewItem="ModifiedDate" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+              </LayoutGroup>
+            </TabbedGroup>
+            <LayoutGroup Id="BaseClassWithAuditAndDescription" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CustomCode1" Removed="True" />
+              <LayoutItem Id="CustomCode2" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="BaseClassWithAudit" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CreatedBy" Removed="True" />
+              <LayoutItem Id="ModifiedBy" Removed="True" />
+              <LayoutItem Id="CreatedDate" Removed="True" />
+              <LayoutItem Id="ModifiedDate" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="SizeableEditors" Removed="True">
+              <LayoutItem Id="Description" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="StokAltGrupTanim" RelativeSize="100" Removed="True">
+              <LayoutItem Id="StokGrupTanim" Removed="True" />
+              <LayoutItem Id="StokAltGrupKodu" Removed="True" />
+              <LayoutItem Id="StokAltGrupAdi" Removed="True" />
+            </LayoutGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <DetailView Id="StokTanim_DetailView" IsNewNode="True">
+      <Layout IsNewNode="True">
+        <LayoutGroup Id="Main" RelativeSize="100" IsNewNode="True">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="100" IsNewNode="True">
+            <TabbedGroup Id="Tabs" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
+              <LayoutGroup Id="Genel" Caption="Genel" Direction="Vertical" Index="0" RelativeSize="100" IsNewNode="True">
+                <LayoutItem Id="StokTipi" ViewItem="StokTipi" Index="0" RelativeSize="11" IsNewNode="True" />
+                <LayoutGroup Id="StokTanim_Row3" ShowCaption="False" Direction="Horizontal" Index="1" RelativeSize="11" IsNewNode="True">
+                  <LayoutItem Id="StokGrubu" ViewItem="StokGrubu" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="StokAltGrubu" ViewItem="StokAltGrubu" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutItem Id="StokKodu" ViewItem="StokKodu" Index="2" RelativeSize="11" IsNewNode="True" />
+                <LayoutItem Id="StokAdi" ViewItem="StokAdi" Index="3" RelativeSize="11" IsNewNode="True" />
+                <LayoutItem Id="StokAdiIngilizce" ViewItem="StokAdiIngilizce" Index="4" RelativeSize="11" IsNewNode="True" />
+                <LayoutGroup Id="StokTanim_Row4" ShowCaption="False" Direction="Horizontal" Index="5" RelativeSize="11" IsNewNode="True">
+                  <LayoutItem Id="Model" ViewItem="Model" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="BirimTanim" ViewItem="BirimTanim" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutItem Id="StokBarkodNo" ViewItem="StokBarkodNo" Index="6" RelativeSize="9" IsNewNode="True" />
+                <LayoutGroup Id="StokTanim_Row6a" ShowCaption="False" Direction="Horizontal" Index="7" RelativeSize="9" IsNewNode="True">
+                  <LayoutItem Id="DovizTanim" ViewItem="DovizTanim" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="KDVTanim" ViewItem="KDVTanim" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="StokTanim_Row6" ShowCaption="False" Direction="Horizontal" Index="8" RelativeSize="9" IsNewNode="True">
+                  <LayoutItem Id="AlisFiyati" ViewItem="AlisFiyati" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="SatisFiyati" ViewItem="SatisFiyati" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="StokTanim_Row6b" ShowCaption="False" Direction="Horizontal" Index="9" RelativeSize="9" IsNewNode="True">
+                  <LayoutItem Id="SatilabilirMi" ViewItem="SatilabilirMi" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="KDVDahilMi" ViewItem="KDVDahilMi" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+              </LayoutGroup>
+              <LayoutGroup Id="Olcu" Caption="Ölçü" Direction="Vertical" Index="1" RelativeSize="100" IsNewNode="True">
+                <LayoutItem Id="SonAlisFiyati" ViewItem="SonAlisFiyati" Index="0" RelativeSize="25" IsNewNode="True" />
+                <LayoutGroup Id="StokTanim_Row7" ShowCaption="False" Direction="Horizontal" Index="1" RelativeSize="25" IsNewNode="True">
+                  <LayoutItem Id="En" ViewItem="En" Index="0" RelativeSize="25" IsNewNode="True" />
+                  <LayoutItem Id="Boy" ViewItem="Boy" Index="1" RelativeSize="25" IsNewNode="True" />
+                  <LayoutItem Id="Yukseklik" ViewItem="Yukseklik" Index="2" RelativeSize="25" IsNewNode="True" />
+                  <LayoutItem Id="Agirlik" ViewItem="Agirlik" Index="3" RelativeSize="25" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="StokTanim_Row8" ShowCaption="False" Direction="Horizontal" Index="2" RelativeSize="25" IsNewNode="True">
+                  <LayoutItem Id="Metrekare" ViewItem="Metrekare" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="MetreKup" ViewItem="MetreKup" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+              </LayoutGroup>
+              <LayoutGroup Id="ResimGrubu" Caption="Resim" Direction="Vertical" Index="2" RelativeSize="100" IsNewNode="True">
+                <LayoutItem Id="Resim" ViewItem="Resim" Index="0" RelativeSize="100" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutGroup Id="OzelKodlar" Caption="Özel Kodlar &amp; Açıklama" Direction="Vertical" Index="3" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="StokTanim_Row9" ShowCaption="False" Direction="Horizontal" Index="0" RelativeSize="20" IsNewNode="True">
+                  <LayoutItem Id="CustomCode1" ViewItem="CustomCode1" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="CustomCode2" ViewItem="CustomCode2" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutItem Id="Description" ViewItem="Description" Index="1" RelativeSize="80" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutGroup Id="Denetim" Caption="Denetim" Direction="Horizontal" Index="4" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="StokTanim_Denetim_col1" ShowCaption="False" Index="0" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedBy" ViewItem="CreatedBy" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedBy" ViewItem="ModifiedBy" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="StokTanim_Denetim_col2" ShowCaption="False" Index="1" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedDate" ViewItem="CreatedDate" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedDate" ViewItem="ModifiedDate" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+              </LayoutGroup>
+            </TabbedGroup>
+            <LayoutGroup Id="BaseClassWithAuditAndDescription" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CustomCode1" Removed="True" />
+              <LayoutItem Id="CustomCode2" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="BaseClassWithAudit" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CreatedBy" Removed="True" />
+              <LayoutItem Id="ModifiedBy" Removed="True" />
+              <LayoutItem Id="CreatedDate" Removed="True" />
+              <LayoutItem Id="ModifiedDate" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="SizeableEditors" Removed="True">
+              <LayoutItem Id="Description" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="StokTanim" RelativeSize="100" Removed="True">
+              <LayoutItem Id="StokKodu" Removed="True" />
+              <LayoutItem Id="StokAdi" Removed="True" />
+              <LayoutItem Id="StokAdiIngilizce" Removed="True" />
+              <LayoutItem Id="StokBarkodNo" Removed="True" />
+              <LayoutItem Id="Resim" Removed="True" />
+              <LayoutItem Id="SatilabilirMi" Removed="True" />
+              <LayoutItem Id="StokAltGrubu" Removed="True" />
+              <LayoutItem Id="StokTipi" Removed="True" />
+              <LayoutItem Id="StokGrubu" Removed="True" />
+              <LayoutItem Id="StokHizmetMasrafTipi" Removed="True" />
+              <LayoutItem Id="Model" Removed="True" />
+              <LayoutItem Id="BirimTanim" Removed="True" />
+              <LayoutItem Id="DovizTanim" Removed="True" />
+              <LayoutItem Id="KDVTanim" Removed="True" />
+              <LayoutItem Id="AlisFiyati" Removed="True" />
+              <LayoutItem Id="SatisFiyati" Removed="True" />
+              <LayoutItem Id="KDVDahilMi" Removed="True" />
+              <LayoutItem Id="SonAlisFiyati" Removed="True" />
+              <LayoutItem Id="En" Removed="True" />
+              <LayoutItem Id="Boy" Removed="True" />
+              <LayoutItem Id="Yukseklik" Removed="True" />
+              <LayoutItem Id="Metrekare" Removed="True" />
+              <LayoutItem Id="MetreKup" Removed="True" />
+              <LayoutItem Id="Agirlik" Removed="True" />
+            </LayoutGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <!-- Hizmet/Masraf Tanımlama — eski projeden aynen taşınan desen: StokTanim'in
+         Criteria ile filtrelenmiş, sadeleştirilmiş bir varyantı (fiziksel stok
+         hiyerarşisi/ölçü/resim alanları YOK — bkz. StokHizmetMasrafTipi.cs). -->
+    <DetailView Id="HizmetTanim_DetailView" ClassName="SofasisERP.Module.BusinessObjects.StokTanim" Caption="Hizmet Tanımlama" IsNewNode="True">
+      <Items IsNewNode="True">
+        <PropertyEditor Id="StokKodu" PropertyName="StokKodu" Caption="Hizmet Kodu" IsNewNode="True" />
+        <PropertyEditor Id="StokAdi" PropertyName="StokAdi" Caption="Hizmet Adı" IsNewNode="True" />
+        <PropertyEditor Id="BirimTanim" PropertyName="BirimTanim" IsNewNode="True" />
+        <PropertyEditor Id="DovizTanim" PropertyName="DovizTanim" IsNewNode="True" />
+        <PropertyEditor Id="AlisFiyati" PropertyName="AlisFiyati" IsNewNode="True" />
+        <PropertyEditor Id="SatisFiyati" PropertyName="SatisFiyati" IsNewNode="True" />
+        <PropertyEditor Id="KDVTanim" PropertyName="KDVTanim" IsNewNode="True" />
+        <PropertyEditor Id="KDVDahilMi" PropertyName="KDVDahilMi" IsNewNode="True" />
+        <PropertyEditor Id="CustomCode1" PropertyName="CustomCode1" IsNewNode="True" />
+        <PropertyEditor Id="CustomCode2" PropertyName="CustomCode2" IsNewNode="True" />
+        <PropertyEditor Id="Description" PropertyName="Description" IsNewNode="True" />
+        <PropertyEditor Id="CreatedBy" PropertyName="CreatedBy" IsNewNode="True" />
+        <PropertyEditor Id="ModifiedBy" PropertyName="ModifiedBy" IsNewNode="True" />
+        <PropertyEditor Id="CreatedDate" PropertyName="CreatedDate" IsNewNode="True" />
+        <PropertyEditor Id="ModifiedDate" PropertyName="ModifiedDate" IsNewNode="True" />
+      </Items>
+      <Layout IsNewNode="True">
+        <LayoutGroup Id="Main" RelativeSize="100" IsNewNode="True">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="100" IsNewNode="True">
+            <TabbedGroup Id="Tabs" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
+              <LayoutGroup Id="Genel" Caption="Genel" Direction="Vertical" Index="0" RelativeSize="100" IsNewNode="True">
+                <LayoutItem Id="StokKodu" ViewItem="StokKodu" Index="0" RelativeSize="20" IsNewNode="True" />
+                <LayoutItem Id="StokAdi" ViewItem="StokAdi" Index="1" RelativeSize="20" IsNewNode="True" />
+                <LayoutGroup Id="HizmetTanim_Row1" ShowCaption="False" Direction="Horizontal" Index="2" RelativeSize="20" IsNewNode="True">
+                  <LayoutItem Id="BirimTanim" ViewItem="BirimTanim" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="DovizTanim" ViewItem="DovizTanim" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="HizmetTanim_Row2" ShowCaption="False" Direction="Horizontal" Index="3" RelativeSize="20" IsNewNode="True">
+                  <LayoutItem Id="AlisFiyati" ViewItem="AlisFiyati" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="SatisFiyati" ViewItem="SatisFiyati" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutItem Id="KDVTanim" ViewItem="KDVTanim" Index="4" RelativeSize="15" IsNewNode="True" />
+                <LayoutItem Id="KDVDahilMi" ViewItem="KDVDahilMi" Index="5" RelativeSize="15" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutGroup Id="OzelKodlar" Caption="Özel Kodlar &amp; Açıklama" Direction="Vertical" Index="1" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="HizmetTanim_Row3" ShowCaption="False" Direction="Horizontal" Index="0" RelativeSize="20" IsNewNode="True">
+                  <LayoutItem Id="CustomCode1" ViewItem="CustomCode1" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="CustomCode2" ViewItem="CustomCode2" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutItem Id="Description" ViewItem="Description" Index="1" RelativeSize="80" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutGroup Id="Denetim" Caption="Denetim" Direction="Horizontal" Index="2" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="HizmetTanim_Denetim_col1" ShowCaption="False" Index="0" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedBy" ViewItem="CreatedBy" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedBy" ViewItem="ModifiedBy" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="HizmetTanim_Denetim_col2" ShowCaption="False" Index="1" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedDate" ViewItem="CreatedDate" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedDate" ViewItem="ModifiedDate" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+              </LayoutGroup>
+            </TabbedGroup>
+            <LayoutGroup Id="BaseClassWithAuditAndDescription" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CustomCode1" Removed="True" />
+              <LayoutItem Id="CustomCode2" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="BaseClassWithAudit" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CreatedBy" Removed="True" />
+              <LayoutItem Id="ModifiedBy" Removed="True" />
+              <LayoutItem Id="CreatedDate" Removed="True" />
+              <LayoutItem Id="ModifiedDate" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="SizeableEditors" Removed="True">
+              <LayoutItem Id="Description" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="StokTanim" RelativeSize="100" Removed="True">
+              <LayoutItem Id="StokKodu" Removed="True" />
+              <LayoutItem Id="StokAdi" Removed="True" />
+              <LayoutItem Id="StokAdiIngilizce" Removed="True" />
+              <LayoutItem Id="StokBarkodNo" Removed="True" />
+              <LayoutItem Id="Resim" Removed="True" />
+              <LayoutItem Id="SatilabilirMi" Removed="True" />
+              <LayoutItem Id="StokAltGrubu" Removed="True" />
+              <LayoutItem Id="StokTipi" Removed="True" />
+              <LayoutItem Id="StokGrubu" Removed="True" />
+              <LayoutItem Id="StokHizmetMasrafTipi" Removed="True" />
+              <LayoutItem Id="Model" Removed="True" />
+              <LayoutItem Id="BirimTanim" Removed="True" />
+              <LayoutItem Id="DovizTanim" Removed="True" />
+              <LayoutItem Id="KDVTanim" Removed="True" />
+              <LayoutItem Id="AlisFiyati" Removed="True" />
+              <LayoutItem Id="SatisFiyati" Removed="True" />
+              <LayoutItem Id="KDVDahilMi" Removed="True" />
+              <LayoutItem Id="SonAlisFiyati" Removed="True" />
+              <LayoutItem Id="En" Removed="True" />
+              <LayoutItem Id="Boy" Removed="True" />
+              <LayoutItem Id="Yukseklik" Removed="True" />
+              <LayoutItem Id="Metrekare" Removed="True" />
+              <LayoutItem Id="MetreKup" Removed="True" />
+              <LayoutItem Id="Agirlik" Removed="True" />
+            </LayoutGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <ListView Id="HizmetTanim_ListView" ClassName="SofasisERP.Module.BusinessObjects.StokTanim" Criteria="[StokHizmetMasrafTipi] = 'Hizmet'" Caption="Hizmet Tanımlama" DetailViewID="HizmetTanim_DetailView" IsNewNode="True">
+      <Columns IsNewNode="True">
+        <ColumnInfo Id="StokKodu" PropertyName="StokKodu" Caption="Hizmet Kodu" Index="0" IsNewNode="True" />
+        <ColumnInfo Id="StokAdi" PropertyName="StokAdi" Caption="Hizmet Adı" Index="1" IsNewNode="True" />
+        <ColumnInfo Id="BirimTanim" PropertyName="BirimTanim" Index="2" IsNewNode="True" />
+      </Columns>
+    </ListView>
+    <DetailView Id="MasrafTanim_DetailView" ClassName="SofasisERP.Module.BusinessObjects.StokTanim" Caption="Masraf Tanımlama" IsNewNode="True">
+      <Items IsNewNode="True">
+        <PropertyEditor Id="StokKodu" PropertyName="StokKodu" Caption="Masraf Kodu" IsNewNode="True" />
+        <PropertyEditor Id="StokAdi" PropertyName="StokAdi" Caption="Masraf Adı" IsNewNode="True" />
+        <PropertyEditor Id="BirimTanim" PropertyName="BirimTanim" IsNewNode="True" />
+        <PropertyEditor Id="DovizTanim" PropertyName="DovizTanim" IsNewNode="True" />
+        <PropertyEditor Id="AlisFiyati" PropertyName="AlisFiyati" IsNewNode="True" />
+        <PropertyEditor Id="SatisFiyati" PropertyName="SatisFiyati" IsNewNode="True" />
+        <PropertyEditor Id="KDVTanim" PropertyName="KDVTanim" IsNewNode="True" />
+        <PropertyEditor Id="KDVDahilMi" PropertyName="KDVDahilMi" IsNewNode="True" />
+        <PropertyEditor Id="CustomCode1" PropertyName="CustomCode1" IsNewNode="True" />
+        <PropertyEditor Id="CustomCode2" PropertyName="CustomCode2" IsNewNode="True" />
+        <PropertyEditor Id="Description" PropertyName="Description" IsNewNode="True" />
+        <PropertyEditor Id="CreatedBy" PropertyName="CreatedBy" IsNewNode="True" />
+        <PropertyEditor Id="ModifiedBy" PropertyName="ModifiedBy" IsNewNode="True" />
+        <PropertyEditor Id="CreatedDate" PropertyName="CreatedDate" IsNewNode="True" />
+        <PropertyEditor Id="ModifiedDate" PropertyName="ModifiedDate" IsNewNode="True" />
+      </Items>
+      <Layout IsNewNode="True">
+        <LayoutGroup Id="Main" RelativeSize="100" IsNewNode="True">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="100" IsNewNode="True">
+            <TabbedGroup Id="Tabs" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
+              <LayoutGroup Id="Genel" Caption="Genel" Direction="Vertical" Index="0" RelativeSize="100" IsNewNode="True">
+                <LayoutItem Id="StokKodu" ViewItem="StokKodu" Index="0" RelativeSize="20" IsNewNode="True" />
+                <LayoutItem Id="StokAdi" ViewItem="StokAdi" Index="1" RelativeSize="20" IsNewNode="True" />
+                <LayoutGroup Id="MasrafTanim_Row1" ShowCaption="False" Direction="Horizontal" Index="2" RelativeSize="20" IsNewNode="True">
+                  <LayoutItem Id="BirimTanim" ViewItem="BirimTanim" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="DovizTanim" ViewItem="DovizTanim" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="MasrafTanim_Row2" ShowCaption="False" Direction="Horizontal" Index="3" RelativeSize="20" IsNewNode="True">
+                  <LayoutItem Id="AlisFiyati" ViewItem="AlisFiyati" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="SatisFiyati" ViewItem="SatisFiyati" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutItem Id="KDVTanim" ViewItem="KDVTanim" Index="4" RelativeSize="15" IsNewNode="True" />
+                <LayoutItem Id="KDVDahilMi" ViewItem="KDVDahilMi" Index="5" RelativeSize="15" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutGroup Id="OzelKodlar" Caption="Özel Kodlar &amp; Açıklama" Direction="Vertical" Index="1" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="MasrafTanim_Row3" ShowCaption="False" Direction="Horizontal" Index="0" RelativeSize="20" IsNewNode="True">
+                  <LayoutItem Id="CustomCode1" ViewItem="CustomCode1" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="CustomCode2" ViewItem="CustomCode2" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutItem Id="Description" ViewItem="Description" Index="1" RelativeSize="80" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutGroup Id="Denetim" Caption="Denetim" Direction="Horizontal" Index="2" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="MasrafTanim_Denetim_col1" ShowCaption="False" Index="0" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedBy" ViewItem="CreatedBy" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedBy" ViewItem="ModifiedBy" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="MasrafTanim_Denetim_col2" ShowCaption="False" Index="1" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedDate" ViewItem="CreatedDate" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedDate" ViewItem="ModifiedDate" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+              </LayoutGroup>
+            </TabbedGroup>
+            <LayoutGroup Id="BaseClassWithAuditAndDescription" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CustomCode1" Removed="True" />
+              <LayoutItem Id="CustomCode2" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="BaseClassWithAudit" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CreatedBy" Removed="True" />
+              <LayoutItem Id="ModifiedBy" Removed="True" />
+              <LayoutItem Id="CreatedDate" Removed="True" />
+              <LayoutItem Id="ModifiedDate" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="SizeableEditors" Removed="True">
+              <LayoutItem Id="Description" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="StokTanim" RelativeSize="100" Removed="True">
+              <LayoutItem Id="StokKodu" Removed="True" />
+              <LayoutItem Id="StokAdi" Removed="True" />
+              <LayoutItem Id="StokAdiIngilizce" Removed="True" />
+              <LayoutItem Id="StokBarkodNo" Removed="True" />
+              <LayoutItem Id="Resim" Removed="True" />
+              <LayoutItem Id="SatilabilirMi" Removed="True" />
+              <LayoutItem Id="StokAltGrubu" Removed="True" />
+              <LayoutItem Id="StokTipi" Removed="True" />
+              <LayoutItem Id="StokGrubu" Removed="True" />
+              <LayoutItem Id="StokHizmetMasrafTipi" Removed="True" />
+              <LayoutItem Id="Model" Removed="True" />
+              <LayoutItem Id="BirimTanim" Removed="True" />
+              <LayoutItem Id="DovizTanim" Removed="True" />
+              <LayoutItem Id="KDVTanim" Removed="True" />
+              <LayoutItem Id="AlisFiyati" Removed="True" />
+              <LayoutItem Id="SatisFiyati" Removed="True" />
+              <LayoutItem Id="KDVDahilMi" Removed="True" />
+              <LayoutItem Id="SonAlisFiyati" Removed="True" />
+              <LayoutItem Id="En" Removed="True" />
+              <LayoutItem Id="Boy" Removed="True" />
+              <LayoutItem Id="Yukseklik" Removed="True" />
+              <LayoutItem Id="Metrekare" Removed="True" />
+              <LayoutItem Id="MetreKup" Removed="True" />
+              <LayoutItem Id="Agirlik" Removed="True" />
+            </LayoutGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <ListView Id="MasrafTanim_ListView" ClassName="SofasisERP.Module.BusinessObjects.StokTanim" Criteria="[StokHizmetMasrafTipi] = 'Masraf'" Caption="Masraf Tanımlama" DetailViewID="MasrafTanim_DetailView" IsNewNode="True">
+      <Columns IsNewNode="True">
+        <ColumnInfo Id="StokKodu" PropertyName="StokKodu" Caption="Masraf Kodu" Index="0" IsNewNode="True" />
+        <ColumnInfo Id="StokAdi" PropertyName="StokAdi" Caption="Masraf Adı" Index="1" IsNewNode="True" />
+        <ColumnInfo Id="BirimTanim" PropertyName="BirimTanim" Index="2" IsNewNode="True" />
+      </Columns>
+    </ListView>
+    <DetailView Id="BirimTanim_DetailView" IsNewNode="True">
+      <Layout IsNewNode="True">
+        <LayoutGroup Id="Main" RelativeSize="100" IsNewNode="True">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="100" IsNewNode="True">
+            <TabbedGroup Id="Tabs" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
+              <LayoutGroup Id="Genel" Caption="Genel" Direction="Vertical" Index="0" RelativeSize="100" IsNewNode="True">
+                <LayoutItem Id="BirimAdi" ViewItem="BirimAdi" Index="0" RelativeSize="50" IsNewNode="True" />
+                <LayoutItem Id="IsVarsayilan" ViewItem="IsVarsayilan" Index="1" RelativeSize="50" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutGroup Id="Denetim" Caption="Denetim" Direction="Horizontal" Index="1" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="BirimTanim_Denetim_col1" ShowCaption="False" Index="0" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedBy" ViewItem="CreatedBy" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedBy" ViewItem="ModifiedBy" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="BirimTanim_Denetim_col2" ShowCaption="False" Index="1" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedDate" ViewItem="CreatedDate" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedDate" ViewItem="ModifiedDate" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+              </LayoutGroup>
+            </TabbedGroup>
+            <LayoutGroup Id="BaseClassWithAudit" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CreatedBy" Removed="True" />
+              <LayoutItem Id="ModifiedBy" Removed="True" />
+              <LayoutItem Id="CreatedDate" Removed="True" />
+              <LayoutItem Id="ModifiedDate" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="BirimTanim" RelativeSize="100" Removed="True">
+              <LayoutItem Id="BirimAdi" Removed="True" />
+              <LayoutItem Id="IsVarsayilan" Removed="True" />
+            </LayoutGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <DetailView Id="FisTuruTanim_DetailView" IsNewNode="True">
+      <Layout IsNewNode="True">
+        <LayoutGroup Id="Main" RelativeSize="100" IsNewNode="True">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="100" IsNewNode="True">
+            <TabbedGroup Id="Tabs" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
+              <LayoutGroup Id="Genel" Caption="Genel" Direction="Vertical" Index="0" RelativeSize="100" IsNewNode="True">
+                <LayoutItem Id="FisTuruKodu" ViewItem="FisTuruKodu" Index="0" RelativeSize="50" IsNewNode="True" />
+                <LayoutItem Id="FisTuruAdi" ViewItem="FisTuruAdi" Index="1" RelativeSize="50" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutGroup Id="Denetim" Caption="Denetim" Direction="Horizontal" Index="1" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="FisTuruTanim_Denetim_col1" ShowCaption="False" Index="0" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedBy" ViewItem="CreatedBy" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedBy" ViewItem="ModifiedBy" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="FisTuruTanim_Denetim_col2" ShowCaption="False" Index="1" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedDate" ViewItem="CreatedDate" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedDate" ViewItem="ModifiedDate" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+              </LayoutGroup>
+            </TabbedGroup>
+            <LayoutGroup Id="BaseClassWithAudit" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CreatedBy" Removed="True" />
+              <LayoutItem Id="ModifiedBy" Removed="True" />
+              <LayoutItem Id="CreatedDate" Removed="True" />
+              <LayoutItem Id="ModifiedDate" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="FisTuruTanim" RelativeSize="100" Removed="True">
+              <LayoutItem Id="FisTuruKodu" Removed="True" />
+              <LayoutItem Id="FisTuruAdi" Removed="True" />
+            </LayoutGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <ListView Id="FisTuruTanim_ListView">
+      <Columns IsNewNode="True">
+        <ColumnInfo Id="FisTuruKodu" PropertyName="FisTuruKodu" Index="0" IsNewNode="True" />
+        <ColumnInfo Id="FisTuruAdi" PropertyName="FisTuruAdi" Index="1" IsNewNode="True" />
+      </Columns>
+    </ListView>
+    <DetailView Id="DovizTanim_DetailView" IsNewNode="True">
+      <Layout IsNewNode="True">
+        <LayoutGroup Id="Main" RelativeSize="100" IsNewNode="True">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="100" IsNewNode="True">
+            <TabbedGroup Id="Tabs" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
+              <LayoutGroup Id="Genel" Caption="Genel" Direction="Vertical" Index="0" RelativeSize="100" IsNewNode="True">
+                <LayoutItem Id="DovizKodu" ViewItem="DovizKodu" Index="0" RelativeSize="25" IsNewNode="True" />
+                <LayoutItem Id="DovizAdi" ViewItem="DovizAdi" Index="1" RelativeSize="25" IsNewNode="True" />
+                <LayoutItem Id="Sembol" ViewItem="Sembol" Index="2" RelativeSize="25" IsNewNode="True" />
+                <LayoutItem Id="IsVarsayilan" ViewItem="IsVarsayilan" Index="3" RelativeSize="25" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutGroup Id="Denetim" Caption="Denetim" Direction="Horizontal" Index="1" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="DovizTanim_Denetim_col1" ShowCaption="False" Index="0" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedBy" ViewItem="CreatedBy" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedBy" ViewItem="ModifiedBy" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="DovizTanim_Denetim_col2" ShowCaption="False" Index="1" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedDate" ViewItem="CreatedDate" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedDate" ViewItem="ModifiedDate" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+              </LayoutGroup>
+            </TabbedGroup>
+            <LayoutGroup Id="BaseClassWithAudit" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CreatedBy" Removed="True" />
+              <LayoutItem Id="ModifiedBy" Removed="True" />
+              <LayoutItem Id="CreatedDate" Removed="True" />
+              <LayoutItem Id="ModifiedDate" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="DovizTanim" RelativeSize="100" Removed="True">
+              <LayoutItem Id="DovizKodu" Removed="True" />
+              <LayoutItem Id="DovizAdi" Removed="True" />
+              <LayoutItem Id="Sembol" Removed="True" />
+              <LayoutItem Id="IsVarsayilan" Removed="True" />
+            </LayoutGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <DetailView Id="KDVTanim_DetailView" IsNewNode="True">
+      <Layout IsNewNode="True">
+        <LayoutGroup Id="Main" RelativeSize="100" IsNewNode="True">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="100" IsNewNode="True">
+            <TabbedGroup Id="Tabs" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
+              <LayoutGroup Id="Genel" Caption="Genel" Direction="Vertical" Index="0" RelativeSize="100" IsNewNode="True">
+                <LayoutItem Id="KDVOrani" ViewItem="KDVOrani" Index="0" RelativeSize="50" IsNewNode="True" />
+                <LayoutItem Id="IsVarsayilan" ViewItem="IsVarsayilan" Index="1" RelativeSize="50" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutGroup Id="Denetim" Caption="Denetim" Direction="Horizontal" Index="1" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="KDVTanim_Denetim_col1" ShowCaption="False" Index="0" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedBy" ViewItem="CreatedBy" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedBy" ViewItem="ModifiedBy" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="KDVTanim_Denetim_col2" ShowCaption="False" Index="1" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedDate" ViewItem="CreatedDate" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedDate" ViewItem="ModifiedDate" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+              </LayoutGroup>
+            </TabbedGroup>
+            <LayoutGroup Id="BaseClassWithAudit" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CreatedBy" Removed="True" />
+              <LayoutItem Id="ModifiedBy" Removed="True" />
+              <LayoutItem Id="CreatedDate" Removed="True" />
+              <LayoutItem Id="ModifiedDate" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="KDVTanim" RelativeSize="100" Removed="True">
+              <LayoutItem Id="KDVOrani" Removed="True" />
+              <LayoutItem Id="IsVarsayilan" Removed="True" />
+            </LayoutGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <DetailView Id="DovizGunlukKurM_DetailView" IsNewNode="True">
+      <Layout IsNewNode="True">
+        <LayoutGroup Id="Main" RelativeSize="100" IsNewNode="True">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="100" IsNewNode="True">
+            <TabbedGroup Id="Tabs" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
+              <LayoutGroup Id="Genel" Caption="Genel" Direction="Vertical" Index="0" RelativeSize="100" IsNewNode="True">
+                <LayoutItem Id="KurTarihi" ViewItem="KurTarihi" Index="0" RelativeSize="50" IsNewNode="True" />
+                <LayoutItem Id="KurAciklama" ViewItem="KurAciklama" Index="1" RelativeSize="50" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutGroup Id="Denetim" Caption="Denetim" Direction="Horizontal" Index="1" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="DovizGunlukKurM_Denetim_col1" ShowCaption="False" Index="0" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedBy" ViewItem="CreatedBy" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedBy" ViewItem="ModifiedBy" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="DovizGunlukKurM_Denetim_col2" ShowCaption="False" Index="1" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedDate" ViewItem="CreatedDate" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedDate" ViewItem="ModifiedDate" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+              </LayoutGroup>
+            </TabbedGroup>
+            <LayoutGroup Id="BaseClassWithAudit" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CreatedBy" Removed="True" />
+              <LayoutItem Id="ModifiedBy" Removed="True" />
+              <LayoutItem Id="CreatedDate" Removed="True" />
+              <LayoutItem Id="ModifiedDate" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="DovizGunlukKurM" RelativeSize="100" Removed="True">
+              <LayoutItem Id="KurAciklama" Removed="True" />
+              <LayoutItem Id="KurTarihi" Removed="True" />
+            </LayoutGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <DetailView Id="UlkeTanim_DetailView" IsNewNode="True">
+      <Layout IsNewNode="True">
+        <LayoutGroup Id="Main" RelativeSize="100" IsNewNode="True">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="100" IsNewNode="True">
+            <TabbedGroup Id="Tabs" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
+              <LayoutGroup Id="Genel" Caption="Genel" Direction="Vertical" Index="0" RelativeSize="100" IsNewNode="True">
+                <LayoutItem Id="UlkeKodu" ViewItem="UlkeKodu" Index="0" RelativeSize="25" IsNewNode="True" />
+                <LayoutItem Id="UlkeAdi" ViewItem="UlkeAdi" Index="1" RelativeSize="25" IsNewNode="True" />
+                <LayoutItem Id="UlkeTelefonKodu" ViewItem="UlkeTelefonKodu" Index="2" RelativeSize="25" IsNewNode="True" />
+                <LayoutItem Id="IsVarsayilan" ViewItem="IsVarsayilan" Index="3" RelativeSize="25" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutGroup Id="OzelKodlar" Caption="Özel Kodlar &amp; Açıklama" Direction="Vertical" Index="1" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="UlkeTanim_Row2" ShowCaption="False" Direction="Horizontal" Index="0" RelativeSize="20" IsNewNode="True">
+                  <LayoutItem Id="CustomCode1" ViewItem="CustomCode1" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="CustomCode2" ViewItem="CustomCode2" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutItem Id="Description" ViewItem="Description" Index="1" RelativeSize="80" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutGroup Id="Denetim" Caption="Denetim" Direction="Horizontal" Index="2" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="UlkeTanim_Denetim_col1" ShowCaption="False" Index="0" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedBy" ViewItem="CreatedBy" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedBy" ViewItem="ModifiedBy" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="UlkeTanim_Denetim_col2" ShowCaption="False" Index="1" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedDate" ViewItem="CreatedDate" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedDate" ViewItem="ModifiedDate" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+              </LayoutGroup>
+            </TabbedGroup>
+            <LayoutGroup Id="BaseClassWithAuditAndDescription" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CustomCode1" Removed="True" />
+              <LayoutItem Id="CustomCode2" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="BaseClassWithAudit" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CreatedBy" Removed="True" />
+              <LayoutItem Id="ModifiedBy" Removed="True" />
+              <LayoutItem Id="CreatedDate" Removed="True" />
+              <LayoutItem Id="ModifiedDate" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="SizeableEditors" Removed="True">
+              <LayoutItem Id="Description" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="UlkeTanim" RelativeSize="100" Removed="True">
+              <LayoutItem Id="UlkeKodu" Removed="True" />
+              <LayoutItem Id="UlkeAdi" Removed="True" />
+              <LayoutItem Id="UlkeTelefonKodu" Removed="True" />
+              <LayoutItem Id="IsVarsayilan" Removed="True" />
+            </LayoutGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <!-- ListView kolon sırası: Kod alanı olan sınıflarda Kod, Ad ile başlar (kural #1). -->
+    <ListView Id="ModelTanim_ListView">
+      <Columns IsNewNode="True">
+        <ColumnInfo Id="ModelAdi" PropertyName="ModelAdi" Index="0" IsNewNode="True" />
+        <ColumnInfo Id="Resim" PropertyName="Resim" Index="1" IsNewNode="True" />
+      </Columns>
+    </ListView>
+    <ListView Id="StokTipiTanim_ListView">
+      <Columns IsNewNode="True">
+        <ColumnInfo Id="StokTipiKodu" PropertyName="StokTipiKodu" Index="0" IsNewNode="True" />
+        <ColumnInfo Id="StokTipiAdi" PropertyName="StokTipiAdi" Index="1" IsNewNode="True" />
+        <ColumnInfo Id="MamulMu" PropertyName="MamulMu" Index="2" IsNewNode="True" />
+      </Columns>
+    </ListView>
+    <ListView Id="StokGrupTanim_ListView">
+      <Columns IsNewNode="True">
+        <ColumnInfo Id="StokGrupKodu" PropertyName="StokGrupKodu" Index="0" IsNewNode="True" />
+        <ColumnInfo Id="StokGrupAdi" PropertyName="StokGrupAdi" Index="1" IsNewNode="True" />
+        <ColumnInfo Id="StokTipiTanim" PropertyName="StokTipiTanim" Index="2" IsNewNode="True" />
+      </Columns>
+    </ListView>
+    <ListView Id="StokAltGrupTanim_ListView" IsNewNode="True">
+      <Columns IsNewNode="True">
+        <ColumnInfo Id="StokAltGrupKodu" PropertyName="StokAltGrupKodu" Index="0" IsNewNode="True" />
+        <ColumnInfo Id="StokAltGrupAdi" PropertyName="StokAltGrupAdi" Index="1" IsNewNode="True" />
+        <ColumnInfo Id="StokGrupTanim" PropertyName="StokGrupTanim" Index="2" IsNewNode="True" />
+      </Columns>
+    </ListView>
+    <ListView Id="StokTanim_ListView" Criteria="[StokHizmetMasrafTipi] = 'Stok'">
+      <Columns IsNewNode="True">
+        <ColumnInfo Id="StokKodu" PropertyName="StokKodu" Index="0" IsNewNode="True" />
+        <ColumnInfo Id="StokAdi" PropertyName="StokAdi" Index="1" IsNewNode="True" />
+        <ColumnInfo Id="SatilabilirMi" PropertyName="SatilabilirMi" Index="2" IsNewNode="True" />
+        <ColumnInfo Id="StokTipi" PropertyName="StokTipi" Index="3" IsNewNode="True" />
+        <ColumnInfo Id="StokGrubu" PropertyName="StokGrubu" Index="4" IsNewNode="True" />
+        <ColumnInfo Id="StokAltGrubu" PropertyName="StokAltGrubu" Index="5" IsNewNode="True" />
+        <ColumnInfo Id="Model" PropertyName="Model" Index="6" IsNewNode="True" />
+        <ColumnInfo Id="BirimTanim" PropertyName="BirimTanim" Index="7" IsNewNode="True" />
+        <ColumnInfo Id="Resim" PropertyName="Resim" Index="8" IsNewNode="True" />
+      </Columns>
+    </ListView>
+    <ListView Id="DovizTanim_ListView">
+      <Columns IsNewNode="True">
+        <ColumnInfo Id="DovizKodu" PropertyName="DovizKodu" Index="0" IsNewNode="True" />
+        <ColumnInfo Id="DovizAdi" PropertyName="DovizAdi" Index="1" IsNewNode="True" />
+        <ColumnInfo Id="Sembol" PropertyName="Sembol" Index="2" IsNewNode="True" />
+        <ColumnInfo Id="IsVarsayilan" PropertyName="IsVarsayilan" Index="3" IsNewNode="True" />
+      </Columns>
+    </ListView>
+    <ListView Id="UlkeTanim_ListView">
+      <Columns IsNewNode="True">
+        <ColumnInfo Id="UlkeKodu" PropertyName="UlkeKodu" Index="0" IsNewNode="True" />
+        <ColumnInfo Id="UlkeAdi" PropertyName="UlkeAdi" Index="1" IsNewNode="True" />
+        <ColumnInfo Id="UlkeTelefonKodu" PropertyName="UlkeTelefonKodu" Index="2" IsNewNode="True" />
+        <ColumnInfo Id="IsVarsayilan" PropertyName="IsVarsayilan" Index="3" IsNewNode="True" />
+      </Columns>
+    </ListView>
   </Views>
+  <NavigationItems NavigationStyle="Accordion">
+    <Items>
+      <Item Id="StokYonetimi" Caption="Stok Yönetimi" ImageName="BO_Resources" Index="0" IsNewNode="True">
+        <Items>
+          <Item Id="StokYonetimi_Tanimlar" Caption="Tanımlar" Index="0" IsNewNode="True">
+            <Items>
+              <Item Id="ModelTanim_ListView" ViewId="ModelTanim_ListView" Index="0" IsNewNode="True" />
+              <Item Id="StokTipiTanim_ListView" ViewId="StokTipiTanim_ListView" Index="1" IsNewNode="True" />
+              <Item Id="StokGrupTanim_ListView" ViewId="StokGrupTanim_ListView" Index="2" IsNewNode="True" />
+              <!-- StokAltGrupTanim BİLEREK yok — saf Detail, StokGrupTanim'in Aggregated koleksiyonundan düzenlenir. -->
+              <Item Id="StokTanim_ListView" ViewId="StokTanim_ListView" Index="3" IsNewNode="True" />
+              <Item Id="HizmetTanim_ListView" ViewId="HizmetTanim_ListView" Index="4" IsNewNode="True" />
+              <Item Id="MasrafTanim_ListView" ViewId="MasrafTanim_ListView" Index="5" IsNewNode="True" />
+              <Item Id="StokParametre_ListView" ViewId="StokParametre_ListView" Index="6" IsNewNode="True" />
+            </Items>
+          </Item>
+          <!-- Hareketler: Faz 2'de StokHareketi/Fiş eklenince doldurulacak — grup şimdiden
+               açılıyor ki ileride yeni bir üst-seviye grup icat edilmesin. -->
+          <Item Id="StokYonetimi_Hareketler" Caption="Hareketler" Index="1" IsNewNode="True">
+            <Items>
+            </Items>
+          </Item>
+        </Items>
+      </Item>
+      <!-- Birim/Döviz/KDV/Kur gibi paylaşılan referans verileri — eski projedeki gibi tek
+           düz "Genel Tanımlar" grubu, herhangi bir modüle özel değil. -->
+      <Item Id="GenelTanimlar" Caption="Genel Tanımlar" ImageName="BO_Unit" Index="1" IsNewNode="True">
+        <Items>
+          <Item Id="UlkeTanim_ListView" ViewId="UlkeTanim_ListView" Index="0" IsNewNode="True" />
+          <!-- SehirTanim ve IlceTanim BİLEREK yok — saf Detail, sırasıyla UlkeTanim ve
+               SehirTanim'in Aggregated koleksiyonlarından düzenlenir. -->
+          <Item Id="BirimTanim_ListView" ViewId="BirimTanim_ListView" Index="2" IsNewNode="True" />
+          <Item Id="DovizTanim_ListView" ViewId="DovizTanim_ListView" Index="3" IsNewNode="True" />
+          <Item Id="KDVTanim_ListView" ViewId="KDVTanim_ListView" Index="4" IsNewNode="True" />
+          <Item Id="DovizGunlukKurM_ListView" ViewId="DovizGunlukKurM_ListView" Index="5" IsNewNode="True" />
+          <!-- DovizGunlukKurD BİLEREK yok — saf Detail, DovizGunlukKurM'in Aggregated koleksiyonundan düzenlenir. -->
+          <Item Id="GenelParametre_ListView" ViewId="GenelParametre_ListView" Index="6" IsNewNode="True" />
+          <Item Id="FisTuruTanim_ListView" ViewId="FisTuruTanim_ListView" Index="7" IsNewNode="True" />
+        </Items>
+      </Item>
+    </Items>
+  </NavigationItems>
 </Application>

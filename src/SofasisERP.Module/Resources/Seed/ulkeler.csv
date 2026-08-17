@@ -1,0 +1,250 @@
+Kod;Ad;TelefonKodu;Varsayilan
+UM;ABD Küçük Dış Adaları;;false
+VI;ABD Virjin Adaları;+1340;false
+AF;Afganistan;+93;false
+DE;Almanya;+49;false
+US;Amerika Birleşik Devletleri;+1;false
+AS;Amerikan Samoası;+1684;false
+AD;Andorra;+376;false
+AO;Angola;+244;false
+AI;Anguilla;+1264;false
+AQ;Antarktika;+672;false
+AG;Antigua ve Barbuda;+1268;false
+AR;Arjantin;+54;false
+AL;Arnavutluk;+355;false
+AW;Aruba;+297;false
+AU;Avustralya;+61;false
+AT;Avusturya;+43;false
+AZ;Azerbaycan;+994;false
+BS;Bahamalar;+1242;false
+BH;Bahreyn;+973;false
+BD;Bangladeş;+880;false
+BB;Barbados;+1246;false
+EH;Batı Sahra;+212;false
+BY;Belarus;+375;false
+BZ;Belize;+501;false
+BE;Belçika;+32;false
+BJ;Benin;+229;false
+BM;Bermuda;+1441;false
+AE;Birleşik Arap Emirlikleri;+971;false
+GB;Birleşik Krallık;+44;false
+BO;Bolivya;+591;false
+BA;Bosna-Hersek;+387;false
+BW;Botsvana;+267;false
+BV;Bouvet Adası;;false
+BR;Brezilya;+55;false
+IO;Britanya Hint Okyanusu Toprakları;+246;false
+VG;Britanya Virjin Adaları;+1284;false
+BN;Brunei;+673;false
+BG;Bulgaristan;+359;false
+BF;Burkina Faso;+226;false
+BI;Burundi;+257;false
+BT;Butan;+975;false
+CV;Cabo Verde;+238;false
+KY;Cayman Adaları;+1345;false
+GI;Cebelitarık;+350;false
+DZ;Cezayir;+213;false
+CX;Christmas Adası;+61;false
+DJ;Cibuti;+253;false
+CC;Cocos (Keeling) Adaları;+61;false
+CK;Cook Adaları;+682;false
+CW;Curaçao;+599;false
+DK;Danimarka;+45;false
+DO;Dominik Cumhuriyeti;+1809;false
+DM;Dominika;+1767;false
+EC;Ekvador;+593;false
+GQ;Ekvator Ginesi;+240;false
+SV;El Salvador;+503;false
+ID;Endonezya;+62;false
+ER;Eritre;+291;false
+AM;Ermenistan;+374;false
+EE;Estonya;+372;false
+SZ;Esvatini;+268;false
+ET;Etiyopya;+251;false
+FK;Falkland Adaları;+500;false
+FO;Faroe Adaları;+298;false
+MA;Fas;+212;false
+FJ;Fiji;+679;false
+CI;Fildişi Sahili;+225;false
+PH;Filipinler;+63;false
+PS;Filistin;+970;false
+FI;Finlandiya;+358;false
+FR;Fransa;+33;false
+GF;Fransız Guyanası;+594;false
+TF;Fransız Güney Toprakları;+262;false
+PF;Fransız Polinezyası;+689;false
+GA;Gabon;+241;false
+GM;Gambiya;+220;false
+GH;Gana;+233;false
+GN;Gine;+224;false
+GW;Gine-Bissau;+245;false
+GD;Grenada;+1473;false
+GL;Grönland;+299;false
+GP;Guadeloupe;+590;false
+GU;Guam;+1671;false
+GT;Guatemala;+502;false
+GG;Guernsey;+44;false
+GY;Guyana;+592;false
+ZA;Güney Afrika;+27;false
+GS;Güney Georgia ve Güney Sandwich Adaları;+500;false
+KR;Güney Kore;+82;false
+SS;Güney Sudan;+211;false
+GE;Gürcistan;+995;false
+HT;Haiti;+509;false
+HM;Heard ve McDonald Adaları;;false
+IN;Hindistan;+91;false
+NL;Hollanda;+31;false
+HN;Honduras;+504;false
+HK;Hong Kong;+852;false
+HR;Hırvatistan;+385;false
+IQ;Irak;+964;false
+IR;İran;+98;false
+IE;İrlanda;+353;false
+ES;İspanya;+34;false
+IL;İsrail;+972;false
+SE;İsveç;+46;false
+CH;İsviçre;+41;false
+IT;İtalya;+39;false
+IS;İzlanda;+354;false
+JM;Jamaika;+1876;false
+JP;Japonya;+81;false
+JE;Jersey;+44;false
+KH;Kamboçya;+855;false
+CM;Kamerun;+237;false
+CA;Kanada;+1;false
+ME;Karadağ;+382;false
+BQ;Karayip Hollandası;+599;false
+QA;Katar;+974;false
+KZ;Kazakistan;+7;false
+KE;Kenya;+254;false
+KI;Kiribati;+686;false
+CO;Kolombiya;+57;false
+KM;Komorlar;+269;false
+CG;Kongo Cumhuriyeti;+242;false
+CD;Kongo Demokratik Cumhuriyeti;+243;false
+CR;Kosta Rika;+506;false
+KW;Kuveyt;+965;false
+KP;Kuzey Kore;+850;false
+MK;Kuzey Makedonya;+389;false
+MP;Kuzey Mariana Adaları;+1670;false
+CU;Küba;+53;false
+CY;Kıbrıs;+357;false
+KG;Kırgızistan;+996;false
+LA;Laos;+856;false
+LS;Lesotho;+266;false
+LV;Letonya;+371;false
+LR;Liberya;+231;false
+LY;Libya;+218;false
+LI;Lihtenştayn;+423;false
+LT;Litvanya;+370;false
+LB;Lübnan;+961;false
+LU;Lüksemburg;+352;false
+HU;Macaristan;+36;false
+MG;Madagaskar;+261;false
+MO;Makao;+853;false
+MW;Malavi;+265;false
+MV;Maldivler;+960;false
+MY;Malezya;+60;false
+ML;Mali;+223;false
+MT;Malta;+356;false
+IM;Man Adası;+44;false
+MH;Marshall Adaları;+692;false
+MQ;Martinik;+596;false
+MU;Mauritius;+230;false
+YT;Mayotte;+262;false
+MX;Meksika;+52;false
+FM;Mikronezya;+691;false
+MD;Moldova;+373;false
+MC;Monako;+377;false
+MS;Montserrat;+1664;false
+MR;Moritanya;+222;false
+MZ;Mozambik;+258;false
+MN;Moğolistan;+976;false
+MM;Myanmar;+95;false
+EG;Mısır;+20;false
+NA;Namibya;+264;false
+NR;Nauru;+674;false
+NP;Nepal;+977;false
+NE;Nijer;+227;false
+NG;Nijerya;+234;false
+NI;Nikaragua;+505;false
+NU;Niue;+683;false
+NF;Norfolk Adası;+672;false
+NO;Norveç;+47;false
+CF;Orta Afrika Cumhuriyeti;+236;false
+PK;Pakistan;+92;false
+PW;Palau;+680;false
+PA;Panama;+507;false
+PG;Papua Yeni Gine;+675;false
+PY;Paraguay;+595;false
+PE;Peru;+51;false
+PN;Pitcairn Adaları;+64;false
+PL;Polonya;+48;false
+PT;Portekiz;+351;false
+PR;Porto Riko;+1787;false
+RO;Romanya;+40;false
+RW;Ruanda;+250;false
+RU;Rusya;+7;false
+RE;Réunion;+262;false
+BL;Saint Barthélemy;+590;false
+SH;Saint Helena;+290;false
+KN;Saint Kitts ve Nevis;+1869;false
+LC;Saint Lucia;+1758;false
+MF;Saint Martin;+590;false
+PM;Saint Pierre ve Miquelon;+508;false
+VC;Saint Vincent ve Grenadinler;+1784;false
+WS;Samoa;+685;false
+SM;San Marino;+378;false
+SN;Senegal;+221;false
+SC;Seyşeller;+248;false
+SL;Sierra Leone;+232;false
+SG;Singapur;+65;false
+SX;Sint Maarten;+1721;false
+SK;Slovakya;+421;false
+SI;Slovenya;+386;false
+SB;Solomon Adaları;+677;false
+SO;Somali;+252;false
+LK;Sri Lanka;+94;false
+SD;Sudan;+249;false
+SR;Surinam;+597;false
+SY;Suriye;+963;false
+SA;Suudi Arabistan;+966;false
+SJ;Svalbard ve Jan Mayen;+47;false
+ST;São Tomé ve Príncipe;+239;false
+RS;Sırbistan;+381;false
+TJ;Tacikistan;+992;false
+TZ;Tanzanya;+255;false
+TH;Tayland;+66;false
+TW;Tayvan;+886;false
+TL;Timor-Leste;+670;false
+TG;Togo;+228;false
+TK;Tokelau;+690;false
+TO;Tonga;+676;false
+TT;Trinidad ve Tobago;+1868;false
+TN;Tunus;+216;false
+TC;Turks ve Caicos Adaları;+1649;false
+TV;Tuvalu;+688;false
+TR;Türkiye;+90;true
+TM;Türkmenistan;+993;false
+UG;Uganda;+256;false
+UA;Ukrayna;+380;false
+OM;Umman;+968;false
+UY;Uruguay;+598;false
+VU;Vanuatu;+678;false
+VA;Vatikan;+379;false
+VE;Venezuela;+58;false
+VN;Vietnam;+84;false
+WF;Wallis ve Futuna;+681;false
+YE;Yemen;+967;false
+NC;Yeni Kaledonya;+687;false
+NZ;Yeni Zelanda;+64;false
+GR;Yunanistan;+30;false
+ZM;Zambiya;+260;false
+ZW;Zimbabve;+263;false
+AX;Åland Adaları;+358;false
+TD;Çad;+235;false
+CZ;Çekya;+420;false
+CN;Çin;+86;false
+UZ;Özbekistan;+998;false
+JO;Ürdün;+962;false
+CL;Şili;+56;false

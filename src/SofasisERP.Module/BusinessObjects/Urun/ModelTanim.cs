@@ -15,6 +15,7 @@
 
 using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Editors;
+using DevExpress.ExpressApp.Model;
 using DevExpress.Persistent.Base;
 using DevExpress.Persistent.BaseImpl;
 using DevExpress.Persistent.Validation;
@@ -30,19 +31,9 @@ public class ModelTanim : BaseClassWithAuditAndDescription
 {
     public ModelTanim(Session session) : base(session) { }
 
-    string modelKodu;
     string modelAdi;
+    string modelAdiIngilizce;
     MediaDataObject resim;
-
-    [Size(20)]
-    [Indexed(Unique = true)]
-    [RuleRequiredField("RuleRequired_ModelTanim_ModelKodu", DefaultContexts.Save, "Lütfen Model Kodunu Giriniz...")]
-    [XafDisplayName("Model Kodu")]
-    public string ModelKodu
-    {
-        get => modelKodu;
-        set => SetPropertyValue(nameof(ModelKodu), ref modelKodu, value);
-    }
 
     [Size(50)]
     [Indexed(Unique = true)]
@@ -52,6 +43,15 @@ public class ModelTanim : BaseClassWithAuditAndDescription
     {
         get => modelAdi;
         set => SetPropertyValue(nameof(ModelAdi), ref modelAdi, value);
+    }
+
+    [Size(SizeAttribute.DefaultStringMappingFieldSize)]
+    [VisibleInListView(false)]
+    [XafDisplayName("Model Adı İngilizce")]
+    public string ModelAdiIngilizce
+    {
+        get => modelAdiIngilizce;
+        set => SetPropertyValue(nameof(ModelAdiIngilizce), ref modelAdiIngilizce, value);
     }
 
     // DB'de saklanır, gecikmeli yüklenir, tarayıcı tarafında önbelleklenir

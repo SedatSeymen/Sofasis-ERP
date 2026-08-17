@@ -182,4 +182,27 @@ public abstract class BaseClass : BaseObject
     public virtual void ObjectSaving()
     {
     }
+
+    // Fiş Türü'ne tanımlı aktif varsayılan değerleri, bu nesnenin tipine TAM eşleşen
+    // TEK bir property'ye uygular (eski projeden aynen taşındı). Yeni bir hedef tipi
+    // eklemek (ör. yeni bir Tanım sınıfına IFisTuruVarsayilanHedefi uygulamak) bu
+    // metoda dokunmadan çalışır. Aynı tipten birden fazla aday property varsa
+    // (belirsizlik), güvenli taraf seçilir ve hiçbiri değiştirilmez.
+    protected void FisTuruVarsayilanlariniUygula(FisTuruTanim fisTuru)
+    {
+        if (fisTuru == null) return;
+        foreach (FisTuruVarsayilanDegeri varsayilan in fisTuru.FisTuruVarsayilanDegerleri.Where(x => x.Aktif))
+        {
+            if (varsayilan.HedefTip == null) continue;
+            object hedefDeger = varsayilan.VarsayilanDeger?.Target;
+            if (hedefDeger == null) continue;
+
+            var adaylar = ClassInfo.PersistentProperties.OfType<XPMemberInfo>()
+                .Where(p => p.MemberType == varsayilan.HedefTip)
+                .ToList();
+
+            if (adaylar.Count == 1)
+                adaylar[0].SetValue(this, hedefDeger);
+        }
+    }
 }

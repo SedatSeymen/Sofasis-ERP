@@ -15,7 +15,7 @@ namespace SofasisERP.Module.BusinessObjects;
 
 public enum StokKoduUretimYontemi
 {
-    [XafDisplayName("Otomatik (basit sıra numarası)")]
+    [XafDisplayName("Otomatik (Fiş Türü-Tarih-Sıra No)")]
     Otomatik,
 
     [XafDisplayName("Kod Jeneratörü (Tip.Grup.AltGrup.SıraNo)")]

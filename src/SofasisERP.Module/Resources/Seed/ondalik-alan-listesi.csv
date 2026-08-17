@@ -6,6 +6,7 @@ StokTanim;Metrekare;Miktar
 StokTanim;MetreKup;Miktar
 StokTanim;Agirlik;Miktar
 StokTanim;AlisFiyati;Tutar
+StokTanim;SatisFiyati;Tutar
 StokTanim;SonAlisFiyati;Tutar
 DovizGunlukKurD;DovizAlis;Kur
 DovizGunlukKurD;DovizSatis;Kur

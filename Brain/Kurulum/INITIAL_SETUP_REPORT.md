@@ -13,7 +13,7 @@
 
 **Rapor Tarihi:** 2026-08-17
 **Durum:** TAMAMLANDI
-**Referans Doküman:** [SOFASIS_INITIAL_SETUP.md](../../SOFASIS_INITIAL_SETUP.md)
+**Referans Doküman:** [SOFASIS_INITIAL_SETUP.md](SOFASIS_INITIAL_SETUP.md)
 
 ---
 

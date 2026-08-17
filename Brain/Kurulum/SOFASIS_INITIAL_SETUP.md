@@ -207,7 +207,7 @@ Oluştur:
 1. **README.md** — Proje amacı, teknoloji yığını (XAF Blazor, XPO, PostgreSQL, .NET), geliştirme ön koşulları, çalıştırma talimatları.
 2. **.gitignore** — Standart .NET/Visual Studio/VS Code gitignore şablonu.
 3. **NuGet.config** — Lokal DevExpress paket kaynağını içeren yapılandırma. Lokal kaynak yolu doğrulanmadan yazma.
-4. **docs/setup/INITIAL_SETUP_REPORT.md** — Bu kurulumun sonunda doldurulacak ortam ve doğrulama raporu.
+4. **Brain/Kurulum/INITIAL_SETUP_REPORT.md** — Bu kurulumun sonunda doldurulacak ortam ve doğrulama raporu.
 
 Kurallar:
 
@@ -302,7 +302,7 @@ Kurallar:
 
 # 9. KURULUM RAPORU
 
-`docs/setup/INITIAL_SETUP_REPORT.md` dosyasına aşağıdakileri kaydet:
+`Brain/Kurulum/INITIAL_SETUP_REPORT.md` dosyasına aşağıdakileri kaydet:
 
 1. Tarih ve ortam bilgileri (işletim sistemi, .NET SDK sürümleri).
 2. DevExpress 26.1.3 doğrulama sonucu (kurulum dizini, paket kaynağı).

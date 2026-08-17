@@ -5,13 +5,21 @@
  * Oluşturan        : Sedat Seymen
  * Son Güncelleme   : 08/17/2026
  * Son Güncelleyen  : Sedat Seymen
- * Açıklama         : KDV oranı tanımı — eski projeden uyarlandı.
+ * Açıklama         : KDV oranı tanımı — eski projeden uyarlandı. FisTuruTanim
+ *                    bazlı varsayılan değer hedefi olarak seçilebilmesi için
+ *                    IFisTuruVarsayilanHedefi arayüzü uygulanır. KDVOrani bilerek
+ *                    decimal değil int — Türkiye'de KDV oranları her zaman tam
+ *                    sayıdır (%0/%1/%10/%20), decimal+ModelDefault EditMask/
+ *                    DisplayFormat yalnızca PropertyEditor'ı biçimlendirir, kaydın
+ *                    OTOMATİK ÜRETİLEN başlığını/lookup caption'ını (DefaultProperty
+ *                    ToString()'i) ETKİLEMEZ — canlı testte "10,00000000" başlığı
+ *                    olarak yakalandı. int kullanmak sorunu kökten (her render
+ *                    yolunda) çözer, ayrıca maskeye gerek bırakmaz.
  * ****************************************************************************
  */
 
 using DevExpress.Data.Filtering;
 using DevExpress.ExpressApp.DC;
-using DevExpress.ExpressApp.Model;
 using DevExpress.Persistent.Base;
 using DevExpress.Persistent.Validation;
 using DevExpress.Xpo;
@@ -22,19 +30,17 @@ namespace SofasisERP.Module.BusinessObjects;
 [DefaultProperty(nameof(KDVOrani))]
 [DefaultClassOptions]
 [XafDisplayName("KDV Tanımlama")]
-public class KDVTanim : BaseClassWithAudit
+public class KDVTanim : BaseClassWithAudit, IFisTuruVarsayilanHedefi
 {
     public KDVTanim(Session session) : base(session) { }
 
     bool isVarsayilan;
-    decimal kDVOrani;
+    int kDVOrani;
 
     [XafDisplayName("KDV Oranı"), ToolTip("KDV Oranını Giriniz")]
-    [ModelDefault("EditMask", "N")]
-    [ModelDefault("DisplayFormat", "{0:N0}")]
     [RuleUniqueValue]
     [Indexed(Unique = true)]
-    public decimal KDVOrani
+    public int KDVOrani
     {
         get => kDVOrani;
         set => SetPropertyValue(nameof(KDVOrani), ref kDVOrani, value);

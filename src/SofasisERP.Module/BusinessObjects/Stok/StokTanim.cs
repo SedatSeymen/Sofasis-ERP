@@ -12,6 +12,7 @@
  * ****************************************************************************
  */
 
+using DevExpress.Data.Filtering;
 using DevExpress.ExpressApp.ConditionalAppearance;
 using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Editors;
@@ -32,18 +33,61 @@ public class StokTanim : BaseClassWithAuditAndDescription
 {
     public StokTanim(Session session) : base(session) { }
 
+    public override void AfterConstruction()
+    {
+        base.AfterConstruction();
+        // Yeni kayıtta Döviz alanı boş başlamasın — sistemdeki varsayılan para
+        // birimi (ör. TRY) otomatik seçili gelsin, kullanıcı isterse değiştirir.
+        DovizTanim = Session.FindObject<DovizTanim>(
+            CriteriaOperator.FromLambda<DovizTanim>(x => x.IsVarsayilan));
+        stokHizmetMasrafTipi = StokHizmetMasrafTipi.Stok;
+    }
+
+    StokHizmetMasrafTipi stokHizmetMasrafTipi;
+
+    // StokTipi/StokGrubu/StokAltGrubu hiyerarşisinden BAĞIMSIZ — o hiyerarşi yalnızca
+    // fiziksel STOK sınıflandırması içindir. Hizmet ve Masraf kartlarının (eski projeden
+    // aynen taşınan ayrım) fiziksel stok hiyerarşisine ihtiyacı yoktur — bkz.
+    // Hizmet/Masraf Tanımlama ekranları (StokAltGrubu bu türlerde zorunlu değildir).
+    [VisibleInListView(false)]
+    [XafDisplayName("Kayıt Türü")]
+    public StokHizmetMasrafTipi StokHizmetMasrafTipi
+    {
+        get => stokHizmetMasrafTipi;
+        set => SetPropertyValue(nameof(StokHizmetMasrafTipi), ref stokHizmetMasrafTipi, value);
+    }
+
+    FisTuruTanim fisTuruTanim;
+
+    // Kullanıcı tarafından seçilmez — StokTanimYeniKayitVarsayilanlariController
+    // yeni kayıt açılan ekrana göre (StokTanim_DetailView/HizmetTanim_DetailView/
+    // MasrafTanim_DetailView) otomatik atar. Yalnızca StokKoduUretimYontemi=Otomatik
+    // iken (ya da Hizmet/Masraf'ta her zaman) StokKoduJeneratoru.SonrakiNumara'ya
+    // önek kaynağı olarak verilir — bkz. NumberSequenceService.SonrakiNumara.
+    [VisibleInDetailView(false)]
+    [VisibleInListView(false)]
+    [XafDisplayName("Fiş Türü")]
+    public FisTuruTanim FisTuruTanim
+    {
+        get => fisTuruTanim;
+        set => SetPropertyValue(nameof(FisTuruTanim), ref fisTuruTanim, value);
+    }
+
     string stokKodu;
     string stokAdi;
     string stokAdiIngilizce;
     string stokBarkodNo;
     MediaDataObject resim;
     bool satilabilirMi;
+    StokGrupTanim stokGrubu;
     StokAltGrupTanim stokAltGrubu;
     ModelTanim model;
     BirimTanim birimTanim;
     DovizTanim dovizTanim;
     KDVTanim kdvTanim;
     decimal? alisFiyati;
+    decimal? satisFiyati;
+    bool kdvDahilMi;
     decimal sonAlisFiyati;
     decimal en;
     decimal boy;
@@ -54,7 +98,7 @@ public class StokTanim : BaseClassWithAuditAndDescription
 
     [Size(32)]
     [Indexed(Unique = true)]
-    [Appearance("ED_StokTanim_StokKodu", Enabled = false, Criteria = "!(IsNewObject(this))", Context = "DetailView")]
+    [Appearance("ED_StokTanim_StokKodu", Enabled = false, Context = "DetailView")]
     [XafDisplayName("Stok Kodu")]
     public string StokKodu
     {
@@ -91,10 +135,9 @@ public class StokTanim : BaseClassWithAuditAndDescription
     }
 
     // DB'de saklanır, gecikmeli yüklenir, tarayıcı tarafında önbelleklenir
-    // (ApplicationUser.Resim/ModelTanim.Resim ile aynı desen). Resim alanı
-    // Sipariş/Model/Stok üçlüsünde zorunlu olarak kararlaştırıldı (§45.2).
+    // (ApplicationUser.Resim/ModelTanim.Resim ile aynı desen). Kullanıcı kararı
+    // (2026-08-17): Resim Stok kartında da ASLA zorunlu değil — opsiyonel kalır.
     [ImageEditor(ListViewImageEditorMode = ImageEditorMode.PictureEdit, ListViewImageEditorCustomHeight = 32)]
-    [RuleRequiredField("RuleRequired_StokTanim_Resim", DefaultContexts.Save, "Lütfen Resim Ekleyiniz...")]
     [XafDisplayName("Resim")]
     public MediaDataObject Resim
     {
@@ -111,7 +154,26 @@ public class StokTanim : BaseClassWithAuditAndDescription
         set => SetPropertyValue(nameof(SatilabilirMi), ref satilabilirMi, value);
     }
 
-    [RuleRequiredField("RuleRequired_StokTanim_StokAltGrubu", DefaultContexts.Save, "Lütfen Stok Alt Grubunu Seçiniz...")]
+    // Kullanıcı kararı (2026-08-17): Stok Grubu gerçekten seçilebilir/aktif bir alan —
+    // önce bu seçilir, Stok Alt Grubu listesi buna göre filtrelenir (kademeli/bağımlı
+    // lookup, bkz. StokAltGrubu'ndaki DataSourceProperty). ImmediatePostData ile seçim
+    // yapılır yapılmaz Alt Grubu lookup'ı anında yeniden filtrelenir.
+    [ImmediatePostData]
+    [RuleRequiredField("RuleRequired_StokTanim_StokGrubu", DefaultContexts.Save, "Lütfen Stok Grubunu Seçiniz...",
+        TargetCriteria = "[StokHizmetMasrafTipi] = 'Stok'")]
+    [XafDisplayName("Stok Grubu")]
+    public StokGrupTanim StokGrubu
+    {
+        get => stokGrubu;
+        set => SetPropertyValue(nameof(StokGrubu), ref stokGrubu, value);
+    }
+
+    // Lookup'ı StokGrubu.StokAltGrupTanims koleksiyonuyla sınırlar — StokGrubu boşken
+    // hiçbir seçenek gösterilmez (SelectNothing), kullanıcı önce Stok Grubunu seçmek
+    // zorunda kalır. Bkz. DevExpress "Implement Dependent Reference Properties".
+    [DataSourceProperty("StokGrubu.StokAltGrupTanims", DataSourcePropertyIsNullMode.SelectNothing)]
+    [RuleRequiredField("RuleRequired_StokTanim_StokAltGrubu", DefaultContexts.Save, "Lütfen Stok Alt Grubunu Seçiniz...",
+        TargetCriteria = "[StokHizmetMasrafTipi] = 'Stok'")]
     [XafDisplayName("Stok Alt Grubu")]
     public StokAltGrupTanim StokAltGrubu
     {
@@ -119,11 +181,23 @@ public class StokTanim : BaseClassWithAuditAndDescription
         set => SetPropertyValue(nameof(StokAltGrubu), ref stokAltGrubu, value);
     }
 
-    // Yalnızca StokAltGrubu'nun bağlı olduğu StokTipiTanim.MamulMu=Evet ise
+    // StokGrubu.StokTipiTanim'den türetilir; ayrı bir alan olarak SAKLANMAZ, yalnızca
+    // listede/formda hızlı görünürlük için hesaplanan salt-okunur bir gezinme
+    // (navigation) alanıdır. PersistentAlias sayesinde ListView'da gerçek,
+    // filtrelenebilir/sıralanabilir bir kolon olarak çalışır. Setter YOK — StokGrubu
+    // seçilince otomatik hesaplanır; seçilebilir bir lookup gibi görünüp de tıklamaya
+    // tepki vermemesi kafa karıştırdığı için (kullanıcı geri bildirimi) Appearance ile
+    // görsel olarak da salt-okunur/devre dışı yapılır.
+    [PersistentAlias("StokGrubu.StokTipiTanim")]
+    [Appearance("ED_StokTanim_StokTipi", Enabled = false, Context = "DetailView")]
+    [XafDisplayName("Stok Tipi")]
+    public StokTipiTanim StokTipi => (StokTipiTanim)EvaluateAlias(nameof(StokTipi));
+
+    // Yalnızca StokGrubu'nun bağlı olduğu StokTipiTanim.MamulMu=Evet ise
     // görünür/zorunlu (eski projedeki "StokTipi=Mamul ise Model alanı görünür"
     // deseninin veriye dayalı karşılığı — bkz. StokTipiTanim.MamulMu).
     [Appearance("IsVisible_StokTanim_Model", Visibility = ViewItemVisibility.Hide,
-        Criteria = "StokAltGrubu.StokGrupTanim.StokTipiTanim.MamulMu != True", Context = "DetailView")]
+        Criteria = "StokGrubu.StokTipiTanim.MamulMu != True", Context = "DetailView")]
     [XafDisplayName("Model")]
     public ModelTanim Model
     {
@@ -163,6 +237,28 @@ public class StokTanim : BaseClassWithAuditAndDescription
     {
         get => alisFiyati;
         set => SetPropertyValue(nameof(AlisFiyati), ref alisFiyati, value);
+    }
+
+    // Manuel/referans liste satış fiyatıdır — Faz 6'da maliyet motorunun hesaplayacağı
+    // önerilen satış fiyatı ile KARIŞTIRILMAMALI (o zaman bu alan varsayılan/override olarak kalır).
+    [VisibleInListView(false)]
+    [XafDisplayName("Satış Fiyatı")]
+    public decimal? SatisFiyati
+    {
+        get => satisFiyati;
+        set => SetPropertyValue(nameof(SatisFiyati), ref satisFiyati, value);
+    }
+
+    // Alış/Satış Fiyatı alanlarına girilen tutarın KDV dahil mi hariç mi olduğunu
+    // belirtir — varsayılan Hariç (Türkiye'de liste/maliyet fiyatları genelde
+    // KDV hariç girilir). Basic kullanıcı bir "*" ile karışıklık yaşamasın diye
+    // ayrı bir onay/uyarı alanı DEĞİL, basit bir işaret kutusudur.
+    [VisibleInListView(false)]
+    [XafDisplayName("KDV Dahil mi?")]
+    public bool KDVDahilMi
+    {
+        get => kdvDahilMi;
+        set => SetPropertyValue(nameof(KDVDahilMi), ref kdvDahilMi, value);
     }
 
     // Kullanıcı kararı: bu alan ELLE girilmez — Satınalma Faturası onay akışı
@@ -237,11 +333,22 @@ public class StokTanim : BaseClassWithAuditAndDescription
 
     protected override void OnSaving()
     {
-        if (Session.IsNewObject(this) && string.IsNullOrEmpty(StokKodu) && StokAltGrubu != null)
+        if (Session.IsNewObject(this) && string.IsNullOrEmpty(StokKodu))
         {
             IStokKoduJeneratoru jenerator = new StokKoduJeneratoru();
-            StokKodu = jenerator.SonrakiStokKodu(Session, StokAltGrubu);
+            StokKodu = jenerator.SonrakiStokKodu(Session, this);
         }
         base.OnSaving();
+    }
+
+    protected override void OnChanged(string propertyName, object oldValue, object newValue)
+    {
+        base.OnChanged(propertyName, oldValue, newValue);
+        // StokTanimYeniKayitVarsayilanlariController yeni kayıtta Fiş Türü'nü atadığında,
+        // o Fiş Türü'ne tanımlı aktif varsayılan değerler (ör. HZMTTN için varsayılan Döviz/
+        // KDV) varsa otomatik uygulanır. Kullanıcı sonradan Döviz/KDV'yi elle değiştirirse
+        // bu değişiklik onun üzerine yazar (varsayılan yalnızca bir kez, atama anında uygulanır).
+        if (propertyName == nameof(FisTuruTanim) && newValue != null && !IsLoading)
+            FisTuruVarsayilanlariniUygula((FisTuruTanim)newValue);
     }
 }

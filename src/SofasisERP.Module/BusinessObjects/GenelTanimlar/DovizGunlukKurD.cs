@@ -16,8 +16,10 @@ using DevExpress.Xpo;
 
 namespace SofasisERP.Module.BusinessObjects;
 
+// [DefaultClassOptions] BİLEREK yok — bu saf bir Detail (D) sınıfı, yalnızca
+// DovizGunlukKurM'in Aggregated koleksiyonu içinden düzenlenir, menüde ayrı
+// bağımsız bir liste olarak görünmemeli.
 [XafDisplayName("Günlük Döviz Kur Girişi")]
-[DefaultClassOptions]
 public class DovizGunlukKurD : BaseClass
 {
     public DovizGunlukKurD(Session session) : base(session) { }

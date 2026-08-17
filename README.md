@@ -42,7 +42,7 @@ dotnet restore
 ### 3. Uygulamayı Çalıştır
 
 ```powershell
-dotnet run --project src/SofasisERP/SofasisERP.Blazor.Server
+dotnet run --project src/SofasisERP.Blazor.Server
 ```
 
 Tarayıcıda `https://localhost:5001` veya `http://localhost:5000` adresini açın.
@@ -52,18 +52,20 @@ Tarayıcıda `https://localhost:5001` veya `http://localhost:5000` adresini aç�
 ```
 SofasisERP/
 ├── src/
-│   └── SofasisERP/
-│       ├── SofasisERP.Module/          # Platformdan bağımsız XAF modülü (XPO Business Objects)
-│       └── SofasisERP.Blazor.Server/   # ASP.NET Core Blazor Server uygulaması
-├── docs/
-│   ├── architecture/                   # Mimari kararlar
-│   └── setup/                          # Kurulum kayıtları
+│   ├── SofasisERP.Module/              # Platformdan bağımsız XAF modülü (XPO Business Objects)
+│   └── SofasisERP.Blazor.Server/       # ASP.NET Core Blazor Server uygulaması
+├── Brain/                               # Tüm proje dokümantasyonu, kategorize (bkz. Brain/README.md)
+│   ├── Mimari/                         # Mimari kararlar
+│   ├── Kurallar/                       # Kod yazım standartları
+│   └── Kurulum/                        # Kurulum kayıtları
 ├── scripts/                            # Yardımcı betikler
 ├── tests/                              # Test projeleri (ileride)
 ├── .gitignore
 ├── NuGet.config
 └── README.md
 ```
+
+Tüm `.md` dokümantasyonu `Brain/` altında toplanır — bkz. [Brain/README.md](Brain/README.md).
 
 ## Kurallar
 

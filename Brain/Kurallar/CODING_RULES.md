@@ -62,4 +62,4 @@ Bu isimler framework tarafından tanımlanır ve Türkçe'ye çevrilmez.
 
 - Tüm dokümantasyon Türkçe yazılır.
 - Dokümantasyon gerçek kodla tutarlı tutulur.
-- Mimari kararlar `docs/architecture/` altında belgelenir.
+- Mimari kararlar `Brain/Mimari/` altında belgelenir. Tüm proje dokümantasyonu (`.md`) `Brain/` klasöründe kategorize edilir (Mimari, Kurallar, Kurulum) — kök dizine veya `docs/`'a yeni `.md` eklenmez.

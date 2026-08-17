@@ -1005,7 +1005,7 @@ Her yeni karar:
 
 # 45. İlk Domain Karar Kapısının Kapanışı (2026-08-17)
 
-Bu bölüm, §42'de tanımlanan "ilk gerçek domain karar kapısı"nın (ürün + modül + uyumluluk + konfigürasyon + stok ilişkisi) 2026-08-17'de kullanıcıyla yapılan kapsamlı bir tasarım oturumu sonucunda nasıl kapandığını kayıt altına alır. Edition stratejisi için bkz. `PRODUCT_EDITIONS.md`; DetailView/servis konvansiyonları için bkz. `docs/architecture/00_DetailView_ve_Servis_Konvansiyonlari.md`.
+Bu bölüm, §42'de tanımlanan "ilk gerçek domain karar kapısı"nın (ürün + modül + uyumluluk + konfigürasyon + stok ilişkisi) 2026-08-17'de kullanıcıyla yapılan kapsamlı bir tasarım oturumu sonucunda nasıl kapandığını kayıt altına alır. Edition stratejisi için bkz. `Brain/Mimari/PRODUCT_EDITIONS.md`; DetailView/servis konvansiyonları için bkz. `Brain/Mimari/00_DetailView_ve_Servis_Konvansiyonlari.md`.
 
 ## 45.1 Hedef sektör
 
@@ -1059,4 +1059,4 @@ Bu, **Tekdüzen Hesap Planı'nın noktalı-hiyerarşik numaralandırma STİLİND
 
 ## 45.7 Ekran ve Menü Standardizasyonu
 
-En temel kural: standart ekran tip ve şablonları — bir ekranı/menüyü anlayan tümünü anlamalı (hedef kullanıcı profili ilkokul/ortaokul/lise mezunu). Ekranlar DevExpress XAF Blazor'un native ListView/DetailView/Popup/Report yapıları temel alınarak standardize edilir; genel/soyut UI kuralları XAF'ın kendi bileşen davranışının üstüne gereksiz özel katman olarak eklenmez. Navigasyon: her iş alanı yalnızca standart "Tanımlar" ve "Hareketler" alt-gruplarını kullanır. DetailView sekme deseni ve numaralandırma servisi için bkz. `docs/architecture/00_DetailView_ve_Servis_Konvansiyonlari.md`.
+En temel kural: standart ekran tip ve şablonları — bir ekranı/menüyü anlayan tümünü anlamalı (hedef kullanıcı profili ilkokul/ortaokul/lise mezunu). Ekranlar DevExpress XAF Blazor'un native ListView/DetailView/Popup/Report yapıları temel alınarak standardize edilir; genel/soyut UI kuralları XAF'ın kendi bileşen davranışının üstüne gereksiz özel katman olarak eklenmez. Navigasyon: her iş alanı yalnızca standart "Tanımlar" ve "Hareketler" alt-gruplarını kullanır. DetailView sekme deseni ve numaralandırma servisi için bkz. `Brain/Mimari/00_DetailView_ve_Servis_Konvansiyonlari.md`.

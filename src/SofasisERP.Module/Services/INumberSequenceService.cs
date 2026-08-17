@@ -12,17 +12,22 @@
  */
 
 using DevExpress.Xpo;
+using SofasisERP.Module.BusinessObjects;
+using System;
 
 namespace SofasisERP.Module.Services;
 
 public interface INumberSequenceService
 {
-    // Fiş türü/prefix/format bağımsız, sade artan tamsayı sıra numarası
-    // (ör. StokKoduJeneratoru). Aynı SequenceGenerator alt yapısını, ayrı bir
-    // sabit kriterle (sequenceAnahtari başına tek sayaç) kullanır.
-    //
-    // NOT: Eski projedeki fiş-türü-önekli/tarih segmentli "SonrakiNumara(...)"
-    // overload'ı burada BİLEREK yok — FisTuruTanim bu projede henüz mevcut
-    // değil (Faz 2/Satınalma'da eklenecek). O aşamada bu arayüze eklenecek.
+    // Fiş türü/prefix/format bağımsız, sade artan tamsayı sıra numarası.
+    // Aynı SequenceGenerator alt yapısını, ayrı bir sabit kriterle
+    // (sequenceAnahtari başına tek sayaç) kullanır.
     int SonrakiSiraNo(Session session, string sequenceAnahtari);
+
+    // Eski projeden aynen taşınan fiş-türü-önekli/GÜNLÜK sıfırlanan numara üretimi
+    // (bkz. StokKoduJeneratoru — StokTanim/Hizmet/Masraf "Otomatik" kod üretimi).
+    // Format: "{FisTuruKodu}-{yyMMdd}{sıra:D3}". Sayaç kriteri
+    // "{sequenceAnahtari}-{FisTuruKodu}-{yyMMdd}" olduğundan her (çağıran tip +
+    // fiş türü + gün) kombinasyonu kendi sayacına sahiptir, sıra GÜNLÜK sıfırlanır.
+    string SonrakiNumara(Session session, string sequenceAnahtari, FisTuruTanim fisTuruTanim, DateTime belgeTarihi);
 }
