@@ -1,4 +1,4 @@
-# Production VPS Hazırlığı (2026-08-19)
+# Production VPS Hazırlığı (2026-08-19, ilk deploy 2026-08-22)
 
 Bu belge, SofasisERP'nin **paylaşılan** bir production VPS'te (Sofasis
 IoT/Cloud platformuyla aynı sunucu) barındırılması için hazırlanan altyapıyı
@@ -6,11 +6,24 @@ belgeler. Asıl detaylı IaC (docker-compose, nginx, backup script'leri)
 `D:\SofasisHomeAutomation\Brain\Operations\production\` altında — bu VPS
 öncelikle o proje için kuruldu, SofasisERP sonradan aynı sunucuya eklendi.
 
-## Mevcut durum
+## Mevcut durum (2026-08-22 itibarıyla)
 
-**Uygulama HENÜZ deploy edilmedi.** SofasisERP kod tabanında aktif
-geliştirme sürdüğü için (kullanıcı isteğiyle) deploy bekletiliyor. Aşağıdaki
-altyapı parçaları ise hazır ve VPS'te bekliyor:
+**Uygulama CANLI ve çalışıyor** — ilk deploy 2026-08-22'de yapıldı,
+`https://erp.sofasis.com` üzerinden erişilebilir. Yeniden deploy için
+`D:\SofasisERP\deploy-vps.ps1` scripti kullanılır (tek komut: `dotnet publish`
+→ zip → VPS'e kopyala → izin düzelt → `--updateDatabase` → servis restart →
+smoke test).
+
+**Deploy sırasında öğrenilen kritik notlar:**
+- SSH portu **22 değil, 22667** (bkz. `ufw-rules.txt`), IP kısıtlaması yok.
+- Windows'ta `Compress-Archive` ile oluşturulan zip, bazı klasörlerin execute
+  (`x`) bitini kaybediyor (`drw-r--r--` yerine `drwxr-xr-x` olmalı) — extract
+  sonrası `chmod` şart, yoksa `wwwroot/_content` altındaki DevExpress JS/CSS
+  dosyaları 404 döner ve rapor görüntüleyici/tasarımcı çalışmaz.
+- `.env`'deki `ConnectionStrings__ConnectionString` noktalı virgül (`;`)
+  içerdiği için düz `source .env` bash'te komut ayırıcı olarak yorumlanıp
+  değeri kesiyor — değer tırnaklanarak source edilmeli (script bunu yapıyor).
+- Aşağıdaki altyapı parçaları hazır ve kullanımda:
 
 - **VPS**: `178.210.161.162`, Ubuntu 24.04 LTS, SSH sadece key ile (root
   girişi kapalı, `sofasis-admin` sudo kullanıcısı üzerinden erişim), firewall
@@ -28,23 +41,20 @@ altyapı parçaları ise hazır ve VPS'te bekliyor:
   çıktı VPS'e kopyalanacak**, VPS'te `dotnet build` çalıştırılmayacak.
 - **Domain**: `erp.sofasis.com` DNS'te tanımlı, VPS'e işaret ediyor. Nginx
   reverse proxy (`127.0.0.1:5050` → `erp.sofasis.com`) ve Let's Encrypt
-  HTTPS sertifikası **hazır ve aktif** — henüz arkasında çalışan bir uygulama
-  olmadığı için şu an 502 dönüyor, bu normal.
-- **systemd servisi** (`sofasiserp.service`) tanımlı ama `enable`/`start`
-  edilmedi — `ExecStart=/usr/bin/dotnet /opt/sofasiserp/SofasisERP.Blazor.Server.dll --urls http://127.0.0.1:5050`,
-  `sofasis-admin` kullanıcısıyla çalışacak şekilde.
-- **Bağlantı dizesi secret'ı** `appsettings.json`'a YAZILMAYACAK — VPS'teki
+  HTTPS sertifikası **aktif**, arkasında uygulama çalışıyor (200 dönüyor).
+- **systemd servisi** (`sofasiserp.service`) `enable`/`active` — `ExecStart=/usr/bin/dotnet /opt/sofasiserp/SofasisERP.Blazor.Server.dll --urls http://127.0.0.1:5050`,
+  `sofasis-admin` kullanıcısıyla çalışıyor.
+- **Bağlantı dizesi secret'ı** `appsettings.json`'a YAZILMADI — VPS'teki
   `/opt/sofasiserp/.env` dosyasında (mode 600) `ConnectionStrings__ConnectionString`
   ortam değişkeni olarak duruyor (ASP.NET Core'un standart çift-alt-çizgi
   config override deseni), systemd `EnvironmentFile` ile enjekte ediliyor.
 
-## Deploy edilecek zaman yapılacaklar (özet)
+## Yeniden deploy (güncelleme) — `deploy-vps.ps1` ile tek komut
 
-1. `D:\SofasisERP\src\SofasisERP.Blazor.Server`'da `dotnet publish -c Release`.
-2. Çıktıyı VPS'te `/opt/sofasiserp/`'e kopyala (mevcut dosyaların üzerine).
-3. `systemctl enable --now sofasiserp` (ilk kurulumda) veya
-   `systemctl restart sofasiserp` (sonraki güncellemelerde).
-4. `https://erp.sofasis.com` üzerinden smoke test.
+```powershell
+D:\SofasisERP> .\deploy-vps.ps1
+```
 
-Bu adımlar kullanıcının "ERP için deploy'a hazırım" onayı sonrası
-uygulanacak — şu an sadece altyapı hazır durumda bekliyor.
+Script sırasıyla: `dotnet publish -c Release` → zip → servis durdur →
+VPS'e kopyala → izinleri düzelt (`chmod 755` dizinler / `644` dosyalar) →
+`--updateDatabase --forceUpdate --silent` → servis başlat → smoke test.
