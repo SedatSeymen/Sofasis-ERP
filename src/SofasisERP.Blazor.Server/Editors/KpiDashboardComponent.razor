@@ -1,0 +1,84 @@
+@using DevExpress.ExpressApp
+@using DevExpress.ExpressApp.Blazor.Editors
+@using SofasisERP.Module.BusinessObjects
+@using System.Globalization
+@using System.Linq
+@inject NavigationManager NavigationManager
+
+<div class="kpi-dashboard">
+    <div class="kpi-section-title">Finansal Özet</div>
+    <div class="kpi-card-row">
+        <div class="kpi-card kpi-accent-teal" @onclick="@(() => Git("KasaCariBankaHareketleri_KasaTumHareketlerListView"))">
+            <div class="kpi-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2" /><circle cx="12" cy="12" r="2.5" /><path d="M6 6V4h12v2M6 18v2h12v-2" /></svg>
+            </div>
+            <div class="kpi-body">
+                <div class="kpi-label">Kasa Toplam Bakiye</div>
+                <div class="kpi-value">@KasaToplamBakiye.ToString("N2", TrCulture)<span class="kpi-unit">₺</span></div>
+            </div>
+        </div>
+        <div class="kpi-card kpi-accent-indigo" @onclick="@(() => Git("KasaCariBankaHareketleri_BankaTumHareketlerListView"))">
+            <div class="kpi-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10 12 4l9 6" /><rect x="4" y="10" width="16" height="9" rx="1" /><path d="M9 19v-6M15 19v-6" /></svg>
+            </div>
+            <div class="kpi-body">
+                <div class="kpi-label">Banka Toplam Bakiye</div>
+                <div class="kpi-value">@BankaToplamBakiye.ToString("N2", TrCulture)<span class="kpi-unit">₺</span></div>
+            </div>
+        </div>
+        <div class="kpi-card kpi-accent-green" @onclick="@(() => Git("KasaCariBankaHareketleri_CariTumHareketlerListView"))">
+            <div class="kpi-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.5" /><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7" /></svg>
+            </div>
+            <div class="kpi-body">
+                <div class="kpi-label">Müşterilerden Alacağımız</div>
+                <div class="kpi-value">@MusterilerdenAlacak.ToString("N2", TrCulture)<span class="kpi-unit">₺</span></div>
+            </div>
+        </div>
+        <div class="kpi-card kpi-accent-orange" @onclick="@(() => Git("KasaCariBankaHareketleri_CariTumHareketlerListView"))">
+            <div class="kpi-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="7" width="14" height="10" rx="1" /><path d="M15 10h4l3 3v4h-7z" /><circle cx="6" cy="19" r="1.6" /><circle cx="17.5" cy="19" r="1.6" /></svg>
+            </div>
+            <div class="kpi-body">
+                <div class="kpi-label">Tedarikçilere Borcumuz</div>
+                <div class="kpi-value">@TedarikcilereBorc.ToString("N2", TrCulture)<span class="kpi-unit">₺</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter] public BlazorControlViewItem ViewItem { get; set; }
+
+    static readonly CultureInfo TrCulture = CultureInfo.GetCultureInfo("tr-TR");
+
+    decimal KasaToplamBakiye;
+    decimal BankaToplamBakiye;
+    decimal MusterilerdenAlacak;
+    decimal TedarikcilereBorc;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        VerileriYukle();
+    }
+
+    // GuncelBakiye tüm Hesap türlerinde (Kasa/Banka/Cari) her zaman yerel (TL) para
+    // birimindedir (bkz. Hesap.cs, KasaCariBankaHareketleri.ObjectSaving — motor hep
+    // YerelBorcTutar/YerelAlacakTutar üzerinden işler) — döviz bazlı gruplama gerekmez,
+    // doğrudan toplanabilir. Cari'de pozitif bakiye "bize borçlu" (alacağımız), negatif
+    // bakiye "biz borçluyuz" (borcumuz) anlamına gelir (Borç hesabı artırır kuralı).
+    void VerileriYukle()
+    {
+        IObjectSpace os = ViewItem.ObjectSpace;
+
+        KasaToplamBakiye = os.GetObjectsQuery<KasaTanim>().Sum(x => (decimal?)x.GuncelBakiye) ?? 0;
+        BankaToplamBakiye = os.GetObjectsQuery<BankaHesabiTanim>().Sum(x => (decimal?)x.GuncelBakiye) ?? 0;
+        MusterilerdenAlacak = os.GetObjectsQuery<CariHesapTanim>()
+            .Where(x => x.GuncelBakiye > 0).Sum(x => (decimal?)x.GuncelBakiye) ?? 0;
+        TedarikcilereBorc = -(os.GetObjectsQuery<CariHesapTanim>()
+            .Where(x => x.GuncelBakiye < 0).Sum(x => (decimal?)x.GuncelBakiye) ?? 0);
+    }
+
+    void Git(string listViewId) => NavigationManager.NavigateTo("/" + listViewId);
+}

@@ -38,10 +38,36 @@ public class Startup {
         services.AddScoped<IDovizKuruService, TcmbDovizKuruService>();
         services.AddScoped<IDovizKuruGuncellemeServisi, DovizKuruGuncellemeServisi>();
         services.AddHostedService<DovizKuruGuncellemeWorker>();
+        // Rapor Controller'ları (ör. HesapEkstresiRaporuController) ile aşağıdaki
+        // AddReports(options.Events.OnBeforeShowPreview) arasındaki köprü — bkz.
+        // Services/ReportPreviewContext.cs.
+        services.AddScoped<SofasisERP.Module.Services.ReportPreviewContext>();
         services.AddXaf(Configuration, builder => {
             builder.UseApplication<SofasisERPBlazorApplication>();
             builder.Modules
                 .AddConditionalAppearance()
+                .AddReports(options => {
+                    options.EnableInplaceReports = true;
+                    options.ReportDataType = typeof(DevExpress.Persistent.BaseImpl.ReportDataV2);
+                    options.ReportStoreMode = DevExpress.ExpressApp.ReportsV2.ReportStoreModes.XML;
+                    // Launching Controller'ın ReportPreviewContext'e koyduğu gizli Parameter
+                    // değerlerini (Hesap Adı, Devreden Bakiye, vb.) ShowPreview'dan hemen önce
+                    // rapora uygular — ShowPreview yalnızca bir "handle" string aldığı için
+                    // Controller'dan XtraReport örneğine başka türlü erişilemiyor.
+                    options.Events.OnBeforeShowPreview = context => {
+                        var previewContext = context.ServiceProvider
+                            .GetService<SofasisERP.Module.Services.ReportPreviewContext>();
+                        if (previewContext == null) return;
+                        if (previewContext.DataSource != null) {
+                            context.Report.DataSource = previewContext.DataSource;
+                        }
+                        foreach (var kv in previewContext.ParameterValues) {
+                            if (context.Report.Parameters[kv.Key] != null) {
+                                context.Report.Parameters[kv.Key].Value = kv.Value;
+                            }
+                        }
+                    };
+                })
                 .AddValidation(options => {
                     options.AllowValidationDetailsAccess = false;
                 })

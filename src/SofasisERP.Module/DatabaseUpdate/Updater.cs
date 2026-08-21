@@ -56,6 +56,24 @@ public class Updater : ModuleUpdater {
             if (banka.HesapTuru != HesapTuru.Banka) banka.HesapTuru = HesapTuru.Banka;
         foreach (CariHesapTanim cari in ObjectSpace.GetObjects<CariHesapTanim>())
             if (cari.HesapTuru != HesapTuru.Cari) cari.HesapTuru = HesapTuru.Cari;
+
+        // UygulananYerelBorcTutar/UygulananYerelAlacakTutar (2026-08-21) yeni eklenen
+        // sütunlar — Açılış Fişi'nde düzenleme sonrası bakiye motorunun doğru "fark"
+        // hesaplayabilmesi için gerekli (bkz. KasaCariBankaHareketleri.ObjectSaving).
+        // Şema güncellemesi mevcut satırlarda bu alanları 0 bırakır; zaten işlenmiş
+        // (MotorIslendi=true) satırlar için GERÇEKTE uygulanmış tutar hâlâ
+        // YerelBorcTutar/YerelAlacakTutar'da duruyor (henüz hiç düzenlenmediler) —
+        // bu yüzden oradan geriye dönük doldurulur. Doldurulmazsa, var olan bir Açılış
+        // kaydı ilk kez düzenlendiğinde fark 0'a göre hesaplanır ve bakiye ÇİFT SAYILIR.
+        foreach (KasaCariBankaHareketleri hareket in ObjectSpace.GetObjects<KasaCariBankaHareketleri>())
+        {
+            if (hareket.MotorIslendi && hareket.UygulananYerelBorcTutar == 0 && hareket.UygulananYerelAlacakTutar == 0
+                && (hareket.YerelBorcTutar != 0 || hareket.YerelAlacakTutar != 0))
+            {
+                hareket.UygulananYerelBorcTutar = hareket.YerelBorcTutar;
+                hareket.UygulananYerelAlacakTutar = hareket.YerelAlacakTutar;
+            }
+        }
         ObjectSpace.CommitChanges();
 
         // Kullanıcı isteği (2026-08-21): standart parola güvenliği (Security System +

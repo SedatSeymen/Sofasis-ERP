@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Application Title="SofasisERP">
-  <NavigationItems NavigationStyle="Accordion">
+  <NavigationItems NavigationStyle="Accordion" StartupNavigationItem="AnaDashboard_DashboardView">
     <Items>
+      <Item Id="AnaDashboard_DashboardView" Caption="Gösterge Paneli" ImageName="Action_OrganizeDashboard" ViewId="AnaDashboard_DashboardView" Index="-1" IsNewNode="True" />
       <Item Id="StokYonetimi" Caption="Stok Yönetimi" ImageName="BO_product_group" Index="0" IsNewNode="True">
         <Items IsNewNode="True">
           <Item Id="StokYonetimi_Tanimlar" Caption="Tanımlar" Index="0" IsNewNode="True">
@@ -114,6 +115,28 @@
     <SchemaModule Name="SystemModule" Version="26.1.3.0" IsNewNode="True" />
   </SchemaModules>
   <Views>
+    <!-- Gösterge Paneli (Dashboard) — özel KPI kart bileşeni (KpiDashboardComponent),
+         eski SofasisERP'deki desenin aynısı: ControlDetailItem ile Blazor bileşenini
+         tam-genişlik bir DashboardView içine gömer, ayrı ListView/veri sorgusu gerekmez
+         (veri bileşenin kendi içinde ObjectSpace üzerinden hesaplanır). -->
+    <DashboardView Id="AnaDashboard_DashboardView" Caption="Gösterge Paneli" IsNewNode="True">
+      <Items IsNewNode="True">
+        <ControlDetailItem Id="KpiDashboardItem" ControlTypeName="SofasisERP.Blazor.Server.Editors.KpiDashboardComponent" IsNewNode="True" />
+      </Items>
+      <Layout IsNewNode="True">
+        <LayoutGroup Id="Main" RelativeSize="100" IsNewNode="True">
+          <LayoutItem Id="KpiDashboardItem" ViewItem="KpiDashboardItem" Index="0" RelativeSize="100" IsNewNode="True" />
+        </LayoutGroup>
+      </Layout>
+      <!-- "Gösterge tablosu düzenlemek" (OrganizeDashboard) — sürükle-bırak dashboard
+           tasarımcısı, bizim sabit KpiDashboardComponent konteynerimizde anlamsız,
+           kullanıcı isteğiyle (2026-08-21) kaldırıldı. ActionDesign/Actions altında
+           Active="False" DENENDİ, ETKİSİZ kaldı (Active bir Model property değil,
+           runtime BoolList) — doğru mekanizma View'a özel HiddenActions node'u. -->
+      <HiddenActions IsNewNode="True">
+        <ActionLink Id="OrganizeDashboard" IsNewNode="True" />
+      </HiddenActions>
+    </DashboardView>
     <DetailView Id="AyakTanim_DetailView" IsNewNode="True">
       <Layout IsNewNode="True">
         <LayoutGroup Id="Main" RelativeSize="100" IsNewNode="True">
@@ -2614,7 +2637,10 @@
         <PropertyEditor Id="BelgeTarihi" PropertyName="BelgeTarihi" IsNewNode="True" />
         <PropertyEditor Id="KaynakHesap" PropertyName="KaynakHesap" Caption="Kasa" DataSourceCriteria="HesapTuru = 'Kasa'" IsNewNode="True" />
         <PropertyEditor Id="KarsiHesap" PropertyName="KarsiHesap" Caption="Açılış Dengesi Hesabı" DataSourceCriteria="CustomCode1 = 'ACILIS_DENGE'" IsNewNode="True" />
-        <PropertyEditor Id="BorcTutar" PropertyName="BorcTutar" Caption="Açılış Bakiyesi" IsNewNode="True" />
+        <PropertyEditor Id="BorcTutar" PropertyName="BorcTutar" Caption="Açılış Borç Bakiyesi" IsNewNode="True" />
+        <PropertyEditor Id="AlacakTutar" PropertyName="AlacakTutar" Caption="Açılış Alacak Bakiyesi" IsNewNode="True" />
+        <PropertyEditor Id="DovizTanim" PropertyName="DovizTanim" IsNewNode="True" />
+        <PropertyEditor Id="DovizKuru" PropertyName="DovizKuru" IsNewNode="True" />
         <PropertyEditor Id="CreatedBy" PropertyName="CreatedBy" IsNewNode="True" />
         <PropertyEditor Id="CreatedDate" PropertyName="CreatedDate" IsNewNode="True" />
         <PropertyEditor Id="CustomCode1" PropertyName="CustomCode1" IsNewNode="True" />
@@ -2630,15 +2656,22 @@
         <LayoutGroup Id="Main" RelativeSize="100" IsNewNode="True">
           <LayoutGroup Id="SimpleEditors" RelativeSize="100" IsNewNode="True">
             <TabbedGroup Id="Tabs" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
-              <LayoutGroup Id="Genel" Caption="Genel" Direction="Vertical" Index="0" RelativeSize="100" IsNewNode="True">
-                <LayoutItem Id="FisNo" ViewItem="FisNo" Index="0" RelativeSize="11" IsNewNode="True" />
-                <LayoutItem Id="FisTarihi" ViewItem="FisTarihi" Index="1" RelativeSize="11" IsNewNode="True" />
-                <LayoutItem Id="KaynakHesap" ViewItem="KaynakHesap" Index="2" RelativeSize="11" IsNewNode="True" />
-                <LayoutItem Id="KarsiHesap" ViewItem="KarsiHesap" Index="3" RelativeSize="11" IsNewNode="True" />
-                <LayoutItem Id="BorcTutar" ViewItem="BorcTutar" Index="4" RelativeSize="11" IsNewNode="True" />
-                <LayoutItem Id="BelgeNo" ViewItem="BelgeNo" Index="5" RelativeSize="11" IsNewNode="True" />
-                <LayoutItem Id="BelgeTarihi" ViewItem="BelgeTarihi" Index="6" RelativeSize="11" IsNewNode="True" />
-                <LayoutItem Id="VadeTarihi" ViewItem="VadeTarihi" Index="7" RelativeSize="11" IsNewNode="True" />
+              <LayoutGroup Id="Genel" Caption="Genel" Direction="Horizontal" Index="0" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="Genel_col1" ShowCaption="False" Index="0" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="FisNo" ViewItem="FisNo" Index="0" RelativeSize="17" IsNewNode="True" />
+                  <LayoutItem Id="BelgeNo" ViewItem="BelgeNo" Index="1" RelativeSize="17" IsNewNode="True" />
+                  <LayoutItem Id="VadeTarihi" ViewItem="VadeTarihi" Index="2" RelativeSize="17" IsNewNode="True" />
+                  <LayoutItem Id="KaynakHesap" ViewItem="KaynakHesap" Index="3" RelativeSize="17" IsNewNode="True" />
+                  <LayoutItem Id="BorcTutar" ViewItem="BorcTutar" Index="4" RelativeSize="17" IsNewNode="True" />
+                  <LayoutItem Id="DovizTanim" ViewItem="DovizTanim" Index="5" RelativeSize="17" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="Genel_col2" ShowCaption="False" Index="1" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="FisTarihi" ViewItem="FisTarihi" Index="0" RelativeSize="20" IsNewNode="True" />
+                  <LayoutItem Id="BelgeTarihi" ViewItem="BelgeTarihi" Index="1" RelativeSize="20" IsNewNode="True" />
+                  <LayoutItem Id="KarsiHesap" ViewItem="KarsiHesap" Index="2" RelativeSize="20" IsNewNode="True" />
+                  <LayoutItem Id="AlacakTutar" ViewItem="AlacakTutar" Index="3" RelativeSize="20" IsNewNode="True" />
+                  <LayoutItem Id="DovizKuru" ViewItem="DovizKuru" Index="4" RelativeSize="20" IsNewNode="True" />
+                </LayoutGroup>
               </LayoutGroup>
               <LayoutGroup Id="OzelKodlar" Caption="Özel Kodlar &amp; Açıklama" Direction="Vertical" Index="1" RelativeSize="100" IsNewNode="True">
                 <LayoutItem Id="CustomCode1" ViewItem="CustomCode1" Index="0" RelativeSize="15" IsNewNode="True" />
@@ -2668,15 +2701,12 @@
               <LayoutItem Id="Description" ViewItem="Description" Removed="True" />
             </LayoutGroup>
             <LayoutGroup Id="KasaCariBankaHareketleri" RelativeSize="100" Removed="True">
-              <LayoutItem Id="AlacakTutar" ViewItem="AlacakTutar" Removed="True" />
-              <LayoutItem Id="DovizTanim" ViewItem="DovizTanim" Removed="True" />
-              <LayoutItem Id="DovizKuru" ViewItem="DovizKuru" Removed="True" />
-              <LayoutItem Id="KarsiDovizTanim" ViewItem="KarsiDovizTanim" Removed="True" />
-              <LayoutItem Id="KarsiDovizKuru" ViewItem="KarsiDovizKuru" Removed="True" />
               <LayoutItem Id="YerelBorcTutar" ViewItem="YerelBorcTutar" Removed="True" />
               <LayoutItem Id="YerelAlacakTutar" ViewItem="YerelAlacakTutar" Removed="True" />
               <LayoutItem Id="FisTuruTanim" ViewItem="FisTuruTanim" Removed="True" />
               <LayoutItem Id="OdemeSekli" ViewItem="OdemeSekli" Removed="True" />
+              <LayoutItem Id="KarsiDovizTanim" ViewItem="KarsiDovizTanim" Removed="True" />
+              <LayoutItem Id="KarsiDovizKuru" ViewItem="KarsiDovizKuru" Removed="True" />
             </LayoutGroup>
           </LayoutGroup>
         </LayoutGroup>
@@ -2688,7 +2718,7 @@
         <ColumnInfo Id="FisTarihi" PropertyName="FisTarihi" Index="1" IsNewNode="True" />
         <ColumnInfo Id="KaynakHesap" PropertyName="KaynakHesap" Index="2" IsNewNode="True" />
         <ColumnInfo Id="KarsiHesap" PropertyName="KarsiHesap" Index="3" IsNewNode="True" />
-        <ColumnInfo Id="BorcTutar" PropertyName="BorcTutar" Caption="Açılış Bakiyesi" Index="4" IsNewNode="True" />
+        <ColumnInfo Id="BorcTutar" PropertyName="BorcTutar" Caption="Açılış Borç Bakiyesi" Index="4" IsNewNode="True" />
         <ColumnInfo Id="BelgeNo" PropertyName="BelgeNo" Index="5" IsNewNode="True" />
       </Columns>
     </ListView>
@@ -2950,7 +2980,10 @@
         <PropertyEditor Id="BelgeTarihi" PropertyName="BelgeTarihi" IsNewNode="True" />
         <PropertyEditor Id="KaynakHesap" PropertyName="KaynakHesap" Caption="Banka Hesabı" DataSourceCriteria="HesapTuru = 'Banka'" IsNewNode="True" />
         <PropertyEditor Id="KarsiHesap" PropertyName="KarsiHesap" Caption="Açılış Dengesi Hesabı" DataSourceCriteria="CustomCode1 = 'ACILIS_DENGE'" IsNewNode="True" />
-        <PropertyEditor Id="BorcTutar" PropertyName="BorcTutar" Caption="Açılış Bakiyesi" IsNewNode="True" />
+        <PropertyEditor Id="BorcTutar" PropertyName="BorcTutar" Caption="Açılış Borç Bakiyesi" IsNewNode="True" />
+        <PropertyEditor Id="AlacakTutar" PropertyName="AlacakTutar" Caption="Açılış Alacak Bakiyesi" IsNewNode="True" />
+        <PropertyEditor Id="DovizTanim" PropertyName="DovizTanim" IsNewNode="True" />
+        <PropertyEditor Id="DovizKuru" PropertyName="DovizKuru" IsNewNode="True" />
         <PropertyEditor Id="CreatedBy" PropertyName="CreatedBy" IsNewNode="True" />
         <PropertyEditor Id="CreatedDate" PropertyName="CreatedDate" IsNewNode="True" />
         <PropertyEditor Id="CustomCode1" PropertyName="CustomCode1" IsNewNode="True" />
@@ -2966,15 +2999,22 @@
         <LayoutGroup Id="Main" RelativeSize="100" IsNewNode="True">
           <LayoutGroup Id="SimpleEditors" RelativeSize="100" IsNewNode="True">
             <TabbedGroup Id="Tabs" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
-              <LayoutGroup Id="Genel" Caption="Genel" Direction="Vertical" Index="0" RelativeSize="100" IsNewNode="True">
-                <LayoutItem Id="FisNo" ViewItem="FisNo" Index="0" RelativeSize="11" IsNewNode="True" />
-                <LayoutItem Id="FisTarihi" ViewItem="FisTarihi" Index="1" RelativeSize="11" IsNewNode="True" />
-                <LayoutItem Id="KaynakHesap" ViewItem="KaynakHesap" Index="2" RelativeSize="11" IsNewNode="True" />
-                <LayoutItem Id="KarsiHesap" ViewItem="KarsiHesap" Index="3" RelativeSize="11" IsNewNode="True" />
-                <LayoutItem Id="BorcTutar" ViewItem="BorcTutar" Index="4" RelativeSize="11" IsNewNode="True" />
-                <LayoutItem Id="BelgeNo" ViewItem="BelgeNo" Index="5" RelativeSize="11" IsNewNode="True" />
-                <LayoutItem Id="BelgeTarihi" ViewItem="BelgeTarihi" Index="6" RelativeSize="11" IsNewNode="True" />
-                <LayoutItem Id="VadeTarihi" ViewItem="VadeTarihi" Index="7" RelativeSize="11" IsNewNode="True" />
+              <LayoutGroup Id="Genel" Caption="Genel" Direction="Horizontal" Index="0" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="Genel_col1" ShowCaption="False" Index="0" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="FisNo" ViewItem="FisNo" Index="0" RelativeSize="17" IsNewNode="True" />
+                  <LayoutItem Id="BelgeNo" ViewItem="BelgeNo" Index="1" RelativeSize="17" IsNewNode="True" />
+                  <LayoutItem Id="VadeTarihi" ViewItem="VadeTarihi" Index="2" RelativeSize="17" IsNewNode="True" />
+                  <LayoutItem Id="KaynakHesap" ViewItem="KaynakHesap" Index="3" RelativeSize="17" IsNewNode="True" />
+                  <LayoutItem Id="BorcTutar" ViewItem="BorcTutar" Index="4" RelativeSize="17" IsNewNode="True" />
+                  <LayoutItem Id="DovizTanim" ViewItem="DovizTanim" Index="5" RelativeSize="17" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="Genel_col2" ShowCaption="False" Index="1" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="FisTarihi" ViewItem="FisTarihi" Index="0" RelativeSize="20" IsNewNode="True" />
+                  <LayoutItem Id="BelgeTarihi" ViewItem="BelgeTarihi" Index="1" RelativeSize="20" IsNewNode="True" />
+                  <LayoutItem Id="KarsiHesap" ViewItem="KarsiHesap" Index="2" RelativeSize="20" IsNewNode="True" />
+                  <LayoutItem Id="AlacakTutar" ViewItem="AlacakTutar" Index="3" RelativeSize="20" IsNewNode="True" />
+                  <LayoutItem Id="DovizKuru" ViewItem="DovizKuru" Index="4" RelativeSize="20" IsNewNode="True" />
+                </LayoutGroup>
               </LayoutGroup>
               <LayoutGroup Id="OzelKodlar" Caption="Özel Kodlar &amp; Açıklama" Direction="Vertical" Index="1" RelativeSize="100" IsNewNode="True">
                 <LayoutItem Id="CustomCode1" ViewItem="CustomCode1" Index="0" RelativeSize="15" IsNewNode="True" />
@@ -3004,15 +3044,12 @@
               <LayoutItem Id="Description" ViewItem="Description" Removed="True" />
             </LayoutGroup>
             <LayoutGroup Id="KasaCariBankaHareketleri" RelativeSize="100" Removed="True">
-              <LayoutItem Id="AlacakTutar" ViewItem="AlacakTutar" Removed="True" />
-              <LayoutItem Id="DovizTanim" ViewItem="DovizTanim" Removed="True" />
-              <LayoutItem Id="DovizKuru" ViewItem="DovizKuru" Removed="True" />
-              <LayoutItem Id="KarsiDovizTanim" ViewItem="KarsiDovizTanim" Removed="True" />
-              <LayoutItem Id="KarsiDovizKuru" ViewItem="KarsiDovizKuru" Removed="True" />
               <LayoutItem Id="YerelBorcTutar" ViewItem="YerelBorcTutar" Removed="True" />
               <LayoutItem Id="YerelAlacakTutar" ViewItem="YerelAlacakTutar" Removed="True" />
               <LayoutItem Id="FisTuruTanim" ViewItem="FisTuruTanim" Removed="True" />
               <LayoutItem Id="OdemeSekli" ViewItem="OdemeSekli" Removed="True" />
+              <LayoutItem Id="KarsiDovizTanim" ViewItem="KarsiDovizTanim" Removed="True" />
+              <LayoutItem Id="KarsiDovizKuru" ViewItem="KarsiDovizKuru" Removed="True" />
             </LayoutGroup>
           </LayoutGroup>
         </LayoutGroup>
@@ -3024,7 +3061,7 @@
         <ColumnInfo Id="FisTarihi" PropertyName="FisTarihi" Index="1" IsNewNode="True" />
         <ColumnInfo Id="KaynakHesap" PropertyName="KaynakHesap" Index="2" IsNewNode="True" />
         <ColumnInfo Id="KarsiHesap" PropertyName="KarsiHesap" Index="3" IsNewNode="True" />
-        <ColumnInfo Id="BorcTutar" PropertyName="BorcTutar" Caption="Açılış Bakiyesi" Index="4" IsNewNode="True" />
+        <ColumnInfo Id="BorcTutar" PropertyName="BorcTutar" Caption="Açılış Borç Bakiyesi" Index="4" IsNewNode="True" />
         <ColumnInfo Id="BelgeNo" PropertyName="BelgeNo" Index="5" IsNewNode="True" />
       </Columns>
     </ListView>
@@ -3286,7 +3323,10 @@
         <PropertyEditor Id="BelgeTarihi" PropertyName="BelgeTarihi" IsNewNode="True" />
         <PropertyEditor Id="KaynakHesap" PropertyName="KaynakHesap" Caption="Cari Hesap" DataSourceCriteria="HesapTuru = 'Cari'" IsNewNode="True" />
         <PropertyEditor Id="KarsiHesap" PropertyName="KarsiHesap" Caption="Açılış Dengesi Hesabı" DataSourceCriteria="CustomCode1 = 'ACILIS_DENGE'" IsNewNode="True" />
-        <PropertyEditor Id="BorcTutar" PropertyName="BorcTutar" Caption="Açılış Bakiyesi" IsNewNode="True" />
+        <PropertyEditor Id="BorcTutar" PropertyName="BorcTutar" Caption="Açılış Borç Bakiyesi" IsNewNode="True" />
+        <PropertyEditor Id="AlacakTutar" PropertyName="AlacakTutar" Caption="Açılış Alacak Bakiyesi" IsNewNode="True" />
+        <PropertyEditor Id="DovizTanim" PropertyName="DovizTanim" IsNewNode="True" />
+        <PropertyEditor Id="DovizKuru" PropertyName="DovizKuru" IsNewNode="True" />
         <PropertyEditor Id="CreatedBy" PropertyName="CreatedBy" IsNewNode="True" />
         <PropertyEditor Id="CreatedDate" PropertyName="CreatedDate" IsNewNode="True" />
         <PropertyEditor Id="CustomCode1" PropertyName="CustomCode1" IsNewNode="True" />
@@ -3305,17 +3345,20 @@
             <TabbedGroup Id="Tabs" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
               <LayoutGroup Id="Genel" Caption="Genel" Direction="Horizontal" Index="0" RelativeSize="100" IsNewNode="True">
                 <LayoutGroup Id="Genel_col1" ShowCaption="False" Index="0" RelativeSize="50" IsNewNode="True">
-                  <LayoutItem Id="FisNo" ViewItem="FisNo" Index="0" RelativeSize="20" IsNewNode="True" />
-                  <LayoutItem Id="FisTarihi" ViewItem="FisTarihi" Index="1" RelativeSize="20" IsNewNode="True" />
-                  <LayoutItem Id="KaynakHesap" ViewItem="KaynakHesap" Index="2" RelativeSize="20" IsNewNode="True" />
-                  <LayoutItem Id="KarsiHesap" ViewItem="KarsiHesap" Index="3" RelativeSize="20" IsNewNode="True" />
-                  <LayoutItem Id="BorcTutar" ViewItem="BorcTutar" Index="4" RelativeSize="20" IsNewNode="True" />
+                  <LayoutItem Id="FisNo" ViewItem="FisNo" Index="0" RelativeSize="14" IsNewNode="True" />
+                  <LayoutItem Id="BelgeNo" ViewItem="BelgeNo" Index="1" RelativeSize="14" IsNewNode="True" />
+                  <LayoutItem Id="VadeTarihi" ViewItem="VadeTarihi" Index="2" RelativeSize="14" IsNewNode="True" />
+                  <LayoutItem Id="KaynakHesap" ViewItem="KaynakHesap" Index="3" RelativeSize="14" IsNewNode="True" />
+                  <LayoutItem Id="BorcTutar" ViewItem="BorcTutar" Index="4" RelativeSize="14" IsNewNode="True" />
+                  <LayoutItem Id="DovizTanim" ViewItem="DovizTanim" Index="5" RelativeSize="14" IsNewNode="True" />
                 </LayoutGroup>
                 <LayoutGroup Id="Genel_col2" ShowCaption="False" Index="1" RelativeSize="50" IsNewNode="True">
-                  <LayoutItem Id="BelgeNo" ViewItem="BelgeNo" Index="0" RelativeSize="25" IsNewNode="True" />
-                  <LayoutItem Id="BelgeTarihi" ViewItem="BelgeTarihi" Index="1" RelativeSize="25" IsNewNode="True" />
-                  <LayoutItem Id="VadeTarihi" ViewItem="VadeTarihi" Index="2" RelativeSize="25" IsNewNode="True" />
-                  <LayoutItem Id="OdemeSekli" ViewItem="OdemeSekli" Index="3" RelativeSize="25" IsNewNode="True" />
+                  <LayoutItem Id="FisTarihi" ViewItem="FisTarihi" Index="0" RelativeSize="14" IsNewNode="True" />
+                  <LayoutItem Id="BelgeTarihi" ViewItem="BelgeTarihi" Index="1" RelativeSize="14" IsNewNode="True" />
+                  <LayoutItem Id="OdemeSekli" ViewItem="OdemeSekli" Index="2" RelativeSize="14" IsNewNode="True" />
+                  <LayoutItem Id="KarsiHesap" ViewItem="KarsiHesap" Index="3" RelativeSize="14" IsNewNode="True" />
+                  <LayoutItem Id="AlacakTutar" ViewItem="AlacakTutar" Index="4" RelativeSize="14" IsNewNode="True" />
+                  <LayoutItem Id="DovizKuru" ViewItem="DovizKuru" Index="5" RelativeSize="14" IsNewNode="True" />
                 </LayoutGroup>
               </LayoutGroup>
               <LayoutGroup Id="OzelKodlar" Caption="Özel Kodlar &amp; Açıklama" Direction="Vertical" Index="1" RelativeSize="100" IsNewNode="True">
@@ -3346,14 +3389,11 @@
               <LayoutItem Id="Description" ViewItem="Description" Removed="True" />
             </LayoutGroup>
             <LayoutGroup Id="KasaCariBankaHareketleri" RelativeSize="100" Removed="True">
-              <LayoutItem Id="AlacakTutar" ViewItem="AlacakTutar" Removed="True" />
-              <LayoutItem Id="DovizTanim" ViewItem="DovizTanim" Removed="True" />
-              <LayoutItem Id="DovizKuru" ViewItem="DovizKuru" Removed="True" />
-              <LayoutItem Id="KarsiDovizTanim" ViewItem="KarsiDovizTanim" Removed="True" />
-              <LayoutItem Id="KarsiDovizKuru" ViewItem="KarsiDovizKuru" Removed="True" />
               <LayoutItem Id="YerelBorcTutar" ViewItem="YerelBorcTutar" Removed="True" />
               <LayoutItem Id="YerelAlacakTutar" ViewItem="YerelAlacakTutar" Removed="True" />
               <LayoutItem Id="FisTuruTanim" ViewItem="FisTuruTanim" Removed="True" />
+              <LayoutItem Id="KarsiDovizTanim" ViewItem="KarsiDovizTanim" Removed="True" />
+              <LayoutItem Id="KarsiDovizKuru" ViewItem="KarsiDovizKuru" Removed="True" />
             </LayoutGroup>
           </LayoutGroup>
         </LayoutGroup>
@@ -3365,7 +3405,7 @@
         <ColumnInfo Id="FisTarihi" PropertyName="FisTarihi" Index="1" IsNewNode="True" />
         <ColumnInfo Id="KaynakHesap" PropertyName="KaynakHesap" Index="2" IsNewNode="True" />
         <ColumnInfo Id="KarsiHesap" PropertyName="KarsiHesap" Index="3" IsNewNode="True" />
-        <ColumnInfo Id="BorcTutar" PropertyName="BorcTutar" Caption="Açılış Bakiyesi" Index="4" IsNewNode="True" />
+        <ColumnInfo Id="BorcTutar" PropertyName="BorcTutar" Caption="Açılış Borç Bakiyesi" Index="4" IsNewNode="True" />
         <ColumnInfo Id="BelgeNo" PropertyName="BelgeNo" Index="5" IsNewNode="True" />
       </Columns>
     </ListView>
@@ -3679,4 +3719,8 @@
       </Columns>
     </ListView>
   </Views>
+  <!-- ChangePasswordByUser action caption'ı artık ActionDesign/XAFML İLE DEĞİL, kod
+       tarafında SifreDegistirBaslikController ile atanıyor (bkz. o dosyadaki not —
+       Model override'ı denendi, ChangePasswordController Caption'ı kendi kodunda
+       eziyor, XAFML etkisiz kaldı). -->
 </Application>

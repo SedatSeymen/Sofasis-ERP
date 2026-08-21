@@ -76,6 +76,8 @@ public class KasaCariBankaHareketleri : BaseClassWithAuditAndDescription
     decimal yerelBorcTutar;
     decimal yerelAlacakTutar;
     bool motorIslendi;
+    decimal uygulananYerelBorcTutar;
+    decimal uygulananYerelAlacakTutar;
 
     [Size(20)]
     [Indexed(Unique = true)]
@@ -160,13 +162,18 @@ public class KasaCariBankaHareketleri : BaseClassWithAuditAndDescription
     // aynı ham tutarla AlacakTutar'a da otomatik kopyalanır (aynı döviz cinsi
     // varsayımıyla; farklı döviz cinsi durumunda kullanıcı AlacakTutar'ı elle
     // düzeltebilir, bu tek-yönlü kopyalama ikinci bir manuel değişikliği EZMEZ).
-    // Yalnızca YENİ kayıtta değiştirilebilir (bkz. Appearance Criteria) — kaydedilmiş
-    // bir fişin tutarı değiştirilemez, yanlış girilen fiş SİLİNİP yeniden girilir
-    // (4-ajanlı testte bulunan "düzenlemede bakiye motoru atlanıyor" hatasının kökten
-    // çözümü — GuncelBakiye güncellemesi zaten yalnızca ilk kayıtta bir kez çalışıyordu).
+    // Yalnızca YENİ kayıtta VEYA Açılış Fişi'nde değiştirilebilir (bkz. Appearance
+    // Criteria) — diğer fiş türlerinde kaydedilmiş bir fişin tutarı değiştirilemez,
+    // yanlış girilen fiş SİLİNİP yeniden girilir (4-ajanlı testte bulunan "düzenlemede
+    // bakiye motoru atlanıyor" hatasının kökten çözümü). Açılış Fişi bir "işlem" değil,
+    // kurulum/mutabakat sırasında düzeltilmesi normal olan referans veri olduğu için
+    // kullanıcı isteğiyle (2026-08-21) istisna tutuldu — düzenleme sonrası bakiye
+    // motorunun doğru çalışması için ObjectSaving()'de "fark" mekanizması eklendi
+    // (bkz. UygulananYerelBorcTutar/UygulananYerelAlacakTutar).
     [RuleValueComparison("Rule_KasaCariBankaHareketleri_BorcTutar_Pozitif", DefaultContexts.Save, ValueComparisonType.GreaterThan, 0,
         CustomMessageTemplate = "Lütfen Tutarı sıfırdan büyük giriniz.")]
-    [Appearance("ED_KasaCariBankaHareketleri_BorcTutar", Enabled = false, Criteria = "!(IsNewObject(this))", Context = "DetailView")]
+    [Appearance("ED_KasaCariBankaHareketleri_BorcTutar", Enabled = false,
+        Criteria = "!(IsNewObject(this)) And Not ([FisTuruTanim.FisTuruKodu] = 'ACILIS')", Context = "DetailView")]
     [XafDisplayName("Borç Tutar")]
     public decimal BorcTutar
     {
@@ -256,6 +263,29 @@ public class KasaCariBankaHareketleri : BaseClassWithAuditAndDescription
     {
         get => motorIslendi;
         set => SetPropertyValue(nameof(MotorIslendi), ref motorIslendi, value);
+    }
+
+    // GuncelBakiye'ye EN SON uygulanan (fiilen işlenmiş) yerel tutarlar — Açılış Fişi
+    // düzenlemesinde (bkz. BorcTutar Appearance Criteria) ObjectSaving()'in "fark"
+    // hesaplayabilmesi için gerekli. YerelBorcTutar/YerelAlacakTutar kullanıcı ekranda
+    // değer değiştirdiği an bellekte GÜNCELLENİR (henüz kaydedilmemiş olsa bile) —
+    // bu yüzden "az önce ne uygulanmıştı" bilgisini AYRI saklamak zorunludur.
+    [Browsable(false)]
+    [VisibleInDetailView(false)]
+    [VisibleInListView(false)]
+    public decimal UygulananYerelBorcTutar
+    {
+        get => uygulananYerelBorcTutar;
+        set => SetPropertyValue(nameof(UygulananYerelBorcTutar), ref uygulananYerelBorcTutar, value);
+    }
+
+    [Browsable(false)]
+    [VisibleInDetailView(false)]
+    [VisibleInListView(false)]
+    public decimal UygulananYerelAlacakTutar
+    {
+        get => uygulananYerelAlacakTutar;
+        set => SetPropertyValue(nameof(UygulananYerelAlacakTutar), ref uygulananYerelAlacakTutar, value);
     }
 
     protected override void OnChanged(string propertyName, object oldValue, object newValue)
@@ -359,7 +389,22 @@ public class KasaCariBankaHareketleri : BaseClassWithAuditAndDescription
             KaynakHesap.GuncelBakiye += YerelBorcTutar;
             KarsiHesap.GuncelBakiye -= YerelAlacakTutar;
 
+            UygulananYerelBorcTutar = YerelBorcTutar;
+            UygulananYerelAlacakTutar = YerelAlacakTutar;
             MotorIslendi = true;
+        }
+        else if (YerelBorcTutar != UygulananYerelBorcTutar || YerelAlacakTutar != UygulananYerelAlacakTutar)
+        {
+            // Kayıt zaten işlenmiş (MotorIslendi=true) ama tutar değişmiş — bu yalnızca
+            // Açılış Fişi'nde mümkün (bkz. BorcTutar Appearance Criteria, diğer fiş
+            // türlerinde bu alan zaten kilitli). Eski etkiyi geri alıp FARKI uygula —
+            // KaynakHesap/KarsiHesap kendisi bu ekranlarda değiştirilemediği için
+            // (kendi Appearance kuralları hâlâ kilitli) aynı hesaplara işlenir.
+            KaynakHesap.GuncelBakiye += (YerelBorcTutar - UygulananYerelBorcTutar);
+            KarsiHesap.GuncelBakiye -= (YerelAlacakTutar - UygulananYerelAlacakTutar);
+
+            UygulananYerelBorcTutar = YerelBorcTutar;
+            UygulananYerelAlacakTutar = YerelAlacakTutar;
         }
         base.ObjectSaving();
     }
@@ -368,8 +413,13 @@ public class KasaCariBankaHareketleri : BaseClassWithAuditAndDescription
     {
         if (MotorIslendi)
         {
-            KaynakHesap.GuncelBakiye -= YerelBorcTutar;
-            KarsiHesap.GuncelBakiye += YerelAlacakTutar;
+            // UygulananYerelBorcTutar/UygulananYerelAlacakTutar kullanılır — YerelBorcTutar/
+            // YerelAlacakTutar DEĞİL: kullanıcı Açılış Fişi'nde tutarı ekranda değiştirip
+            // KAYDETMEDEN silme yaparsa, Yerel* alanları henüz commit edilmemiş (yanlış)
+            // değeri taşır; Uygulanan* alanları ise her zaman GERÇEKTEN GuncelBakiye'ye
+            // işlenmiş son tutarı yansıtır (yalnızca başarılı ObjectSaving()'de güncellenir).
+            KaynakHesap.GuncelBakiye -= UygulananYerelBorcTutar;
+            KarsiHesap.GuncelBakiye += UygulananYerelAlacakTutar;
         }
         base.ObjectDeleting();
     }

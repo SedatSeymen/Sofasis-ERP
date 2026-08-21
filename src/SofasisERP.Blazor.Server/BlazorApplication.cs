@@ -22,18 +22,16 @@ public class SofasisERPBlazorApplication : BlazorApplication {
     protected override void OnSetupStarted() {
         base.OnSetupStarted();
 
-#if DEBUG
-        if(System.Diagnostics.Debugger.IsAttached && CheckCompatibilityType == CheckCompatibilityType.DatabaseSchema) {
+        if(ZorunluSemaGuncellemesiAcikMi() && CheckCompatibilityType == CheckCompatibilityType.DatabaseSchema) {
             DatabaseUpdateMode = DatabaseUpdateMode.UpdateDatabaseAlways;
         }
-#endif
     }
     void SofasisERPBlazorApplication_DatabaseVersionMismatch(object sender, DatabaseVersionMismatchEventArgs e) {
 #if EASYTEST
         e.Updater.Update();
         e.Handled = true;
 #else
-        if(System.Diagnostics.Debugger.IsAttached) {
+        if(ZorunluSemaGuncellemesiAcikMi()) {
             e.Updater.Update();
             e.Handled = true;
         }
@@ -51,4 +49,14 @@ public class SofasisERPBlazorApplication : BlazorApplication {
         }
 #endif
     }
+
+    // Yerel geliştirmede F5/debugger her zaman şema güncellemesini tetikler (değişmedi).
+    // Production'da (systemd servisi, debugger yok) şema oluşturma/güncelleme normalde
+    // KAPALI kalır — yanlışlıkla canlı şemanın değiştirilmesini önlemek için. İlk deploy
+    // gibi tek seferlik durumlarda SOFASISERP_ZORUNLU_DB_GUNCELLEME=1 ortam değişkeni
+    // (systemd EnvironmentFile üzerinden) bilinçli olarak açılır, güncelleme sonrası
+    // .env dosyasından kaldırılır — kalıcı olarak açık bırakılmaz.
+    static bool ZorunluSemaGuncellemesiAcikMi() =>
+        System.Diagnostics.Debugger.IsAttached
+        || Environment.GetEnvironmentVariable("SOFASISERP_ZORUNLU_DB_GUNCELLEME") == "1";
 }

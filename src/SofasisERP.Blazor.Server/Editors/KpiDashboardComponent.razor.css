@@ -1,0 +1,91 @@
+/* Renkler DevExpress Fluent tema public tasarım token'larından (--dxds-*) geliyor —
+   sabit hex renk YOK. Bu sayede tema/skin (Blue, Dark, Mint, vb.) veya açık/koyu mod
+   değiştiğinde kartlar otomatik uyum sağlar, ayrı bir kod değişikliği gerekmez. */
+
+.kpi-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 8px 4px 16px 4px;
+}
+
+.kpi-section-title {
+    color: var(--dxds-color-content-neutral-subdued-rest);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.kpi-card-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.kpi-card {
+    flex: 1 1 220px;
+    min-width: 220px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--dxds-color-surface-neutral-default-rest);
+    border: 1px solid var(--dxds-color-border-neutral-default-rest);
+    border-radius: 10px;
+    padding: 18px 20px;
+    cursor: pointer;
+    transition: background-color .12s ease, transform .12s ease;
+}
+
+.kpi-card:hover {
+    background: var(--dxds-color-surface-neutral-default-hovered);
+    transform: translateY(-2px);
+}
+
+.kpi-icon {
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.kpi-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.kpi-body {
+    min-width: 0;
+}
+
+.kpi-label {
+    color: var(--dxds-color-content-neutral-subdued-rest);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.kpi-value {
+    color: var(--dxds-color-content-neutral-default-rest);
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.25;
+    white-space: nowrap;
+}
+
+.kpi-unit {
+    color: var(--dxds-color-content-neutral-subdued-rest);
+    font-size: 13px;
+    font-weight: 500;
+    margin-left: 6px;
+}
+
+.kpi-accent-teal .kpi-icon { background: var(--dxds-color-surface-utility-teal-subdued-rest); color: var(--dxds-icon-color-blue); }
+.kpi-accent-indigo .kpi-icon { background: var(--dxds-color-surface-utility-indigo-subdued-rest); color: var(--dxds-icon-color-purple); }
+.kpi-accent-green .kpi-icon { background: var(--dxds-color-surface-utility-green-subdued-rest); color: var(--dxds-icon-color-green); }
+.kpi-accent-orange .kpi-icon { background: var(--dxds-color-surface-utility-orange-subdued-rest); color: var(--dxds-icon-color-yellow); }

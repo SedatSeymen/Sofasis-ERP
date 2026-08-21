@@ -18,9 +18,13 @@
  */
 
 using DevExpress.ExpressApp.Security;
+using System.ComponentModel;
 
 namespace SofasisERP.Module.Services;
 
+// [DisplayName] olmadan başlık "{ApplicationName}{SınıfAdı}" şeklinde ("Sofasis
+// ERPLogon Parameters") çirkin birleşiyordu — kullanıcı fark etti (2026-08-21).
+[DisplayName("Kullanıcı Girişi")]
 public class SofasisERPLogonParameters : AuthenticationStandardLogonParameters
 {
     public SofasisERPLogonParameters()

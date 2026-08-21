@@ -71,10 +71,38 @@ public class StokAltGrupTanim : BaseClassWithAuditAndDescription
     {
         if (Session.IsNewObject(this) && string.IsNullOrEmpty(StokAltGrupKodu) && StokGrupTanim != null)
         {
-            IStokKoduJeneratoru jenerator = new StokKoduJeneratoru();
-            StokAltGrupKodu = jenerator.SonrakiStokAltGrupKodu(Session, StokGrupTanim);
+            // NumberSequenceService/SequenceGenerator YERİNE ModelSetDetay.SiraNo ile
+            // kanıtlanmış deseni kullanır: kardeş kayıtlar StokGrupTanim.StokAltGrupTanims
+            // koleksiyonundan (in-memory association) okunur. Sebep: aynı StokGrupTanim
+            // DetailView'ı kaydedilmeden art arda "Yeni" popup'ıyla birden fazla
+            // StokAltGrupTanim eklenince, her popup KENDİ nested ObjectSpace/Session'ında
+            // çalışıyor — SequenceGenerator'ın Session-bazlı önbelleği bu nested
+            // Session'lar arasında paylaşılmıyor, her popup veritabanından AYNI (henüz
+            // commit edilmemiş) sayacı okuyup AYNI kodu üretiyordu (canlıda doğrulanan
+            // hata: "duplicate key value violates unique constraint
+            // iStokAltGrupKodu_StokAltGrupTanim"). Kardeş koleksiyonunu doğrudan okumak
+            // nested Session'lar arasında da doğru çalışır (aynı üst nesneye bağlı
+            // Session zinciri commit edilmeden de kardeşi görür).
+            if (string.IsNullOrEmpty(StokGrupTanim.StokGrupKodu))
+            {
+                IStokKoduJeneratoru jenerator = new StokKoduJeneratoru();
+                StokGrupTanim.StokGrupKodu = jenerator.SonrakiStokGrupKodu(Session, StokGrupTanim.StokTipiTanim);
+            }
+
+            int sonSiraNo = StokGrupTanim.StokAltGrupTanims
+                .Where(x => x != this && !string.IsNullOrEmpty(x.StokAltGrupKodu))
+                .Select(x => SonEkSiraNumarasi(x.StokAltGrupKodu))
+                .DefaultIfEmpty(0)
+                .Max();
+            StokAltGrupKodu = $"{StokGrupTanim.StokGrupKodu}.{(sonSiraNo + 1):D2}";
         }
         base.OnSaving();
+    }
+
+    static int SonEkSiraNumarasi(string kod)
+    {
+        string sonSegment = kod.Substring(kod.LastIndexOf('.') + 1);
+        return int.TryParse(sonSegment, out int n) ? n : 0;
     }
 
     protected override void OnDeleting()
