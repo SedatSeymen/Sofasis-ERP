@@ -11,6 +11,7 @@
  * ****************************************************************************
  */
 
+using System.ComponentModel;
 using DevExpress.ExpressApp.DC;
 using DevExpress.Persistent.Base;
 using DevExpress.Xpo;
@@ -18,6 +19,7 @@ using DevExpress.Xpo;
 namespace SofasisERP.Module.BusinessObjects;
 
 [DefaultClassOptions]
+[NavigationItem(false)]
 [XafDisplayName("Genel Parametre Tanımlama")]
 public class GenelParametre : BaseClass
 {
@@ -29,7 +31,7 @@ public class GenelParametre : BaseClass
         if (Session.IsNewObject(this))
         {
             XPCollection<GenelParametre> mevcutlar = new XPCollection<GenelParametre>(Session);
-            if (mevcutlar.Count == 1)
+            if (mevcutlar.Count >= 1)
             {
                 this.CancelEdit();
                 GenelParametre mevcut = mevcutlar[0];
@@ -39,9 +41,29 @@ public class GenelParametre : BaseClass
         }
     }
 
-    OndalikBasamakSayisi miktarOndalikMaski = OndalikBasamakSayisi.Basamak4;
+    // Tek-satır garantisi: değer her zaman 1'dir; benzersiz indeks DB seviyesinde
+    // ikinci bir satır eklenmesini engeller. AfterConstruction'daki Count kontrolü
+    // yalnızca UI akışını (yeni kayıt yerine mevcuda yönlendirme) sağlar — asıl
+    // garanti burada, çünkü Count kontrolü tek başına DB'de zaten 2+ satır varsa
+    // yetersiz kalır (denetim raporu O4).
+    int tekKayitAnahtari = 1;
+
+    [Indexed(Unique = true)]
+    [Browsable(false)]
+    [VisibleInListView(false)]
+    [VisibleInDetailView(false)]
+    [VisibleInLookupListView(false)]
+    [VisibleInReports(false)]
+    [VisibleInDashboards(false)]
+    public int TekKayitAnahtari
+    {
+        get => tekKayitAnahtari;
+        set => SetPropertyValue(nameof(TekKayitAnahtari), ref tekKayitAnahtari, value);
+    }
+
+    OndalikBasamakSayisi miktarOndalikMaski = OndalikBasamakSayisi.Basamak2;
     OndalikBasamakSayisi tutarOndalikMaski = OndalikBasamakSayisi.Basamak2;
-    OndalikBasamakSayisi kurOndalikMaski = OndalikBasamakSayisi.Basamak6;
+    OndalikBasamakSayisi kurOndalikMaski = OndalikBasamakSayisi.Basamak2;
 
     [XafDisplayName("Miktar Ondalık Maskı")]
     public OndalikBasamakSayisi MiktarOndalikMaski

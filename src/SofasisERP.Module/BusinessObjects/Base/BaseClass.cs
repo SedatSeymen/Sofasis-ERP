@@ -33,7 +33,7 @@ TargetItems = "*", Criteria = "IsSystemRecord = true", Context = "ListView",
     FontColor = "Red")]
 // Varsayılan kayıt ise turuncu ve kalın yazı tipi uygula
 [Appearance("IsDefaultColor", AppearanceItemType = "ViewItem",
-TargetItems = "*", Criteria = "IsDefault = 1", Context = "",
+TargetItems = "*", Criteria = "IsDefault = true", Context = "",
     FontColor = "Orange", FontStyle = DevExpress.Drawing.DXFontStyle.Bold)]
 public abstract class BaseClass : BaseObject
 {

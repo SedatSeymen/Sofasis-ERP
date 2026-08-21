@@ -11,8 +11,9 @@
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Editors;
+using SofasisERP.Module.BusinessObjects;
 
-namespace SofasisERP.Module.BusinessObjects;
+namespace SofasisERP.Module.Controllers.Process;
 
 public class FisTuruVarsayilanDegeriHedefTipDegistiController : ObjectViewController<DetailView, FisTuruVarsayilanDegeri>
 {

@@ -11,6 +11,7 @@
  * ****************************************************************************
  */
 
+using DevExpress.Data.Filtering;
 using DevExpress.ExpressApp.ConditionalAppearance;
 using DevExpress.ExpressApp.DC;
 using DevExpress.Persistent.Base;
@@ -23,6 +24,7 @@ namespace SofasisERP.Module.BusinessObjects;
 
 [DefaultProperty(nameof(UlkeAdi))]
 [DefaultClassOptions]
+[NavigationItem(false)]
 [XafDisplayName("Ülke Tanımlama")]
 public class UlkeTanim : BaseClassWithAuditAndDescription
 {
@@ -76,5 +78,23 @@ public class UlkeTanim : BaseClassWithAuditAndDescription
     {
         get => isVarsayilan;
         set => SetPropertyValue(nameof(IsVarsayilan), ref isVarsayilan, value);
+    }
+
+    // NOT: IsVarsayilan alanı vardı ama tekil-zorlama YOKTU — birden fazla "varsayılan"
+    // kayıt oluşabiliyordu (denetim raporunda bulundu, doğrulandı). DovizTanim/KDVTanim'deki
+    // kanıtlanmış desenle aynı.
+    protected override void OnSaving()
+    {
+        if (IsVarsayilan)
+        {
+            UlkeTanim entity = Session.FindObject<UlkeTanim>(
+                CriteriaOperator.FromLambda<UlkeTanim>(x => x.IsVarsayilan && x.Oid != this.Oid));
+            if (entity != null)
+            {
+                entity.IsVarsayilan = false;
+                entity.Save();
+            }
+        }
+        base.OnSaving();
     }
 }

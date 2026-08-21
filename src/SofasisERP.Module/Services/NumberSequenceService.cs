@@ -60,7 +60,7 @@ public sealed class NumberSequenceService : INumberSequenceService
     static SequenceGenerator BulYadaOlustur(Session session, string sequenceAnahtari, string kriter)
     {
         ConcurrentDictionary<string, SequenceGenerator> cache = sessionCache.GetOrCreateValue(session);
-        string onbellekAnahtari = sequenceAnahtari + "" + kriter;
+        string onbellekAnahtari = sequenceAnahtari + "|" + kriter;
 
         if (cache.TryGetValue(onbellekAnahtari, out SequenceGenerator onbellektekiGenerator))
             return onbellektekiGenerator;

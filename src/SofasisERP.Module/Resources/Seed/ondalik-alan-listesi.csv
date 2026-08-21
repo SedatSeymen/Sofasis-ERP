@@ -12,3 +12,13 @@ DovizGunlukKurD;DovizAlis;Kur
 DovizGunlukKurD;DovizSatis;Kur
 DovizGunlukKurD;EfektifDovizAlis;Kur
 DovizGunlukKurD;EfektifDovizSatis;Kur
+StokTanim;ToplamMiktar;Miktar
+StokTanim;OrtalamaMaliyet;Maliyet
+StokBakiye;Miktar;Miktar
+StokHareketleriD;Miktar;Miktar
+StokHareketleriD;BirimMaliyet;Maliyet
+StokHareketleriD;ToplamMaliyet;Maliyet
+StokHareketleriD;YerelBirimMaliyet;Maliyet
+StokHareketleriD;YerelToplamMaliyet;Maliyet
+StokHareketleriD;DovizKuru;Kur
+StokTransferi;Miktar;Miktar

@@ -15,8 +15,9 @@
 
 using DevExpress.Data.Filtering;
 using DevExpress.ExpressApp;
+using SofasisERP.Module.BusinessObjects;
 
-namespace SofasisERP.Module.BusinessObjects;
+namespace SofasisERP.Module.Controllers.Process;
 
 public class StokTanimYeniKayitVarsayilanlariController : ViewController<DetailView>
 {

@@ -24,7 +24,10 @@ using AggregatedAttribute = DevExpress.Xpo.AggregatedAttribute;
 
 namespace SofasisERP.Module.BusinessObjects;
 
+// TODO (Faz 7 — Security System aktifleşince, denetim raporu N8): bu ekran yalnızca
+// muhasebe rolüne açık olmalı (plan §5 kararı, StokTipiTanim ile aynı desen).
 [DefaultClassOptions]
+[NavigationItem(false)]
 [DefaultProperty(nameof(StokGrupAdi))]
 [XafDisplayName("Stok Grup Tanımlama")]
 public class StokGrupTanim : BaseClassWithAuditAndDescription

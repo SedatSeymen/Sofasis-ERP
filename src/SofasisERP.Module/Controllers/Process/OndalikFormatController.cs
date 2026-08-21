@@ -20,8 +20,9 @@ using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Editors;
 using DevExpress.ExpressApp.Model;
 using DevExpress.Persistent.Base;
+using SofasisERP.Module.BusinessObjects;
 
-namespace SofasisERP.Module.BusinessObjects;
+namespace SofasisERP.Module.Controllers.Process;
 
 public class OndalikFormatController : ViewController<DetailView>
 {
@@ -39,21 +40,7 @@ public class OndalikFormatController : ViewController<DetailView>
         Type tip = nesne.GetType();
         string kisaSinifAdi = tip.Name;
 
-        int miktarHane = 4, tutarHane = 2, kurHane = 6;
-        try
-        {
-            GenelParametre parametre = View.ObjectSpace.GetObjects<GenelParametre>().FirstOrDefault();
-            if (parametre != null)
-            {
-                miktarHane = (int)parametre.MiktarOndalikMaski;
-                tutarHane = (int)parametre.TutarOndalikMaski;
-                kurHane = (int)parametre.KurOndalikMaski;
-            }
-        }
-        catch (Exception ex)
-        {
-            Tracing.Tracer.LogError(ex);
-        }
+        (int miktarHane, int tutarHane, int kurHane) = GenelParametreOkuyucu.OndalikHaneleriniOku(View.ObjectSpace);
 
         DovizTanim doviz = null;
         bool dovizAranmisti = false;
@@ -133,21 +120,7 @@ public class OndalikFormatListController : ViewController<ListView>
         Type tip = View.ObjectTypeInfo.Type;
         string kisaSinifAdi = tip.Name;
 
-        int miktarHane = 4, tutarHane = 2, kurHane = 6;
-        try
-        {
-            GenelParametre parametre = View.ObjectSpace.GetObjects<GenelParametre>().FirstOrDefault();
-            if (parametre != null)
-            {
-                miktarHane = (int)parametre.MiktarOndalikMaski;
-                tutarHane = (int)parametre.TutarOndalikMaski;
-                kurHane = (int)parametre.KurOndalikMaski;
-            }
-        }
-        catch (Exception ex)
-        {
-            Tracing.Tracer.LogError(ex);
-        }
+        (int miktarHane, int tutarHane, int kurHane) = GenelParametreOkuyucu.OndalikHaneleriniOku(View.ObjectSpace);
 
         foreach (PropertyInfo prop in tip.GetProperties())
         {

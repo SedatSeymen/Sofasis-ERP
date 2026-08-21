@@ -1,5 +1,5 @@
 Kod;Ad;TelefonKodu;Varsayilan
-UM;ABD Küçük Dış Adaları;;false
+UM;ABD Küçük Dış Adaları;+1;false
 VI;ABD Virjin Adaları;+1340;false
 AF;Afganistan;+93;false
 DE;Almanya;+49;false
@@ -31,7 +31,7 @@ GB;Birleşik Krallık;+44;false
 BO;Bolivya;+591;false
 BA;Bosna-Hersek;+387;false
 BW;Botsvana;+267;false
-BV;Bouvet Adası;;false
+BV;Bouvet Adası;+47;false
 BR;Brezilya;+55;false
 IO;Britanya Hint Okyanusu Toprakları;+246;false
 VG;Britanya Virjin Adaları;+1284;false
@@ -91,7 +91,7 @@ KR;Güney Kore;+82;false
 SS;Güney Sudan;+211;false
 GE;Gürcistan;+995;false
 HT;Haiti;+509;false
-HM;Heard ve McDonald Adaları;;false
+HM;Heard ve McDonald Adaları;+672;false
 IN;Hindistan;+91;false
 NL;Hollanda;+31;false
 HN;Honduras;+504;false

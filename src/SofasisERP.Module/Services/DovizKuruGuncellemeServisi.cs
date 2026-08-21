@@ -37,7 +37,7 @@ public sealed class DovizKuruGuncellemeServisi : IDovizKuruGuncellemeServisi
 
     public void BugununKuruGerekirseGuncelle(IObjectSpace objectSpace)
     {
-        DateTime bugun = DateTime.UtcNow.Date;
+        DateTime bugun = TurkiyeZamani.Bugun;
 
         // TRY taban birimdir; TCMB kur listesinde yayınlanmaz, kur girilmez.
         List<DovizTanim> tumDovizler = objectSpace.GetObjects<DovizTanim>()
@@ -66,7 +66,7 @@ public sealed class DovizKuruGuncellemeServisi : IDovizKuruGuncellemeServisi
 
         master ??= objectSpace.CreateObject<DovizGunlukKurM>();
         master.KurTarihi = bugun;
-        master.KurSaati = DateTime.UtcNow;
+        master.KurSaati = TurkiyeZamani.Simdi;
 
         foreach (DovizTanim dovizTanim in tumDovizler)
         {

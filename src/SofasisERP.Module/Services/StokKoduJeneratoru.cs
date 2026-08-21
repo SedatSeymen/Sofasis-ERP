@@ -76,7 +76,7 @@ public sealed class StokKoduJeneratoru : IStokKoduJeneratoru
         if (stokTanim.FisTuruTanim == null)
             throw new ArgumentException("Fiş Türü ataması yapılmamış (StokTanimYeniKayitVarsayilanlariController kontrol edilmeli).", nameof(stokTanim));
 
-        return numberSequenceService.SonrakiNumara(session, "StokTanim", stokTanim.FisTuruTanim, DateTime.UtcNow);
+        return numberSequenceService.SonrakiNumara(session, "StokTanim", stokTanim.FisTuruTanim, TurkiyeZamani.Bugun);
     }
 
     // StokTipiTanim.StokTipiKodu (ör. "150") kullanıcı tarafından anlamlı biçimde

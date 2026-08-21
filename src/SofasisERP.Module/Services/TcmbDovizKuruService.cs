@@ -21,7 +21,7 @@ public sealed class TcmbDovizKuruService : IDovizKuruService
 {
     public IReadOnlyList<DovizKuruDto> KurlariCek(DateTime tarih)
     {
-        string url = tarih.Date == DateTime.UtcNow.Date
+        string url = tarih.Date == TurkiyeZamani.Bugun
             ? "https://www.tcmb.gov.tr/kurlar/today.xml"
             : $"https://www.tcmb.gov.tr/kurlar/{tarih:yyyyMM}/{tarih:ddMMyyyy}.xml";
 

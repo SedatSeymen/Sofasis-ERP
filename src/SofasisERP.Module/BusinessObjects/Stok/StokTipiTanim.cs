@@ -19,7 +19,12 @@ using System.ComponentModel;
 
 namespace SofasisERP.Module.BusinessObjects;
 
+// TODO (Faz 7 — Security System aktifleşince, denetim raporu N8): bu ekran yalnızca
+// muhasebe rolüne açık olmalı (plan §5 kararı). Security modülü bu projede henüz aktif
+// değil (bkz. project_stokkod_admin_kisiti_faz7 belleği) — şimdiden rol bazlı izin
+// eklenemez, Security kurulduğunda StokKoduUretimYontemi ile aynı desende eklenecek.
 [DefaultClassOptions]
+[NavigationItem(false)]
 [DefaultProperty(nameof(StokTipiAdi))]
 [XafDisplayName("Stok Tipi Tanımlama")]
 public class StokTipiTanim : BaseClassWithAuditAndDescription

@@ -18,12 +18,14 @@ using DevExpress.ExpressApp.Model;
 using DevExpress.Persistent.Base;
 using DevExpress.Persistent.Validation;
 using DevExpress.Xpo;
+using SofasisERP.Module.Services;
 using AggregatedAttribute = DevExpress.Xpo.AggregatedAttribute;
 
 namespace SofasisERP.Module.BusinessObjects;
 
 [XafDisplayName("Günlük Döviz Kur Girişi")]
 [DefaultClassOptions]
+[NavigationItem(false)]
 public class DovizGunlukKurM : BaseClassWithAudit
 {
     public DovizGunlukKurM(Session session) : base(session) { }
@@ -33,7 +35,7 @@ public class DovizGunlukKurM : BaseClassWithAudit
         base.AfterConstruction();
         if (Session.IsNewObject(this))
         {
-            KurTarihi = DateTime.UtcNow.Date;
+            KurTarihi = TurkiyeZamani.Bugun;
             KurAciklama = "[Yeni Kayıt]";
         }
     }

@@ -13,6 +13,7 @@
  */
 
 using DevExpress.Data.Filtering;
+using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.ConditionalAppearance;
 using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Editors;
@@ -23,10 +24,12 @@ using DevExpress.Persistent.Validation;
 using DevExpress.Xpo;
 using SofasisERP.Module.Services;
 using System.ComponentModel;
+using System.Linq;
 
 namespace SofasisERP.Module.BusinessObjects;
 
 [DefaultClassOptions]
+[NavigationItem(false)]
 [DefaultProperty(nameof(StokAdi))]
 [XafDisplayName("Stok Tanımlama")]
 public class StokTanim : BaseClassWithAuditAndDescription
@@ -36,11 +39,18 @@ public class StokTanim : BaseClassWithAuditAndDescription
     public override void AfterConstruction()
     {
         base.AfterConstruction();
-        // Yeni kayıtta Döviz alanı boş başlamasın — sistemdeki varsayılan para
-        // birimi (ör. TRY) otomatik seçili gelsin, kullanıcı isterse değiştirir.
-        DovizTanim = Session.FindObject<DovizTanim>(
-            CriteriaOperator.FromLambda<DovizTanim>(x => x.IsVarsayilan));
-        stokHizmetMasrafTipi = StokHizmetMasrafTipi.Stok;
+        // NOT: Session.IsNewObject korumasız idi — XPO, DB'den mevcut kayıt yüklenirken de
+        // AfterConstruction'ı çağırdığından, her açılışta DovizTanim güncel varsayılana
+        // SESSİZCE ezilebiliyordu (denetim raporunda bulundu, doğrulandı; projedeki diğer
+        // tüm sınıflar bu korumayı zaten kullanıyor).
+        if (Session.IsNewObject(this))
+        {
+            // Yeni kayıtta Döviz alanı boş başlamasın — sistemdeki varsayılan para
+            // birimi (ör. TRY) otomatik seçili gelsin, kullanıcı isterse değiştirir.
+            DovizTanim = Session.FindObject<DovizTanim>(
+                CriteriaOperator.FromLambda<DovizTanim>(x => x.IsVarsayilan));
+            stokHizmetMasrafTipi = StokHizmetMasrafTipi.Stok;
+        }
     }
 
     StokHizmetMasrafTipi stokHizmetMasrafTipi;
@@ -95,6 +105,8 @@ public class StokTanim : BaseClassWithAuditAndDescription
     decimal metrekare;
     decimal metreKup;
     decimal agirlik;
+    decimal toplamMiktar;
+    decimal ortalamaMaliyet;
 
     [Size(32)]
     [Indexed(Unique = true)]
@@ -196,8 +208,15 @@ public class StokTanim : BaseClassWithAuditAndDescription
     // Yalnızca StokGrubu'nun bağlı olduğu StokTipiTanim.MamulMu=Evet ise
     // görünür/zorunlu (eski projedeki "StokTipi=Mamul ise Model alanı görünür"
     // deseninin veriye dayalı karşılığı — bkz. StokTipiTanim.MamulMu).
+    [Association("ModelTanim-StokTanims")]
     [Appearance("IsVisible_StokTanim_Model", Visibility = ViewItemVisibility.Hide,
         Criteria = "StokGrubu.StokTipiTanim.MamulMu != True", Context = "DetailView")]
+    // NOT: yorum "zorunlu" diyordu ama yalnızca görünürlük vardı, gerçek zorunluluk kuralı
+    // eksikti — Mamul tipi stok Model'siz kaydedilebiliyordu (denetim raporunda bulundu,
+    // doğrulandı). §45.2 Katman 5'teki "StokTipi=Mamul ise Model referansı zorunludur"
+    // kararıyla artık tutarlı.
+    [RuleRequiredField("RuleRequired_StokTanim_Model", DefaultContexts.Save, "Mamul tipi stok için Lütfen Modeli Seçiniz...",
+        TargetCriteria = "StokGrubu.StokTipiTanim.MamulMu = True")]
     [XafDisplayName("Model")]
     public ModelTanim Model
     {
@@ -230,8 +249,13 @@ public class StokTanim : BaseClassWithAuditAndDescription
     }
 
     // Manuel/referans "liste" fiyatıdır — Faz 2'de maliyet motorunun hesaplayacağı
-    // OrtalamaMaliyet ile KARIŞTIRILMAMALI.
+    // OrtalamaMaliyet ile KARIŞTIRILMAMALI. Hizmet/Masraf'ta ve fiziksel Hammadde'de
+    // (Mamul olmayan Stok) kullanılır. Mamul'de GİZLİ — kullanıcı kararı (2026-08-18):
+    // Mamul'ün alış fiyatı anlamlı değil (satın alınmaz, üretilir) ve satış fiyatı
+    // ileride yalnızca Fiyat Listesi'nden gelecek.
     [VisibleInListView(false)]
+    [Appearance("IsVisible_StokTanim_AlisFiyati", Visibility = ViewItemVisibility.Hide,
+        Criteria = "StokGrubu.StokTipiTanim.MamulMu = True", Context = "DetailView")]
     [XafDisplayName("Alış Fiyatı")]
     public decimal? AlisFiyati
     {
@@ -241,7 +265,10 @@ public class StokTanim : BaseClassWithAuditAndDescription
 
     // Manuel/referans liste satış fiyatıdır — Faz 6'da maliyet motorunun hesaplayacağı
     // önerilen satış fiyatı ile KARIŞTIRILMAMALI (o zaman bu alan varsayılan/override olarak kalır).
+    // Mamul'de GİZLİ — bkz. AlisFiyati açıklaması.
     [VisibleInListView(false)]
+    [Appearance("IsVisible_StokTanim_SatisFiyati", Visibility = ViewItemVisibility.Hide,
+        Criteria = "StokGrubu.StokTipiTanim.MamulMu = True", Context = "DetailView")]
     [XafDisplayName("Satış Fiyatı")]
     public decimal? SatisFiyati
     {
@@ -323,12 +350,36 @@ public class StokTanim : BaseClassWithAuditAndDescription
         set => SetPropertyValue(nameof(Agirlik), ref agirlik, value);
     }
 
+    // Faz 2 (StokHareketleriM/D) Ağırlıklı Ortalama Maliyet motoru tarafından günceller —
+    // tüm depoların toplamıdır (depo bazlı bakiye için bkz. StokBakiye). Kullanıcı elle
+    // değiştirmez.
+    [VisibleInListView(false)]
+    [Appearance("ED_StokTanim_ToplamMiktar", Enabled = false, Context = "DetailView")]
+    [XafDisplayName("Toplam Miktar")]
+    public decimal ToplamMiktar
+    {
+        get => toplamMiktar;
+        set => SetPropertyValue(nameof(ToplamMiktar), ref toplamMiktar, value);
+    }
+
+    // Hareketli ağırlıklı ortalama, TL (Yerel) bazında — yalnızca Giriş hareketlerinde
+    // yeniden hesaplanır, Çıkış hareketlerinde DEĞİŞMEZ (bkz. IWeightedAverageCostService).
+    [VisibleInListView(false)]
+    [Appearance("ED_StokTanim_OrtalamaMaliyet", Enabled = false, Context = "DetailView")]
+    [XafDisplayName("Ortalama Maliyet")]
+    public decimal OrtalamaMaliyet
+    {
+        get => ortalamaMaliyet;
+        set => SetPropertyValue(nameof(OrtalamaMaliyet), ref ortalamaMaliyet, value);
+    }
+
+    // NOT: önceden yalnızca En/Boy/Yükseklik sıfırdan farklıyken hesaplanıyordu — ölçü
+    // sıfırlanınca Metrekare/MetreKüp ESKİ DEĞERDE DONUK KALIYORDU (denetim raporunda
+    // bulundu, doğrulandı). Artık koşulsuz her zaman yeniden hesaplanıyor.
     void HesaplaOlculer()
     {
-        if (En != 0 && Boy != 0)
-            Metrekare = (En * Boy) / 10000;
-        if (En != 0 && Boy != 0 && Yukseklik != 0)
-            MetreKup = (En * Boy * Yukseklik) / 1000000;
+        Metrekare = (En * Boy) / 10000;
+        MetreKup = (En * Boy * Yukseklik) / 1000000;
     }
 
     protected override void OnSaving()
@@ -339,6 +390,27 @@ public class StokTanim : BaseClassWithAuditAndDescription
             StokKodu = jenerator.SonrakiStokKodu(Session, this);
         }
         base.OnSaving();
+    }
+
+    // CariHesapTanim.OnDeleting ile aynı üslup (Faz 2): bu stoğa ait hareket kaydı varsa
+    // silme reddedilir — aksi halde StokHareketleriD orphan FK/çiğ Postgres hatası riski taşır.
+    protected override void OnDeleting()
+    {
+        try
+        {
+            if (new XPQuery<StokHareketleriD>(Session).Count(x => x.StokTanim == this) > 0)
+                throw new UserFriendlyException("Bu stoğa ait hareket kaydı var, silemezsiniz.");
+            base.OnDeleting();
+        }
+        catch (UserFriendlyException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Tracing.Tracer.LogError(ex);
+            throw;
+        }
     }
 
     protected override void OnChanged(string propertyName, object oldValue, object newValue)

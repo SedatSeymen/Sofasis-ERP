@@ -30,6 +30,7 @@ using AggregatedAttribute = DevExpress.Xpo.AggregatedAttribute;
 namespace SofasisERP.Module.BusinessObjects;
 
 [DefaultClassOptions]
+[NavigationItem(false)]
 [XafDisplayName("Fiş Türü Varsayılan Değeri")]
 public class FisTuruVarsayilanDegeri : BaseClass
 {

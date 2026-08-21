@@ -93,4 +93,16 @@ public class DovizGunlukKurD : BaseClass
         get => dovizGunlukKurMaster;
         set => SetPropertyValue(nameof(DovizGunlukKurMaster), ref dovizGunlukKurMaster, value);
     }
+
+    // KurTarihi (Master ile birlikte DovizTanim+KurTarihi benzersiz indeksini oluşturuyor) yalnızca
+    // DovizKuruGuncellemeServisi tarafından dolduruluyordu — kullanıcı Master'ın Aggregated
+    // koleksiyonundan elle yeni satır eklerse boş (DateTime.MinValue) kalıyor ve aynı dövizi ikinci
+    // kez eklemeye çalışınca unique index çakışması oluşuyordu (denetim raporunda bulundu, doğrulandı).
+    // Artık her kayıtta Master'dan otomatik senkronize ediliyor.
+    protected override void OnSaving()
+    {
+        if (DovizGunlukKurMaster != null)
+            KurTarihi = DovizGunlukKurMaster.KurTarihi;
+        base.OnSaving();
+    }
 }

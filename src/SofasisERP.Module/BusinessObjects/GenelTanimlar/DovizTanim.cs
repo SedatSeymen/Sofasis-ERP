@@ -23,6 +23,7 @@ namespace SofasisERP.Module.BusinessObjects;
 
 [DefaultProperty(nameof(DovizKodu))]
 [DefaultClassOptions]
+[NavigationItem(false)]
 [XafDisplayName("Döviz Tanımlama")]
 public class DovizTanim : BaseClassWithAudit, IFisTuruVarsayilanHedefi
 {

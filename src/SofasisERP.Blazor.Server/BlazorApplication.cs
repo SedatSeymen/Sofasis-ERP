@@ -13,6 +13,11 @@ public class SofasisERPBlazorApplication : BlazorApplication {
         ApplicationName = "SofasisERP";
         CheckCompatibilityType = DevExpress.ExpressApp.CheckCompatibilityType.DatabaseSchema;
         DatabaseVersionMismatch += SofasisERPBlazorApplication_DatabaseVersionMismatch;
+
+        // Giriş ekranında Kullanıcı Adı varsayılan "Admin" gelmesi artık burada DEĞİL,
+        // Startup.cs'de options.LogonParametersType = typeof(SofasisERPLogonParameters)
+        // ile çözülüyor — bkz. SofasisERPLogonParameters.cs (LastLogonParametersRead
+        // event'i yeni Blazor /LoginPage akışında güvenilmez tetikleniyordu).
     }
     protected override void OnSetupStarted() {
         base.OnSetupStarted();

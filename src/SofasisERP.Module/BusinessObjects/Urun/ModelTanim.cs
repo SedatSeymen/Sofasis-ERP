@@ -25,6 +25,7 @@ using System.ComponentModel;
 namespace SofasisERP.Module.BusinessObjects;
 
 [DefaultClassOptions]
+[NavigationItem(false)]
 [DefaultProperty(nameof(ModelAdi))]
 [XafDisplayName("Model Tanımlama")]
 public class ModelTanim : BaseClassWithAuditAndDescription
@@ -63,4 +64,17 @@ public class ModelTanim : BaseClassWithAuditAndDescription
         get => resim;
         set => SetPropertyValue(nameof(Resim), ref resim, value);
     }
+
+    // Aggregated DEĞİL — Model, StokTanim'in yaşam döngüsünü sahiplenmez, sadece
+    // referans alır. Tek amacı ModelSetDetay.StokTanim'in DataSourceProperty
+    // zincirinde ("ModelSetTanim.ModelTanim.StokTanims") kullanılmak — kullanıcı
+    // geri bildirimi: Model Set Detayı'nda Stok lookup'ı seçili Model'e göre
+    // daralmalıydı. Model Tanımlama ekranında ayrıca bir liste olarak GÖRÜNMESİN
+    // diye VisibleInDetailView(false).
+    [VisibleInDetailView(false)]
+    [VisibleInListView(false)]
+    [Association("ModelTanim-StokTanims")]
+    [XafDisplayName("Stok Kalemleri")]
+    public XPCollection<StokTanim> StokTanims
+        => GetCollection<StokTanim>(nameof(StokTanims));
 }

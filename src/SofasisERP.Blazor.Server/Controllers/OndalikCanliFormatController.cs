@@ -81,17 +81,7 @@ public class OndalikCanliFormatController : ViewController<DetailView>
         if (nesne == null) return;
         Type tip = nesne.GetType();
 
-        int tutarHane = 2;
-        try
-        {
-            GenelParametre parametre = View.ObjectSpace.GetObjects<GenelParametre>().FirstOrDefault();
-            if (parametre != null)
-                tutarHane = (int)parametre.TutarOndalikMaski;
-        }
-        catch (Exception ex)
-        {
-            Tracing.Tracer.LogError(ex);
-        }
+        (_, int tutarHane, _) = GenelParametreOkuyucu.OndalikHaneleriniOku(View.ObjectSpace);
 
         DovizTanim doviz = OndalikAlanKatalogu.DovizTaniminiCoz(nesne, tip);
         string sembol = doviz?.Sembol ?? "₺";

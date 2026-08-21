@@ -12,6 +12,7 @@ using DevExpress.ExpressApp.Model.DomainLogics;
 using DevExpress.ExpressApp.Model.NodeGenerators;
 using DevExpress.Xpo;
 using DevExpress.ExpressApp.Xpo;
+using SofasisERP.Module.BusinessObjects;
 
 namespace SofasisERP.Module;
 
@@ -24,6 +25,9 @@ public sealed class SofasisERPModule : ModuleBase {
         RequiredModuleTypes.Add(typeof(DevExpress.ExpressApp.SystemModule.SystemModule));
         RequiredModuleTypes.Add(typeof(DevExpress.ExpressApp.ConditionalAppearance.ConditionalAppearanceModule));
         RequiredModuleTypes.Add(typeof(DevExpress.ExpressApp.Validation.ValidationModule));
+        // Kullanıcı bazlı Model Difference deposu (ör. ListView sütun genişlikleri) için gerekli —
+        // eski ERP'den taşındı, bkz. SofasisERPBlazorModule.Application_CreateCustomUserModelDifferenceStore.
+        AdditionalExportedTypes.Add(typeof(ModelDifference));
     }
     public override IEnumerable<ModuleUpdater> GetModuleUpdaters(IObjectSpace objectSpace, Version versionFromDB) {
         ModuleUpdater updater = new DatabaseUpdate.Updater(objectSpace, versionFromDB);

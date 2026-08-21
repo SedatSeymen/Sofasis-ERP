@@ -22,6 +22,10 @@ using System.Linq;
 
 namespace SofasisERP.Module.BusinessObjects;
 
+// TODO (Faz 7 — Security System aktifleşince, denetim raporu N8): saf Aggregated Detail
+// olduğundan yalnızca StokGrupTanim'in DetailView'ından düzenlenir — StokGrupTanim
+// muhasebe rolüne kısıtlanınca bu da dolaylı olarak kısıtlanmış olur, ayrı bir izin
+// gerekmez.
 [DefaultProperty(nameof(StokAltGrupAdi))]
 [XafDisplayName("Stok Alt Grup Tanımlama")]
 public class StokAltGrupTanim : BaseClassWithAuditAndDescription

@@ -16,14 +16,13 @@ using DevExpress.ExpressApp.Security;
 using DevExpress.Persistent.Base;
 using DevExpress.Xpo;
 using Microsoft.Extensions.DependencyInjection;
+using SofasisERP.Module.Services;
 
 namespace SofasisERP.Module.BusinessObjects
 {
     [NonPersistent]
     public class BaseClassWithAudit : BaseClass
     {
-        ApplicationUser user { get; set; }
-
         public BaseClassWithAudit() : base()
         {
         }
@@ -45,20 +44,23 @@ namespace SofasisERP.Module.BusinessObjects
         protected override void OnSaving()
         {
             base.OnSaving();
-            user = GetCurrentUser();
+            ApplicationUser user = GetCurrentUser();
 
             if (user != null)
             {
                 // Yeni kayıt ise oluşturma bilgilerini doldur
                 if (Session.IsNewObject(this))
                 {
-                    CreatedDate = DateTime.Now;
+                    // NOT: DateTime.Now — sunucu saat dilimine bağımlıydı (bulut/UTC sunucuda
+                    // yanlış "bugün"e yazabilirdi). Denetim raporu K4 ile aynı kök neden,
+                    // TurkiyeZamani ile tutarlı hale getirildi.
+                    CreatedDate = TurkiyeZamani.Simdi;
                     CreatedBy = user;
                 }
                 else
                 {
                     // Mevcut kayıt ise değiştirme bilgilerini güncelle
-                    ModifiedDate = DateTime.Now;
+                    ModifiedDate = TurkiyeZamani.Simdi;
                     ModifiedBy = user;
                 }
             }

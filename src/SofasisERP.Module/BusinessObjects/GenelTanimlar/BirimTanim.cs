@@ -12,6 +12,7 @@
  * ****************************************************************************
  */
 
+using DevExpress.Data.Filtering;
 using DevExpress.ExpressApp.DC;
 using DevExpress.Persistent.Base;
 using DevExpress.Persistent.Validation;
@@ -22,6 +23,7 @@ namespace SofasisERP.Module.BusinessObjects;
 
 [DefaultProperty(nameof(BirimAdi))]
 [DefaultClassOptions]
+[NavigationItem(false)]
 [XafDisplayName("Birim Tanımlama")]
 public class BirimTanim : BaseClassWithAudit, IFisTuruVarsayilanHedefi
 {
@@ -46,5 +48,23 @@ public class BirimTanim : BaseClassWithAudit, IFisTuruVarsayilanHedefi
     {
         get => isVarsayilan;
         set => SetPropertyValue(nameof(IsVarsayilan), ref isVarsayilan, value);
+    }
+
+    // NOT: IsVarsayilan alanı vardı ama tekil-zorlama YOKTU — birden fazla "varsayılan"
+    // kayıt oluşabiliyordu (denetim raporunda bulundu, doğrulandı). DovizTanim/KDVTanim'deki
+    // kanıtlanmış desenle aynı.
+    protected override void OnSaving()
+    {
+        if (IsVarsayilan)
+        {
+            BirimTanim entity = Session.FindObject<BirimTanim>(
+                CriteriaOperator.FromLambda<BirimTanim>(x => x.IsVarsayilan && x.Oid != this.Oid));
+            if (entity != null)
+            {
+                entity.IsVarsayilan = false;
+                entity.Save();
+            }
+        }
+        base.OnSaving();
     }
 }

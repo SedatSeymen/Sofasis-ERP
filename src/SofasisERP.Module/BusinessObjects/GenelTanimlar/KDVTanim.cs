@@ -29,6 +29,7 @@ namespace SofasisERP.Module.BusinessObjects;
 
 [DefaultProperty(nameof(KDVOrani))]
 [DefaultClassOptions]
+[NavigationItem(false)]
 [XafDisplayName("KDV Tanımlama")]
 public class KDVTanim : BaseClassWithAudit, IFisTuruVarsayilanHedefi
 {

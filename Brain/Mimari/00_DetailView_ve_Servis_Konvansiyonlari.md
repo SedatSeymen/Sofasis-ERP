@@ -16,7 +16,7 @@ Bu doküman, eski SofasisERP projesinde (`D:\2025\SofasisERP\docs\00_Kod-Konvans
 
 ## 1. Audit Sekme Kuralı (zorunlu, standart)
 
-**Kural:** Denetim alanları (`OlusturanKullanici`, `OlusturmaTarihi`, `DegistirenKullanici`, `DegistirmeTarihi`) her `DetailView`'da **ayrı bir "Denetim" sekmesinde ve tüm sekmelerin EN SONUNDA** gösterilir. `ListView` / `LookupListView` / `Reports` / `Dashboards`'ta gizlidir (taban sınıftaki `VisibleIn*(false)` attribute'ları bunu sağlar).
+**Kural:** Denetim alanları (`CreatedBy`, `CreatedDate`, `ModifiedBy`, `ModifiedDate` — `BaseClassWithAudit`) her `DetailView`'da **ayrı bir "Denetim" sekmesinde ve tüm sekmelerin EN SONUNDA** gösterilir. `ListView` / `LookupListView` / `Reports` / `Dashboards`'ta gizlidir (taban sınıftaki `VisibleIn*(false)` attribute'ları bunu sağlar).
 
 ### ⚠ Kanıtlanmış ÇALIŞMAYAN yaklaşım — denenmeyecek
 
@@ -33,9 +33,9 @@ Bu doküman, eski SofasisERP projesinde (`D:\2025\SofasisERP\docs\00_Kod-Konvans
       <LayoutGroup Id="SimpleEditors" RelativeSize="100">
         <!-- Otomatik üretilen varsayılan gruplar mükerrer görünmesin diye kaldırılır -->
         <LayoutGroup Id="XTanim" Removed="True" />                  <!-- sınıfın KENDİ alanları (sınıf adıyla otomatik grup) -->
-        <LayoutGroup Id="BaseObject" Removed="True" />
-        <LayoutGroup Id="BaseObjectAuditAciklama" Removed="True" />
-        <LayoutGroup Id="BaseObjectAudit" Removed="True" />          <!-- 4 denetim alanı -->
+        <LayoutGroup Id="BaseClassWithAuditAndDescription" Removed="True" />  <!-- CustomCode1/2 (varsa) -->
+        <LayoutGroup Id="BaseClassWithAudit" Removed="True" />       <!-- 4 denetim alanı -->
+        <LayoutGroup Id="SizeableEditors" Removed="True" />          <!-- Description (varsa) -->
         <TabbedGroup Id="Tabs" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
           <LayoutGroup Id="Genel" Caption="Genel" Index="0" RelativeSize="100" IsNewNode="True">
             <LayoutItem Id="XKodu" ViewItem="XKodu" Index="0" IsNewNode="True" />
@@ -44,12 +44,12 @@ Bu doküman, eski SofasisERP projesinde (`D:\2025\SofasisERP\docs\00_Kod-Konvans
           <LayoutGroup Id="Denetim" Caption="Denetim" Index="1" RelativeSize="100" IsNewNode="True">
             <!-- 2 sütun: satır başına Direction="Horizontal" alt-grup -->
             <LayoutGroup Id="Denetim_Row1" ShowCaption="False" Direction="Horizontal" Index="0" RelativeSize="50" IsNewNode="True">
-              <LayoutItem Id="OlusturanKullanici" ViewItem="OlusturanKullanici" Index="0" RelativeSize="50" IsNewNode="True" />
-              <LayoutItem Id="OlusturmaTarihi" ViewItem="OlusturmaTarihi" Index="1" RelativeSize="50" IsNewNode="True" />
+              <LayoutItem Id="CreatedBy" ViewItem="CreatedBy" Index="0" RelativeSize="50" IsNewNode="True" />
+              <LayoutItem Id="CreatedDate" ViewItem="CreatedDate" Index="1" RelativeSize="50" IsNewNode="True" />
             </LayoutGroup>
             <LayoutGroup Id="Denetim_Row2" ShowCaption="False" Direction="Horizontal" Index="1" RelativeSize="50" IsNewNode="True">
-              <LayoutItem Id="DegistirenKullanici" ViewItem="DegistirenKullanici" Index="0" RelativeSize="50" IsNewNode="True" />
-              <LayoutItem Id="DegistirmeTarihi" ViewItem="DegistirmeTarihi" Index="1" RelativeSize="50" IsNewNode="True" />
+              <LayoutItem Id="ModifiedBy" ViewItem="ModifiedBy" Index="0" RelativeSize="50" IsNewNode="True" />
+              <LayoutItem Id="ModifiedDate" ViewItem="ModifiedDate" Index="1" RelativeSize="50" IsNewNode="True" />
             </LayoutGroup>
           </LayoutGroup>
         </TabbedGroup>
@@ -60,13 +60,13 @@ Bu doküman, eski SofasisERP projesinde (`D:\2025\SofasisERP\docs\00_Kod-Konvans
 ```
 
 **Önemli noktalar:**
-- Otomatik üretilen grup ID'leri: sınıfın KENDİ alanları için grup ID'si **sınıf adının kendisidir**; miras alınan alanlar için grup ID'si **tanımlandığı taban sınıfın adıdır** (`BaseClass`, `BaseClassWithAudit`, `BaseClassWithDescription`, `BaseClassWithAuditAndDescription` — bizim proje için tam adlar farklı olabilir, ilk uygulamada gerçek grup ID'leri tarayıcıda/Model Editor'de doğrulanmalı). Kaldırılmazsa alanlar HEM eski otomatik yerinde HEM yeni sekmede mükerrer görünür.
+- Otomatik üretilen grup ID'leri: sınıfın KENDİ alanları için grup ID'si **sınıf adının kendisidir**; miras alınan alanlar için grup ID'si **tanımlandığı taban sınıfın adıdır** (`BaseClass`, `BaseClassWithAudit`, `BaseClassWithDescription`, `BaseClassWithAuditAndDescription`, `SizeableEditors` — bu projede `Model.DesignedDiffs.xafml`'de fiilen kullanılan gerçek grup ID'leri budur). Kaldırılmazsa alanlar HEM eski otomatik yerinde HEM yeni sekmede mükerrer görünür.
 - Master-detail koleksiyonlar sekme İÇİNE alınmaz — XAF onları zaten `Main` altında, sekme grubunun ALTINDA kendi bölümünde otomatik gösterir; dokunulmaz.
 - Her yeni "Tanım" sınıfı için bu XML bloğu elle eklenir (mekanik ama kanıtlanmış).
 
 ## 2. Numaralandırma Servisi
 
-`INumberSequenceService.SonrakiNo(Session session, string seriKodu)` — sayaç kaydını **çağıranın kendi Session/UnitOfWork'ü içinde** artırır.
+`INumberSequenceService.SonrakiSiraNo(Session session, string sequenceAnahtari)` (sade artan sıra) ve `SonrakiNumara(Session session, string sequenceAnahtari, FisTuruTanim fisTuruTanim, DateTime belgeTarihi)` (fiş-türü-önekli, günlük sıfırlanan numara) — sayaç kaydını **çağıranın kendi Session/UnitOfWork'ü içinde** artırır.
 
 - **Neden ayrı Session yok:** Sayaç artışı çağıranın UnitOfWork'ü içinde olduğu için, dış işlem (ör. fatura onayı) rollback olursa sayaç artışı da rollback olur → gerçek "boşluksuz" numaralandırma. DevExpress'in 26.1'de mevcut olmayan `DistributedIdGeneratorHelper`'a dayanmaz, global `lock`+commit deseni kullanılmaz.
 - Eşzamanlı iki çağrı aynı `seriKodu`'nu artırmaya çalışırsa commit anında `OptimisticLockException` fırlar; yeniden deneme sorumluluğu çağırana aittir.
