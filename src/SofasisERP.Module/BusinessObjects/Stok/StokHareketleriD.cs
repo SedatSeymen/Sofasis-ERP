@@ -105,8 +105,13 @@ public class StokHareketleriD : BaseClassWithAuditAndDescription
     // ObjectSaving()'deki kontrol KALDIRILMADI — motor matematiği (ağırlıklı ortalama) için
     // son bir savunma hattı olarak kalıyor (programatik/gelecekteki İrsaliye entegrasyonu gibi
     // bu declarative kuralı atlayabilecek yollara karşı).
+    // TargetCriteria'daki "KaynakBelgeOid Is Null" (22.08.2026 denetimi G16): StokTransferi
+    // gibi başka bir belgenin motoru tarafından otomatik üretilen satırlarda (KaynakBelgeOid
+    // dolu) bu zorunluluk gevşetilir — transfer, hiç maliyetli giriş görmemiş (OrtalamaMaliyet=0)
+    // bir kalem için gerçek bir alım değildir, sıfır maliyetle işlenmesi güvenlidir (G2 guard'ı
+    // sayesinde). Elle girilen (KaynakBelgeOid boş) Alış Girişi vb. için kural aynen geçerli.
     [RuleValueComparison("Rule_StokHareketleriD_BirimMaliyet_Pozitif", DefaultContexts.Save, ValueComparisonType.GreaterThan, 0,
-        TargetCriteria = "StokHareketleriM.FisTuruTanim.StokHareketYonu = 'Giris'",
+        TargetCriteria = "StokHareketleriM.FisTuruTanim.StokHareketYonu = 'Giris' And KaynakBelgeOid Is Null",
         CustomMessageTemplate = "Lütfen giriş için birim maliyeti sıfırdan büyük giriniz.")]
     [Appearance("ED_StokHareketleriD_BirimMaliyet", Enabled = false,
         Criteria = "StokHareketleriM.FisTuruTanim.StokHareketYonu = 'Cikis'", Context = "DetailView")]
@@ -156,7 +161,7 @@ public class StokHareketleriD : BaseClassWithAuditAndDescription
     // alan üzerinde net bir mesaj görür — ObjectSaving()'deki eşdeğer kontrol savunma
     // hattı olarak kalır.
     [RuleValueComparison("Rule_StokHareketleriD_YerelBirimMaliyet_Pozitif", DefaultContexts.Save, ValueComparisonType.GreaterThan, 0,
-        TargetCriteria = "StokHareketleriM.FisTuruTanim.StokHareketYonu = 'Giris'",
+        TargetCriteria = "StokHareketleriM.FisTuruTanim.StokHareketYonu = 'Giris' And KaynakBelgeOid Is Null",
         CustomMessageTemplate = "Döviz kuru bulunamadı veya birim maliyetin TL karşılığı sıfır — lütfen Döviz Kodu/Kuru bilgisini kontrol ediniz.")]
     [Appearance("ED_StokHareketleriD_YerelBirimMaliyet", Enabled = false, Context = "DetailView")]
     [XafDisplayName("Yerel Birim Maliyet")]
@@ -341,10 +346,16 @@ public class StokHareketleriD : BaseClassWithAuditAndDescription
 
         if (yon == StokHareketYonu.Giris)
         {
-            if (BirimMaliyet <= 0)
-                throw new UserFriendlyException("Lütfen giriş için birim maliyeti sıfırdan büyük giriniz.");
-            if (YerelBirimMaliyet <= 0)
-                throw new UserFriendlyException("Döviz kuru bulunamadı veya birim maliyetin TL karşılığı sıfır — lütfen Döviz Kodu/Kuru bilgisini kontrol ediniz.");
+            // KaynakBelgeOid dolu (başka bir belgenin motoru tarafından otomatik üretilmiş,
+            // ör. StokTransferi) satırlarda bu zorunluluk gevşetilir — bkz. BirimMaliyet/
+            // YerelBirimMaliyet property'lerindeki declarative kural açıklaması (G16).
+            if (KaynakBelgeOid == null)
+            {
+                if (BirimMaliyet <= 0)
+                    throw new UserFriendlyException("Lütfen giriş için birim maliyeti sıfırdan büyük giriniz.");
+                if (YerelBirimMaliyet <= 0)
+                    throw new UserFriendlyException("Döviz kuru bulunamadı veya birim maliyetin TL karşılığı sıfır — lütfen Döviz Kodu/Kuru bilgisini kontrol ediniz.");
+            }
 
             // Motor HER ZAMAN TL (Yerel) okur — BirimMaliyet döviz bazlı olabilir, ağırlıklı
             // ortalama maliyet farklı dövizlerden giren stoklarda bile tutarlı kalır.

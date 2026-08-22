@@ -186,7 +186,12 @@ public class KasaCariBankaHareketleri : BaseClassWithAuditAndDescription
         {
             SetPropertyValue(nameof(BorcTutar), ref borcTutar, value);
             YerelBorcTutar = Math.Round(value * (DovizKuru == 0 ? 1 : DovizKuru), 2, MidpointRounding.AwayFromZero);
-            if (!IsLoading && value > 0 && alacakTutar == 0) AlacakTutar = value;
+            // "alacakTutar == 0" koşulu tutar DÜZELTMESİNDE (ör. 100'den 150'ye) bayat
+            // kalıyordu — kaynak ve karşı döviz cinsi AYNIYSA kopyalama koşulsuz yapılır
+            // (22.08.2026 denetimi G17); farklı dövizlerde kullanıcı AlacakTutar'ı elle
+            // girer/düzeltir, denge kuralı (Rule_KasaCariBankaHareketleri_Denge) zaten
+            // eşitliği şart koşuyor.
+            if (!IsLoading && value > 0 && DovizTanim == KarsiDovizTanim) AlacakTutar = value;
         }
     }
 
