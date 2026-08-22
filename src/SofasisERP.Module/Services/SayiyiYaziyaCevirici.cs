@@ -54,38 +54,55 @@ public static class SayiyiYaziyaCevirici
         return gruplar.Count == 0 ? "Sıfır" : string.Join(" ", gruplar);
     }
 
+    static string ParaBirimiAdi(string paraBirimi) => paraBirimi.ToUpper(CultureInfo.InvariantCulture) switch
+    {
+        "TRY" => "Türk Lirası",
+        "USD" => "Amerikan Doları",
+        "EUR" => "Euro",
+        _ => paraBirimi
+    };
+
+    static string OndalikParaBirimi(string paraBirimi) => paraBirimi.ToUpper(CultureInfo.InvariantCulture) switch
+    {
+        "TRY" => "Kuruş",
+        "USD" => "Cent",
+        "EUR" => "Cent",
+        _ => ""
+    };
+
     // CultureInfo.CurrentCulture ile biçimlendirilmiş bir tutar metni (tr-TR: "," ondalık,
     // "." binlik ayıracı) bekler — InvariantCulture ("1500.00") verilirse "." binlik ayıracı
     // sanılıp 1500 yanlışlıkla 15.000.000'a dönüşür (eski ERP'de kanıtlanmış hata, bkz. dosya
     // başı açıklama).
+    //
+    // 22.08.2026 denetiminde bulunan iki hata düzeltildi (DUZELTME_GOREVLERI.md G5):
+    // (a) Math.Round(...,3) yerine parasal 2 hane; (b) ondalık kısım string olarak
+    // Split(',') ile okunuyordu (yer-değeri kayboluyordu: "1500,5" → "5" → "Beş Kuruş"
+    // yerine olması gereken "Elli Kuruş") — artık decimal aritmetiğiyle (deger-tamKisim)*100
+    // hesaplanıyor, string round-trip yok. Negatif tutar artık istisna ile boş dönmüyor,
+    // "Eksi ..." öneki ile normal yoldan işleniyor.
     public static string SayiyiYaziyaCevirVirgullu(string tutar, string paraBirimi)
     {
         try
         {
-            string ondalikParaBirimi = paraBirimi.ToUpper(CultureInfo.InvariantCulture) switch
-            {
-                "TRY" => "Kuruş",
-                "USD" => "Cent",
-                "EUR" => "Cent",
-                _ => ""
-            };
-
             if (tutar == "") return "";
-            decimal yuvarlanmis = Math.Round(Convert.ToDecimal(tutar, CultureInfo.CurrentCulture), 3);
 
-            string[] parcalar = yuvarlanmis.ToString(CultureInfo.CurrentCulture).Split(',');
-            string tamSayi = parcalar[0].Replace(".", "");
-            string ondalikSayi = parcalar.Length > 1 ? parcalar[1] : "";
+            decimal deger = Math.Round(Convert.ToDecimal(tutar, CultureInfo.CurrentCulture), 2, MidpointRounding.AwayFromZero);
+            bool negatif = deger < 0;
+            deger = Math.Abs(deger);
 
-            string tamSayiSonuc = SayiyiYaziyaCevir(tamSayi);
-            string ondalikSonuc = ondalikSayi != "" && Convert.ToInt32(ondalikSayi, CultureInfo.InvariantCulture) > 0
-                ? SayiyiYaziyaCevir(ondalikSayi)
-                : "";
+            long tamKisim = (long)Math.Truncate(deger);
+            int kurus = (int)Math.Round((deger - tamKisim) * 100m, MidpointRounding.AwayFromZero);
+            if (kurus == 100) { kurus = 0; tamKisim += 1; } // 2 haneye yuvarlama sınır durumu (ör. 999,995)
 
-            string paraBirimiBaslikli = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(paraBirimi);
-            return ondalikSonuc.Length > 0
-                ? $"{tamSayiSonuc} {paraBirimiBaslikli} {ondalikSonuc} {ondalikParaBirimi}"
-                : $"{tamSayiSonuc} {paraBirimiBaslikli}";
+            string tamSonuc = SayiyiYaziyaCevir(tamKisim.ToString(CultureInfo.InvariantCulture));
+            string paraBirimiAdi = ParaBirimiAdi(paraBirimi);
+
+            string sonuc = kurus > 0
+                ? $"{tamSonuc} {paraBirimiAdi} {SayiyiYaziyaCevir(kurus.ToString(CultureInfo.InvariantCulture))} {OndalikParaBirimi(paraBirimi)}"
+                : $"{tamSonuc} {paraBirimiAdi}";
+
+            return negatif ? $"Eksi {sonuc}" : sonuc;
         }
         catch (Exception)
         {
