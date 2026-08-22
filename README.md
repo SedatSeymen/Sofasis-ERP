@@ -67,6 +67,29 @@ SofasisERP/
 
 Tüm `.md` dokümantasyonu `Brain/` altında toplanır — bkz. [Brain/README.md](Brain/README.md).
 
+## Production Yapılandırması
+
+`appsettings.json`'daki `UrlSigningKey` yalnızca **Development** içindir
+(`appsettings.Development.json`) — production'da aşağıdaki ortam değişkenleri
+**zorunludur** (yoksa uygulama başlamaz ya da güvensiz bir varsayılana düşer,
+bkz. 22.08.2026 denetimi G6):
+
+| Ortam değişkeni | Amaç |
+|---|---|
+| `ConnectionStrings__ConnectionString` | PostgreSQL bağlantı dizesi (kullanıcı adı/parola dahil) |
+| `DevExpress__ExpressApp__Security__UrlSigningKey` | İmzalı URL doğrulama anahtarı — production'a özel, rastgele, rotasyona açık bir GUID olmalı |
+| `SOFASIS_ADMIN_INITIAL_PASSWORD` | İlk kurulumda Admin kullanıcısının başlangıç parolası (ilk girişte değiştirilmesi zorunlu tutulur) |
+| `AllowedHosts` | Gerçek alan adıyla sınırlandırılmalı (ör. `erp.sofasis.com`) — `"*"` production'da kullanılmamalı |
+
+VPS'te bu değişkenler `/opt/sofasiserp/.env` dosyasında tutulur ve
+`deploy-vps.ps1` tarafından systemd `EnvironmentFile` mekanizmasıyla servise
+aktarılır — script bu değişkenlerle zaten uyumludur (ek parametre gerekmez).
+
+> **İnsan aksiyonu:** VPS'teki DB parolasını ve `UrlSigningKey`'i rotasyona
+> sok (eski appsettings.json değeri `87A0CCC3-9077-4A17-BB33-2ECD2A31BF0D`
+> git geçmişinde sızmış kabul edilir, ASLA yeniden kullanılmamalı). Git
+> geçmişi temizliği (BFG/filter-repo) ayrıca değerlendirilmeli.
+
 ## Kurallar
 
 - **ORM**: Yalnızca DevExpress XPO kullanılır. EF Core kullanılmaz.

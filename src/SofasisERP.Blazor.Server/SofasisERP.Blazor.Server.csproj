@@ -7,6 +7,7 @@
     <FileVersion>1.0.0.0</FileVersion>
     <Configurations>Debug;Release;EasyTest</Configurations>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>sofasiserp-blazor-server</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Model.xafml" />
