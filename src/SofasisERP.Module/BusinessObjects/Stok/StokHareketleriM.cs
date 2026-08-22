@@ -66,7 +66,7 @@ public class StokHareketleriM : BaseClassWithAuditAndDescription
     DateTime belgeTarihi;
     DepoTanim depo;
 
-    [Size(16)]
+    [Size(20)]
     [Indexed(Unique = true)]
     [Appearance("ED_StokHareketleriM_FisNo", Enabled = false, Context = "DetailView")]
     [XafDisplayName("Fiş No")]

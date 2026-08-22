@@ -54,7 +54,10 @@ public sealed class NumberSequenceService : INumberSequenceService
         string kriter = $"{fisTuruTanim.FisTuruKodu}-{tarihSegmenti}";
         SequenceGenerator generator = BulYadaOlustur(session, sequenceAnahtari, kriter);
         generator.NextSequence++;
-        return $"{fisTuruTanim.FisTuruKodu}-{tarihSegmenti}{generator.NextSequence:D3}";
+        // D3 -> D4: 999. belgeden sonra (22.08.2026 denetimi G19) alan taşmasını önler --
+        // FisNo Size(20) ile birlikte kullanılmalı (bkz. StokHareketleriM/
+        // KasaCariBankaHareketleri.FisNo).
+        return $"{fisTuruTanim.FisTuruKodu}-{tarihSegmenti}{generator.NextSequence:D4}";
     }
 
     static SequenceGenerator BulYadaOlustur(Session session, string sequenceAnahtari, string kriter)
