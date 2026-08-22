@@ -76,6 +76,18 @@ public class Updater : ModuleUpdater {
             }
         }
 
+        // StokHareketleriD.UygulananMiktar/UygulananBirimMaliyet (22.08.2026 denetimi
+        // G12) yeni eklenen sütunlar — zaten işlenmiş (MotorIslendi=true) satırlarda
+        // Miktar/BirimMaliyet'ten geriye dönük doldurulur, aksi halde ilk düzenleme
+        // denemesinde "değişti" sanılıp yanlışlıkla engellenir.
+        foreach (StokHareketleriD satir in ObjectSpace.GetObjects<StokHareketleriD>())
+        {
+            if (satir.MotorIslendi && satir.UygulananMiktar == 0 && satir.Miktar != 0)
+                satir.UygulananMiktar = satir.Miktar;
+            if (satir.MotorIslendi && satir.UygulananBirimMaliyet == 0 && satir.BirimMaliyet != 0)
+                satir.UygulananBirimMaliyet = satir.BirimMaliyet;
+        }
+
         // Tedarikçi bakiye işaret çevirmesi (KasaCariBankaHareketleri.ObjectSaving/
         // ObjectDeleting'de vardı) kaldırıldı — motor artık HER Hesap için evrensel
         // işaretli kuralı kullanıyor (DUZELTME_GOREVLERI.md G1). Eski (çevrilmiş)

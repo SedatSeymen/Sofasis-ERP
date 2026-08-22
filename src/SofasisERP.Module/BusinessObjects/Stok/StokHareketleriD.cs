@@ -34,6 +34,11 @@ namespace SofasisERP.Module.BusinessObjects;
 [Appearance("NegatifBakiyeUyarisiColor", AppearanceItemType = "ViewItem", TargetItems = "*",
     Criteria = "NegatifBakiyeUyarisi = True", Context = "ListView",
     FontColor = "Red", FontStyle = DevExpress.Drawing.DXFontStyle.Bold, Priority = 1)]
+// Motor bir kez işlendikten sonra Miktar/BirimMaliyet/Stok değişikliği ObjectSaving()'de
+// zaten engelleniyor (G12) — burada ekranda da düzenlenemez gösterilir, kullanıcı
+// hatayı save denemesinden önce görsün diye.
+[Appearance("ED_StokHareketleriD_MotorIslendiKilit", Enabled = false,
+    TargetItems = "Miktar;BirimMaliyet;StokTanim", Criteria = "MotorIslendi = True", Context = "DetailView")]
 public class StokHareketleriD : BaseClassWithAuditAndDescription
 {
     public StokHareketleriD(Session session) : base(session) { }
@@ -224,6 +229,32 @@ public class StokHareketleriD : BaseClassWithAuditAndDescription
         set => SetPropertyValue(nameof(MotorIslendi), ref motorIslendi, value);
     }
 
+    decimal uygulananMiktar;
+    decimal uygulananBirimMaliyet;
+
+    // Motor bir kez işlendikten (MotorIslendi=true) SONRA Miktar/BirimMaliyet elle
+    // değiştirilip tekrar kaydedilirse eski kod sessizce erken return ediyordu —
+    // satır ekranda yeni değeri gösterirken bakiye/ortalama maliyet bayat kalıyordu
+    // (22.08.2026 denetimi G12). Bu iki alan, motorun FİİLEN işlediği son değerleri
+    // saklar; ObjectSaving()'de bunlarla karşılaştırılıp değişiklik varsa engellenir.
+    [Browsable(false)]
+    [VisibleInDetailView(false)]
+    [VisibleInListView(false)]
+    public decimal UygulananMiktar
+    {
+        get => uygulananMiktar;
+        set => SetPropertyValue(nameof(UygulananMiktar), ref uygulananMiktar, value);
+    }
+
+    [Browsable(false)]
+    [VisibleInDetailView(false)]
+    [VisibleInListView(false)]
+    public decimal UygulananBirimMaliyet
+    {
+        get => uygulananBirimMaliyet;
+        set => SetPropertyValue(nameof(UygulananBirimMaliyet), ref uygulananBirimMaliyet, value);
+    }
+
     void YerelMaliyetiHesapla()
     {
         if (BirimMaliyet > 0)
@@ -269,7 +300,15 @@ public class StokHareketleriD : BaseClassWithAuditAndDescription
     public override void ObjectSaving()
     {
         if (MotorIslendi)
-            return; // Motor bu satır için zaten çalıştı — tekrar flush edilse de yeniden çalışmaz.
+        {
+            // Motor bu satır için zaten çalıştı — tekrar flush edilse de yeniden çalışmaz.
+            // Ama Miktar/BirimMaliyet elle değiştirilip kaydedilmeye çalışılıyorsa
+            // (bakiye/maliyet sessizce bayat kalmasın diye) engellenir (G12).
+            if (Miktar != UygulananMiktar || BirimMaliyet != UygulananBirimMaliyet)
+                throw new UserFriendlyException(
+                    "İşlenmiş stok hareketi satırında miktar/birim maliyet değiştirilemez. Satırı silip yeniden giriniz.");
+            return;
+        }
 
         if (StokHareketleriM == null)
             throw new UserFriendlyException("Stok hareketi bir fiş başlığına bağlı olmalıdır.");
@@ -347,6 +386,8 @@ public class StokHareketleriD : BaseClassWithAuditAndDescription
 
         ToplamMaliyet = Math.Round(Miktar * BirimMaliyet, 2, MidpointRounding.AwayFromZero);
         YerelToplamMaliyet = Math.Round(Miktar * YerelBirimMaliyet, 2, MidpointRounding.AwayFromZero);
+        UygulananMiktar = Miktar;
+        UygulananBirimMaliyet = BirimMaliyet;
         MotorIslendi = true;
     }
 
