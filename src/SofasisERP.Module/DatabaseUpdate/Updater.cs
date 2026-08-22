@@ -9,6 +9,7 @@ using DevExpress.ExpressApp.Xpo;
 using DevExpress.Persistent.BaseImpl;
 using Microsoft.Extensions.DependencyInjection;
 using SofasisERP.Module.BusinessObjects;
+using System.Linq;
 
 namespace SofasisERP.Module.DatabaseUpdate;
 
@@ -74,6 +75,29 @@ public class Updater : ModuleUpdater {
                 hareket.UygulananYerelAlacakTutar = hareket.YerelAlacakTutar;
             }
         }
+
+        // Tedarikçi bakiye işaret çevirmesi (KasaCariBankaHareketleri.ObjectSaving/
+        // ObjectDeleting'de vardı) kaldırıldı — motor artık HER Hesap için evrensel
+        // işaretli kuralı kullanıyor (DUZELTME_GOREVLERI.md G1). Eski (çevrilmiş)
+        // mantıkla üretilmiş GuncelBakiye değerleri artık yanlış; tek seferlik,
+        // idempotent bir yeniden hesaplama ile tüm Hesap'lar GuncelBakiye'sini
+        // MotorIslendi=true hareketlerden SIFIRDAN yeniden türetir. İdempotent:
+        // her çalıştırmada aynı (doğru) sonucu üretir, zarar vermez.
+        foreach (Hesap hesap in ObjectSpace.GetObjects<Hesap>())
+        {
+            decimal dogruBakiye =
+                new XPQuery<KasaCariBankaHareketleri>(((XPObjectSpace)ObjectSpace).Session)
+                    .Where(x => x.MotorIslendi && x.KaynakHesap == hesap)
+                    .Sum(x => (decimal?)x.UygulananYerelBorcTutar) ?? 0m;
+            dogruBakiye -=
+                new XPQuery<KasaCariBankaHareketleri>(((XPObjectSpace)ObjectSpace).Session)
+                    .Where(x => x.MotorIslendi && x.KarsiHesap == hesap)
+                    .Sum(x => (decimal?)x.UygulananYerelAlacakTutar) ?? 0m;
+
+            if (hesap.GuncelBakiye != dogruBakiye)
+                hesap.GuncelBakiye = dogruBakiye;
+        }
+
         ObjectSpace.CommitChanges();
 
         // Kullanıcı isteği (2026-08-21): standart parola güvenliği (Security System +
