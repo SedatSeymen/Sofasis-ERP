@@ -149,6 +149,7 @@ public class Updater : ModuleUpdater {
                         "güncellemesini tekrar çalıştırın (ilk girişten sonra Admin kendi parolasını değiştirebilir).");
                 userAdmin.SetPassword(ilkParola);
             }
+            userAdmin.ChangePasswordOnFirstLogon = true;
 
             // UserLoginInfo nesnesi kullanıcının Oid'ine ihtiyaç duyar — önce commit edilir.
             ObjectSpace.CommitChanges();
