@@ -29,21 +29,9 @@ namespace SofasisERP.Module.BusinessObjects
         {
         }
 
-        protected override void OnDeleting()
-        {
-            base.OnDeleting();
-        }
-
-        public override void AfterConstruction()
-        {
-            base.AfterConstruction();
-        }
-
-        protected override void OnSaving()
-        {
-            base.OnSaving();
-        }
-
+        // BaseClassWithDescription.cs'deki BİREBİR AYNI alanların kasıtlı kopyası — bkz. o
+        // dosyadaki ayrıntılı gerekçe (C# tekli kalıtım kısıtı, şema/veri taşıma riski).
+        // BURAYI DEĞİŞTİRİRSEN, BaseClassWithDescription.cs'i de GÜNCELLE.
         string customCode2;
         string customCode1;
         string description;

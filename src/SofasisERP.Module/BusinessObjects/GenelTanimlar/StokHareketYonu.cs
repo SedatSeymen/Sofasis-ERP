@@ -5,8 +5,7 @@
  * Oluşturan        : Sedat Seymen
  * Son Güncelleme   : 08/18/2026
  * Son Güncelleyen  : Sedat Seymen
- * Açıklama         : FisTuruTanim.StokHareketYonu için — FinansBorcAlacakTipi'nin
- *                    Stok modülü karşılığı, eski ERP'den birebir taşındı.
+ * Açıklama         : FisTuruTanim.StokHareketYonu için — eski ERP'den birebir taşındı.
  * ****************************************************************************
  */
 

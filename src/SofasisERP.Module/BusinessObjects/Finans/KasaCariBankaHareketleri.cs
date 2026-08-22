@@ -376,7 +376,7 @@ public class KasaCariBankaHareketleri : BaseClassWithAuditAndDescription
             // property setter'ları üzerinden takas edilir ki OnChanged zaten doğru
             // Döviz/Kur/Yerel Tutar yeniden hesaplamasını KENDİLİĞİNDEN yapsın.
             if (FisTuruTanim?.FisTuruKodu == "ACILIS" && KaynakHesap is CariHesapTanim kaynakCari
-                && kaynakCari.CariHesapTipi == CariHesapTipi.Tedarikci)
+                && kaynakCari.CariHesapSinifi == CariHesapTipi.Tedarikci)
             {
                 Hesap eskiKaynak = KaynakHesap;
                 Hesap eskiKarsi = KarsiHesap;
@@ -386,8 +386,26 @@ public class KasaCariBankaHareketleri : BaseClassWithAuditAndDescription
 
             // Tüm Hesap türleri aktif/borç-çalışan kabul edilir (bkz. Hesap.cs) — Borç
             // bakiyeyi artırır, Alacak azaltır. Negatif bakiye engellenmez.
-            KaynakHesap.GuncelBakiye += YerelBorcTutar;
-            KarsiHesap.GuncelBakiye -= YerelAlacakTutar;
+            //
+            // 4-ajanlı testte (2026-08-22, mali müşavir bulgusu) tespit edilen hata:
+            // Kasa/Banka/Cari TAHSİLAT ve ÖDEME fişlerinde Cari her zaman aynı formülle
+            // (Kaynak ise +Borç, Karşı ise -Alacak) işleniyordu — Tedarikçi'nin doğal
+            // bakiye yönü (biz onlara borçluyuz, negatif) Müşteri'ninkinin (bize
+            // borçlular, pozitif) TERSİ olduğundan, bir Tedarikçi'den tahsilat/ödemede
+            // bakiye yanlış yöne hareket ediyordu (ör. -1000 TL borcumuz olan bir
+            // tedarikçiden 500 TL tahsilat girilince bakiye -1500'e düşüyordu, oysa
+            // borcumuz azaldığı için -500 olmalıydı). ACILIS fişi bu sorunu zaten
+            // KaynakHesap/KarsiHesap'ı TAKAS ederek çözüyor (yukarıda) — ama o çözüm
+            // karşı tarafın da her zaman sistemin dengeleme hesabı (ACILIS_DENGE) olduğu
+            // için güvenli; TAHSİLAT/ÖDEME'de karşı taraf GERÇEK bir Kasa/Banka hesabı
+            // olduğundan onun bakiyesi (gerçek nakit) ASLA tipe göre ters çevrilemez —
+            // bu yüzden burada TAKAS değil, yalnızca Tedarikçi Cari'nin KENDİ bakiye
+            // güncellemesinin işareti ters çevrilir. ACILIS için bu ek düzeltme
+            // uygulanmaz (zaten takas ile doğru sonucu üretiyor, üstüne bir daha ters
+            // çevirmek onu tekrar yanlışa döndürür).
+            bool acilisFisi = FisTuruTanim?.FisTuruKodu == "ACILIS";
+            KaynakHesap.GuncelBakiye += TedarikciMi(KaynakHesap, acilisFisi) ? -YerelBorcTutar : YerelBorcTutar;
+            KarsiHesap.GuncelBakiye += TedarikciMi(KarsiHesap, acilisFisi) ? YerelAlacakTutar : -YerelAlacakTutar;
 
             UygulananYerelBorcTutar = YerelBorcTutar;
             UygulananYerelAlacakTutar = YerelAlacakTutar;
@@ -418,9 +436,21 @@ public class KasaCariBankaHareketleri : BaseClassWithAuditAndDescription
             // KAYDETMEDEN silme yaparsa, Yerel* alanları henüz commit edilmemiş (yanlış)
             // değeri taşır; Uygulanan* alanları ise her zaman GERÇEKTEN GuncelBakiye'ye
             // işlenmiş son tutarı yansıtır (yalnızca başarılı ObjectSaving()'de güncellenir).
-            KaynakHesap.GuncelBakiye -= UygulananYerelBorcTutar;
-            KarsiHesap.GuncelBakiye += UygulananYerelAlacakTutar;
+            // ObjectSaving()'de uygulanan Tedarikçi-ters-çevirme işareti burada da AYNEN
+            // tekrarlanır — aksi halde bir Tedarikçi tahsilat/ödeme kaydı silindiğinde
+            // ters yönde geri alınıp bakiyeyi yine yanlışa döndürür.
+            bool acilisFisi = FisTuruTanim?.FisTuruKodu == "ACILIS";
+            KaynakHesap.GuncelBakiye -= TedarikciMi(KaynakHesap, acilisFisi) ? -UygulananYerelBorcTutar : UygulananYerelBorcTutar;
+            KarsiHesap.GuncelBakiye -= TedarikciMi(KarsiHesap, acilisFisi) ? UygulananYerelAlacakTutar : -UygulananYerelAlacakTutar;
         }
         base.ObjectDeleting();
     }
+
+    // Yalnızca TAHSİLAT/ÖDEME (ACILIS dışı) fişlerinde Tedarikçi Cari'nin bakiye yönünü
+    // ters çevirmek için kullanılır — bkz. ObjectSaving() üstündeki ayrıntılı açıklama.
+    // ACILIS zaten KaynakHesap/KarsiHesap takasıyla kendi doğru sonucunu ürettiğinden,
+    // ACILIS için bu ek ters çevirme UYGULANMAZ (aksi halde iki kez ters çevrilip yine
+    // yanlışa döner).
+    static bool TedarikciMi(Hesap hesap, bool acilisFisi)
+        => !acilisFisi && hesap is CariHesapTanim cari && cari.CariHesapSinifi == CariHesapTipi.Tedarikci;
 }

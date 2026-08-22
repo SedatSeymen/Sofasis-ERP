@@ -13,7 +13,6 @@ using DevExpress.Persistent.BaseImpl;
 namespace SofasisERP.Blazor.Server;
 
 [ToolboxItemFilter("Xaf.Platform.Blazor")]
-// For more typical usage scenarios, be sure to check out https://docs.devexpress.com/eXpressAppFramework/DevExpress.ExpressApp.ModuleBase.
 public sealed class SofasisERPBlazorModule : ModuleBase {
     public SofasisERPBlazorModule() {
     }

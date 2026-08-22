@@ -31,16 +31,6 @@ namespace SofasisERP.Module.BusinessObjects
         {
         }
 
-        protected override void OnDeleting()
-        {
-            base.OnDeleting();
-        }
-
-        public override void AfterConstruction()
-        {
-            base.AfterConstruction();
-        }
-
         protected override void OnSaving()
         {
             base.OnSaving();

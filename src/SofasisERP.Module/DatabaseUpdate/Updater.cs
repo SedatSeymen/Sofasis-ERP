@@ -98,7 +98,11 @@ public class Updater : ModuleUpdater {
     // İlk kurulum: "Administrators" rolü (tam yetkili) + "Admin" kullanıcısı. Yalnızca hiç
     // kullanıcı yokken çalışır (idempotent) — Security System'in kendi ilk-kurulum deseni
     // (bkz. DevExpress "Use the Security System" belgesi), resmi DevExpress demosuyla aynı
-    // şekilde boş parola ile (kullanıcı kararı 2026-08-21: geliştirme kolaylığı için).
+    // şekilde boş parola ile (kullanıcı kararı 2026-08-21: geliştirme kolaylığı için) —
+    // AMA yalnızca Development ortamında. 4-ajanlı testte (2026-08-22, yazılım mühendisi
+    // bulgusu) tespit edildi: bu boş parola hiçbir ortam kontrolü olmadan production'a da
+    // uygulanabiliyordu. Production/Staging'de SOFASIS_ADMIN_INITIAL_PASSWORD ortam
+    // değişkeni ZORUNLU — yoksa güncelleme durur (sessizce boş parolaya düşmez).
     void SeedAdminKullanicisi()
     {
         ApplicationUser userAdmin = ObjectSpace.FirstOrDefault<ApplicationUser>(u => u.UserName == "Admin");
@@ -106,7 +110,21 @@ public class Updater : ModuleUpdater {
         {
             userAdmin = ObjectSpace.CreateObject<ApplicationUser>();
             userAdmin.UserName = "Admin";
-            userAdmin.SetPassword("");
+
+            if (OrtamKontrolu.GelistirmeOrtamiMi())
+            {
+                userAdmin.SetPassword("");
+            }
+            else
+            {
+                string ilkParola = Environment.GetEnvironmentVariable("SOFASIS_ADMIN_INITIAL_PASSWORD");
+                if (string.IsNullOrEmpty(ilkParola))
+                    throw new InvalidOperationException(
+                        "Production/Staging ortamında Admin kullanıcısı boş parola ile oluşturulamaz. " +
+                        "Lütfen SOFASIS_ADMIN_INITIAL_PASSWORD ortam değişkenini ayarlayıp veritabanı " +
+                        "güncellemesini tekrar çalıştırın (ilk girişten sonra Admin kendi parolasını değiştirebilir).");
+                userAdmin.SetPassword(ilkParola);
+            }
 
             // UserLoginInfo nesnesi kullanıcının Oid'ine ihtiyaç duyar — önce commit edilir.
             ObjectSpace.CommitChanges();

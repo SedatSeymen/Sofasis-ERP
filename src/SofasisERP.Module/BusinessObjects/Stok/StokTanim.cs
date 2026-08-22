@@ -54,6 +54,7 @@ public class StokTanim : BaseClassWithAuditAndDescription
     }
 
     StokHizmetMasrafTipi stokHizmetMasrafTipi;
+    bool stokAltGrubuDegisti;
 
     // StokTipi/StokGrubu/StokAltGrubu hiyerarşisinden BAĞIMSIZ — o hiyerarşi yalnızca
     // fiziksel STOK sınıflandırması içindir. Hizmet ve Masraf kartlarının (eski projeden
@@ -389,7 +390,25 @@ public class StokTanim : BaseClassWithAuditAndDescription
             IStokKoduJeneratoru jenerator = new StokKoduJeneratoru();
             StokKodu = jenerator.SonrakiStokKodu(Session, this);
         }
+        else if (!Session.IsNewObject(this) && stokAltGrubuDegisti && JenaratorModuAktifMi(Session))
+        {
+            // 4-ajanlı testte (2026-08-22, kıdemli muhasebeci bulgusu) tespit edildi:
+            // kullanıcı yanlış seçilen bir Stok Alt Grubu'nu sonradan düzeltirse, StokKodu
+            // (Jenerator modunda alt gruptan türeyen) ESKİ sınıflandırmayı göstermeye devam
+            // ediyordu — yalnızca boşken üretiliyordu. Alt Grup değişince kod da yeniden
+            // üretilir (Otomatik modunda StokAltGrubu kodu belirlemediği için dokunulmaz).
+            IStokKoduJeneratoru jenerator = new StokKoduJeneratoru();
+            StokKodu = jenerator.SonrakiStokKodu(Session, this);
+        }
+        stokAltGrubuDegisti = false;
         base.OnSaving();
+    }
+
+    static bool JenaratorModuAktifMi(Session session)
+    {
+        StokParametre parametre = session.GetObjectsToSave().OfType<StokParametre>().FirstOrDefault()
+            ?? session.FindObject<StokParametre>(null);
+        return (parametre?.StokKoduUretimYontemi ?? StokKoduUretimYontemi.Jenerator) == StokKoduUretimYontemi.Jenerator;
     }
 
     // CariHesapTanim.OnDeleting ile aynı üslup (Faz 2): bu stoğa ait hareket kaydı varsa
@@ -422,5 +441,10 @@ public class StokTanim : BaseClassWithAuditAndDescription
         // bu değişiklik onun üzerine yazar (varsayılan yalnızca bir kez, atama anında uygulanır).
         if (propertyName == nameof(FisTuruTanim) && newValue != null && !IsLoading)
             FisTuruVarsayilanlariniUygula((FisTuruTanim)newValue);
+
+        // Var olan (zaten kaydedilmiş) bir kayıtta Stok Alt Grubu değişirse, OnSaving()
+        // StokKodu'nu yeniden üretir — bkz. OnSaving() üstündeki ayrıntılı açıklama.
+        if (propertyName == nameof(StokAltGrubu) && !IsLoading && !Session.IsNewObject(this))
+            stokAltGrubuDegisti = true;
     }
 }

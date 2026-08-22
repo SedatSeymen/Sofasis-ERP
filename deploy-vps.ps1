@@ -43,19 +43,19 @@ echo TAMAMLANDI
 '@
 
 Write-Host "6) Veritabani/rapor kayitlari guncelleniyor..." -ForegroundColor Cyan
-ssh -i $key -p $port $vps @'
-cd /opt/sofasiserp
-set -a
-source <(sed -E 's/^([A-Za-z_][A-Za-z0-9_]*)=(.*)$/\1="\2"/' .env)
-set +a
-dotnet SofasisERP.Blazor.Server.dll --updateDatabase --forceUpdate --silent
-'@
+# NOT (2026-08-22, ikinci deploy'da ogrenildi): bash "source .env" ile noktali virgullu
+# ConnectionString degerini kirdigi icin, systemd'nin KENDI EnvironmentFile ayristiricisini
+# (servisin de kullandigi, kanitlanmis calisan yontem) systemd-run ile odunc aliyoruz --
+# boylece bash quoting sorunu tamamen devre disi kaliyor.
+ssh -i $key -p $port $vps "sudo systemd-run --uid=sofasis-admin --gid=sofasis-admin --working-directory=/opt/sofasiserp --property=EnvironmentFile=/opt/sofasiserp/.env --setenv=ASPNETCORE_ENVIRONMENT=Production --wait --pipe --collect --unit=sofasiserp-dbupdate /usr/bin/dotnet /opt/sofasiserp/SofasisERP.Blazor.Server.dll --updateDatabase --forceUpdate --silent"
 
 Write-Host "7) Servis baslatiliyor..." -ForegroundColor Cyan
 ssh -i $key -p $port $vps "sudo systemctl start sofasiserp"
 
-Write-Host "8) Baslamasi bekleniyor (~20sn) ve smoke test..." -ForegroundColor Cyan
-Start-Sleep -Seconds 20
+Write-Host "8) Baslamasi bekleniyor (~35sn) ve smoke test..." -ForegroundColor Cyan
+# NOT (2026-08-22): gercek acilis (DevExpress model derlemesi dahil) ~22-30sn suruyor,
+# 20sn'de yapilan ilk smoke test yanlislikla 502 vermisti (servis aslinda saglikliydi).
+Start-Sleep -Seconds 35
 try {
     $resp = Invoke-WebRequest -Uri "https://erp.sofasis.com/" -UseBasicParsing
     Write-Host "Smoke test: HTTP $($resp.StatusCode)" -ForegroundColor Green

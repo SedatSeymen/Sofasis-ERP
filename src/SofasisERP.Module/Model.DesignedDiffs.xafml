@@ -5,103 +5,105 @@
       <Item Id="AnaDashboard_DashboardView" Caption="Gösterge Paneli" ImageName="Action_OrganizeDashboard" ViewId="AnaDashboard_DashboardView" Index="-1" IsNewNode="True" />
       <Item Id="StokYonetimi" Caption="Stok Yönetimi" ImageName="BO_product_group" Index="0" IsNewNode="True">
         <Items IsNewNode="True">
-          <Item Id="StokYonetimi_Tanimlar" Caption="Tanımlar" Index="0" IsNewNode="True">
+          <Item Id="StokYonetimi_Tanimlar" Caption="Tanımlar" ImageName="BO_folder" Index="0" IsNewNode="True">
             <Items IsNewNode="True">
-              <Item Id="AyakTanim_ListView" ViewId="AyakTanim_ListView" ImageName="BO_category" Index="0" IsNewNode="True" />
-              <Item Id="ModelSetTanim_ListView" ViewId="ModelSetTanim_ListView" ImageName="BO_product_group" Index="1" IsNewNode="True" />
-              <Item Id="StokTipiTanim_ListView" ViewId="StokTipiTanim_ListView" ImageName="BO_category" Index="2" IsNewNode="True" />
-              <Item Id="StokGrupTanim_ListView" ViewId="StokGrupTanim_ListView" ImageName="BO_folder" Index="3" IsNewNode="True" />
-              <Item Id="StokTanim_ListView" ViewId="StokTanim_ListView" ImageName="BO_product" Index="4" IsNewNode="True" />
-              <Item Id="ModelTanim_ListView" ViewId="ModelTanim_ListView" ImageName="BO_product" Index="5" IsNewNode="True" />
-              <Item Id="HizmetTanim_ListView" ViewId="HizmetTanim_ListView" ImageName="BO_task" Index="6" IsNewNode="True" />
-              <Item Id="MasrafTanim_ListView" ViewId="MasrafTanim_ListView" ImageName="BO_price_item" Index="7" IsNewNode="True" />
-              <Item Id="StokParametre_ListView" ViewId="StokParametre_ListView" ImageName="BO_rules" Index="8" IsNewNode="True" />
-              <Item Id="DepoTanim_ListView" ViewId="DepoTanim_ListView" ImageName="BO_organization" Index="9" IsNewNode="True" />
+              <Item Id="AyakTanim_ListView" ViewId="AyakTanim_ListView" ImageName="BO_document" Index="0" IsNewNode="True" />
+              <Item Id="ModelSetTanim_ListView" ViewId="ModelSetTanim_ListView" ImageName="BO_document" Index="1" IsNewNode="True" />
+              <Item Id="StokTipiTanim_ListView" ViewId="StokTipiTanim_ListView" ImageName="BO_document" Index="2" IsNewNode="True" />
+              <Item Id="StokGrupTanim_ListView" ViewId="StokGrupTanim_ListView" ImageName="BO_document" Index="3" IsNewNode="True" />
+              <Item Id="StokTanim_ListView" ViewId="StokTanim_ListView" ImageName="BO_document" Index="4" IsNewNode="True" />
+              <Item Id="ModelTanim_ListView" ViewId="ModelTanim_ListView" ImageName="BO_document" Index="5" IsNewNode="True" />
+              <Item Id="HizmetTanim_ListView" ViewId="HizmetTanim_ListView" ImageName="BO_document" Index="6" IsNewNode="True" />
+              <Item Id="MasrafTanim_ListView" ViewId="MasrafTanim_ListView" ImageName="BO_document" Index="7" IsNewNode="True" />
+              <Item Id="StokParametre_ListView" ViewId="StokParametre_ListView" ImageName="BO_document" Index="8" IsNewNode="True" />
+              <Item Id="DepoTanim_ListView" ViewId="DepoTanim_ListView" ImageName="BO_document" Index="9" IsNewNode="True" />
             </Items>
           </Item>
-          <Item Id="StokYonetimi_Hareketler" Caption="Hareketler" Index="1" IsNewNode="True">
+          <Item Id="StokYonetimi_Hareketler" Caption="Hareketler" ImageName="BO_transition" Index="1" IsNewNode="True">
             <Items IsNewNode="True">
               <Item Id="StokHareketleriM_AcilisListView" ViewId="StokHareketleriM_AcilisListView" ImageName="BO_document" Index="0" IsNewNode="True" />
-              <Item Id="StokHareketleriM_AlisGirisiListView" ViewId="StokHareketleriM_AlisGirisiListView" ImageName="BO_folder" Index="1" IsNewNode="True" />
-              <Item Id="StokHareketleriM_MalKabulGirisiListView" ViewId="StokHareketleriM_MalKabulGirisiListView" ImageName="BO_folder" Index="2" IsNewNode="True" />
-              <Item Id="StokHareketleriM_UretimGirisiListView" ViewId="StokHareketleriM_UretimGirisiListView" ImageName="BO_folder" Index="3" IsNewNode="True" />
-              <Item Id="StokHareketleriM_SayimFazlasiListView" ViewId="StokHareketleriM_SayimFazlasiListView" ImageName="BO_list" Index="4" IsNewNode="True" />
-              <Item Id="StokHareketleriM_SatisCikisiListView" ViewId="StokHareketleriM_SatisCikisiListView" ImageName="BO_report" Index="5" IsNewNode="True" />
-              <Item Id="StokHareketleriM_UretimTuketimiListView" ViewId="StokHareketleriM_UretimTuketimiListView" ImageName="BO_report" Index="6" IsNewNode="True" />
-              <Item Id="StokHareketleriM_SayimEksigiListView" ViewId="StokHareketleriM_SayimEksigiListView" ImageName="BO_category" Index="7" IsNewNode="True" />
-              <Item Id="StokHareketleriM_FireListView" ViewId="StokHareketleriM_FireListView" ImageName="BO_rules" Index="8" IsNewNode="True" />
-              <Item Id="StokHareketleriM_SatinAlmaIadeCikisiListView" ViewId="StokHareketleriM_SatinAlmaIadeCikisiListView" ImageName="BO_report" Index="9" IsNewNode="True" />
-              <Item Id="StokHareketleriM_SatisIadeGirisiListView" ViewId="StokHareketleriM_SatisIadeGirisiListView" ImageName="BO_folder" Index="10" IsNewNode="True" />
-              <Item Id="StokHareketleriM_ListView" ViewId="StokHareketleriM_ListView" ImageName="BO_list" Index="11" IsNewNode="True" />
-              <Item Id="StokTransferi_ListView" ViewId="StokTransferi_ListView" ImageName="BO_transition" Index="12" IsNewNode="True" />
-              <Item Id="StokBakiye_ListView" ViewId="StokBakiye_ListView" ImageName="BO_report" Index="13" IsNewNode="True" />
+              <Item Id="StokHareketleriM_AlisGirisiListView" ViewId="StokHareketleriM_AlisGirisiListView" ImageName="BO_document" Index="1" IsNewNode="True" />
+              <Item Id="StokHareketleriM_MalKabulGirisiListView" ViewId="StokHareketleriM_MalKabulGirisiListView" ImageName="BO_document" Index="2" IsNewNode="True" />
+              <Item Id="StokHareketleriM_UretimGirisiListView" ViewId="StokHareketleriM_UretimGirisiListView" ImageName="BO_document" Index="3" IsNewNode="True" />
+              <Item Id="StokHareketleriM_SayimFazlasiListView" ViewId="StokHareketleriM_SayimFazlasiListView" ImageName="BO_document" Index="4" IsNewNode="True" />
+              <Item Id="StokHareketleriM_SatisCikisiListView" ViewId="StokHareketleriM_SatisCikisiListView" ImageName="BO_document" Index="5" IsNewNode="True" />
+              <Item Id="StokHareketleriM_UretimTuketimiListView" ViewId="StokHareketleriM_UretimTuketimiListView" ImageName="BO_document" Index="6" IsNewNode="True" />
+              <Item Id="StokHareketleriM_SayimEksigiListView" ViewId="StokHareketleriM_SayimEksigiListView" ImageName="BO_document" Index="7" IsNewNode="True" />
+              <Item Id="StokHareketleriM_FireListView" ViewId="StokHareketleriM_FireListView" ImageName="BO_document" Index="8" IsNewNode="True" />
+              <Item Id="StokHareketleriM_SatinAlmaIadeCikisiListView" ViewId="StokHareketleriM_SatinAlmaIadeCikisiListView" ImageName="BO_document" Index="9" IsNewNode="True" />
+              <Item Id="StokHareketleriM_SatisIadeGirisiListView" ViewId="StokHareketleriM_SatisIadeGirisiListView" ImageName="BO_document" Index="10" IsNewNode="True" />
+              <Item Id="StokHareketleriM_ListView" ViewId="StokHareketleriM_ListView" ImageName="BO_document" Index="11" IsNewNode="True" />
+              <Item Id="StokTransferi_ListView" ViewId="StokTransferi_ListView" ImageName="BO_document" Index="12" IsNewNode="True" />
+              <Item Id="StokBakiye_ListView" ViewId="StokBakiye_ListView" ImageName="BO_document" Index="13" IsNewNode="True" />
             </Items>
           </Item>
         </Items>
       </Item>
       <Item Id="GenelTanimlar" Caption="Genel Tanımlar" ImageName="BO_organization" Index="1" IsNewNode="True">
         <Items IsNewNode="True">
-          <Item Id="UlkeTanim_ListView" ViewId="UlkeTanim_ListView" ImageName="BO_country" Index="0" IsNewNode="True" />
-          <Item Id="BirimTanim_ListView" ViewId="BirimTanim_ListView" ImageName="BO_list" Index="2" IsNewNode="True" />
-          <Item Id="DovizTanim_ListView" ViewId="DovizTanim_ListView" ImageName="BO_price" Index="3" IsNewNode="True" />
-          <Item Id="KDVTanim_ListView" ViewId="KDVTanim_ListView" ImageName="BO_rules" Index="4" IsNewNode="True" />
-          <Item Id="DovizGunlukKurM_ListView" ViewId="DovizGunlukKurM_ListView" ImageName="BO_report" Index="5" IsNewNode="True" />
-          <Item Id="GenelParametre_ListView" ViewId="GenelParametre_ListView" ImageName="BO_rules" Index="6" IsNewNode="True" />
+          <Item Id="UlkeTanim_ListView" ViewId="UlkeTanim_ListView" ImageName="BO_document" Index="0" IsNewNode="True" />
+          <Item Id="BirimTanim_ListView" ViewId="BirimTanim_ListView" ImageName="BO_document" Index="2" IsNewNode="True" />
+          <Item Id="DovizTanim_ListView" ViewId="DovizTanim_ListView" ImageName="BO_document" Index="3" IsNewNode="True" />
+          <Item Id="KDVTanim_ListView" ViewId="KDVTanim_ListView" ImageName="BO_document" Index="4" IsNewNode="True" />
+          <Item Id="DovizGunlukKurM_ListView" ViewId="DovizGunlukKurM_ListView" ImageName="BO_document" Index="5" IsNewNode="True" />
+          <Item Id="GenelParametre_ListView" ViewId="GenelParametre_ListView" ImageName="BO_document" Index="6" IsNewNode="True" />
           <Item Id="FisTuruTanim_ListView" ViewId="FisTuruTanim_ListView" ImageName="BO_document" Index="7" IsNewNode="True" />
         </Items>
       </Item>
-      <Item Id="Finans" Caption="Cari Hesap Yönetimi" ImageName="BO_price" Index="2" IsNewNode="True">
+      <Item Id="Finans" Caption="Cari Hesap Yönetimi" ImageName="BO_customer" Index="2" IsNewNode="True">
         <Items IsNewNode="True">
-          <Item Id="Finans_Tanimlar" Caption="Tanımlar" Index="0" IsNewNode="True">
+          <Item Id="Finans_Tanimlar" Caption="Tanımlar" ImageName="BO_folder" Index="0" IsNewNode="True">
             <Items IsNewNode="True">
-              <Item Id="CariGrupTanim_ListView" ViewId="CariGrupTanim_ListView" ImageName="BO_department" Index="0" IsNewNode="True" />
-              <Item Id="CariHesapTanim_ListView" ViewId="CariHesapTanim_ListView" ImageName="BO_customer" Index="1" IsNewNode="True" />
+              <Item Id="CariHesapTipiTanim_ListView" ViewId="CariHesapTipiTanim_ListView" ImageName="BO_document" Index="0" IsNewNode="True" />
+              <Item Id="CariHesapGrupTanim_ListView" ViewId="CariHesapGrupTanim_ListView" ImageName="BO_document" Index="1" IsNewNode="True" />
+              <Item Id="CariHesapTanim_ListView" ViewId="CariHesapTanim_ListView" ImageName="BO_document" Index="2" IsNewNode="True" />
+              <Item Id="CariHesapParametre_ListView" ViewId="CariHesapParametre_ListView" ImageName="BO_document" Index="3" IsNewNode="True" />
             </Items>
           </Item>
-          <Item Id="Finans_Hareketler" Caption="Hareketler" Index="1" IsNewNode="True">
+          <Item Id="Finans_Hareketler" Caption="Hareketler" ImageName="BO_transition" Index="1" IsNewNode="True">
             <Items IsNewNode="True">
               <Item Id="KasaCariBankaHareketleri_CariAcilisListView" ViewId="KasaCariBankaHareketleri_CariAcilisListView" ImageName="BO_document" Index="0" IsNewNode="True" />
               <Item Id="KasaCariBankaHareketleri_CariTahsilatListView" ViewId="KasaCariBankaHareketleri_CariTahsilatListView" ImageName="BO_document" Index="1" IsNewNode="True" />
               <Item Id="KasaCariBankaHareketleri_CariOdemeListView" ViewId="KasaCariBankaHareketleri_CariOdemeListView" ImageName="BO_document" Index="2" IsNewNode="True" />
               <Item Id="KasaCariBankaHareketleri_CariVirmanListView" ViewId="KasaCariBankaHareketleri_CariVirmanListView" ImageName="BO_document" Index="3" IsNewNode="True" />
-              <Item Id="KasaCariBankaHareketleri_CariTumHareketlerListView" ViewId="KasaCariBankaHareketleri_CariTumHareketlerListView" ImageName="BO_list" Index="4" IsNewNode="True" />
+              <Item Id="KasaCariBankaHareketleri_CariTumHareketlerListView" ViewId="KasaCariBankaHareketleri_CariTumHareketlerListView" ImageName="BO_document" Index="4" IsNewNode="True" />
             </Items>
           </Item>
         </Items>
       </Item>
       <Item Id="KasaYonetimi" Caption="Kasa Yönetimi" ImageName="BO_price" Index="3" IsNewNode="True">
         <Items IsNewNode="True">
-          <Item Id="KasaYonetimi_Tanimlar" Caption="Tanımlar" Index="0" IsNewNode="True">
+          <Item Id="KasaYonetimi_Tanimlar" Caption="Tanımlar" ImageName="BO_folder" Index="0" IsNewNode="True">
             <Items IsNewNode="True">
-              <Item Id="KasaTanim_ListView" ViewId="KasaTanim_ListView" ImageName="BO_price" Index="0" IsNewNode="True" />
+              <Item Id="KasaTanim_ListView" ViewId="KasaTanim_ListView" ImageName="BO_document" Index="0" IsNewNode="True" />
             </Items>
           </Item>
-          <Item Id="KasaYonetimi_Hareketler" Caption="Hareketler" Index="1" IsNewNode="True">
+          <Item Id="KasaYonetimi_Hareketler" Caption="Hareketler" ImageName="BO_transition" Index="1" IsNewNode="True">
             <Items IsNewNode="True">
               <Item Id="KasaCariBankaHareketleri_KasaAcilisListView" ViewId="KasaCariBankaHareketleri_KasaAcilisListView" ImageName="BO_document" Index="0" IsNewNode="True" />
               <Item Id="KasaCariBankaHareketleri_KasaTahsilatListView" ViewId="KasaCariBankaHareketleri_KasaTahsilatListView" ImageName="BO_document" Index="1" IsNewNode="True" />
               <Item Id="KasaCariBankaHareketleri_KasaOdemeListView" ViewId="KasaCariBankaHareketleri_KasaOdemeListView" ImageName="BO_document" Index="2" IsNewNode="True" />
               <Item Id="KasaCariBankaHareketleri_KasaVirmanListView" ViewId="KasaCariBankaHareketleri_KasaVirmanListView" ImageName="BO_document" Index="3" IsNewNode="True" />
-              <Item Id="KasaCariBankaHareketleri_KasaTumHareketlerListView" ViewId="KasaCariBankaHareketleri_KasaTumHareketlerListView" ImageName="BO_list" Index="4" IsNewNode="True" />
+              <Item Id="KasaCariBankaHareketleri_KasaTumHareketlerListView" ViewId="KasaCariBankaHareketleri_KasaTumHareketlerListView" ImageName="BO_document" Index="4" IsNewNode="True" />
             </Items>
           </Item>
         </Items>
       </Item>
-      <Item Id="BankaYonetimi" Caption="Banka Yönetimi" ImageName="BO_price" Index="4" IsNewNode="True">
+      <Item Id="BankaYonetimi" Caption="Banka Yönetimi" ImageName="BO_price_item" Index="4" IsNewNode="True">
         <Items IsNewNode="True">
-          <Item Id="BankaYonetimi_Tanimlar" Caption="Tanımlar" Index="0" IsNewNode="True">
+          <Item Id="BankaYonetimi_Tanimlar" Caption="Tanımlar" ImageName="BO_folder" Index="0" IsNewNode="True">
             <Items IsNewNode="True">
-              <Item Id="BankaTanim_ListView" ViewId="BankaTanim_ListView" ImageName="BO_organization" Index="0" IsNewNode="True" />
-              <Item Id="BankaHesabiTanim_ListView" ViewId="BankaHesabiTanim_ListView" ImageName="BO_price" Index="1" IsNewNode="True" />
+              <Item Id="BankaTanim_ListView" ViewId="BankaTanim_ListView" ImageName="BO_document" Index="0" IsNewNode="True" />
+              <Item Id="BankaHesabiTanim_ListView" ViewId="BankaHesabiTanim_ListView" ImageName="BO_document" Index="1" IsNewNode="True" />
             </Items>
           </Item>
-          <Item Id="BankaYonetimi_Hareketler" Caption="Hareketler" Index="1" IsNewNode="True">
+          <Item Id="BankaYonetimi_Hareketler" Caption="Hareketler" ImageName="BO_transition" Index="1" IsNewNode="True">
             <Items IsNewNode="True">
               <Item Id="KasaCariBankaHareketleri_BankaAcilisListView" ViewId="KasaCariBankaHareketleri_BankaAcilisListView" ImageName="BO_document" Index="0" IsNewNode="True" />
               <Item Id="KasaCariBankaHareketleri_BankaTahsilatListView" ViewId="KasaCariBankaHareketleri_BankaTahsilatListView" ImageName="BO_document" Index="1" IsNewNode="True" />
               <Item Id="KasaCariBankaHareketleri_BankaOdemeListView" ViewId="KasaCariBankaHareketleri_BankaOdemeListView" ImageName="BO_document" Index="2" IsNewNode="True" />
               <Item Id="KasaCariBankaHareketleri_BankaVirmanListView" ViewId="KasaCariBankaHareketleri_BankaVirmanListView" ImageName="BO_document" Index="3" IsNewNode="True" />
-              <Item Id="KasaCariBankaHareketleri_BankaTumHareketlerListView" ViewId="KasaCariBankaHareketleri_BankaTumHareketlerListView" ImageName="BO_list" Index="4" IsNewNode="True" />
+              <Item Id="KasaCariBankaHareketleri_BankaTumHareketlerListView" ViewId="KasaCariBankaHareketleri_BankaTumHareketlerListView" ImageName="BO_document" Index="4" IsNewNode="True" />
             </Items>
           </Item>
         </Items>
@@ -211,82 +213,31 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
-    <DetailView Id="CariGrupTanim_DetailView" IsNewNode="True">
-      <Layout IsNewNode="True">
-        <LayoutGroup Id="Main" RelativeSize="100" IsNewNode="True">
-          <LayoutGroup Id="SimpleEditors" RelativeSize="100" IsNewNode="True">
-            <TabbedGroup Id="Tabs" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
-              <LayoutGroup Id="Genel" Caption="Genel" Direction="Vertical" Index="0" RelativeSize="100" IsNewNode="True">
-                <LayoutItem Id="CariGrupAdi" ViewItem="CariGrupAdi" Index="0" RelativeSize="50" IsNewNode="True" />
-                <LayoutItem Id="IsVarsayilan" ViewItem="IsVarsayilan" Index="1" RelativeSize="50" IsNewNode="True" />
-              </LayoutGroup>
-              <LayoutGroup Id="OzelKodlar" Caption="Özel Kodlar &amp; Açıklama" Direction="Vertical" Index="1" RelativeSize="100" IsNewNode="True">
-                <LayoutGroup Id="CariGrupTanim_Row1" ShowCaption="False" Direction="Horizontal" Index="0" RelativeSize="20" IsNewNode="True">
-                  <LayoutItem Id="CustomCode1" ViewItem="CustomCode1" Index="0" RelativeSize="50" IsNewNode="True" />
-                  <LayoutItem Id="CustomCode2" ViewItem="CustomCode2" Index="1" RelativeSize="50" IsNewNode="True" />
-                </LayoutGroup>
-                <LayoutItem Id="Description" ViewItem="Description" Index="1" RelativeSize="80" IsNewNode="True" />
-              </LayoutGroup>
-              <LayoutGroup Id="Denetim" Caption="Denetim" Direction="Horizontal" Index="2" RelativeSize="100" IsNewNode="True">
-                <LayoutGroup Id="CariGrupTanim_Denetim_col1" ShowCaption="False" Index="0" RelativeSize="50" IsNewNode="True">
-                  <LayoutItem Id="CreatedBy" ViewItem="CreatedBy" Index="0" RelativeSize="50" IsNewNode="True" />
-                  <LayoutItem Id="ModifiedBy" ViewItem="ModifiedBy" Index="1" RelativeSize="50" IsNewNode="True" />
-                </LayoutGroup>
-                <LayoutGroup Id="CariGrupTanim_Denetim_col2" ShowCaption="False" Index="1" RelativeSize="50" IsNewNode="True">
-                  <LayoutItem Id="CreatedDate" ViewItem="CreatedDate" Index="0" RelativeSize="50" IsNewNode="True" />
-                  <LayoutItem Id="ModifiedDate" ViewItem="ModifiedDate" Index="1" RelativeSize="50" IsNewNode="True" />
-                </LayoutGroup>
-              </LayoutGroup>
-            </TabbedGroup>
-            <LayoutGroup Id="BaseClassWithAudit" RelativeSize="100" Removed="True">
-              <LayoutItem Id="CreatedBy" ViewItem="CreatedBy" Removed="True" />
-              <LayoutItem Id="CreatedDate" ViewItem="CreatedDate" Removed="True" />
-              <LayoutItem Id="ModifiedBy" ViewItem="ModifiedBy" Removed="True" />
-              <LayoutItem Id="ModifiedDate" ViewItem="ModifiedDate" Removed="True" />
-            </LayoutGroup>
-            <LayoutGroup Id="BaseClassWithAuditAndDescription" RelativeSize="100" Removed="True">
-              <LayoutItem Id="CustomCode1" ViewItem="CustomCode1" Removed="True" />
-              <LayoutItem Id="CustomCode2" ViewItem="CustomCode2" Removed="True" />
-              <LayoutItem Id="Description" ViewItem="Description" Removed="True" />
-            </LayoutGroup>
-            <LayoutGroup Id="CariGrupTanim" RelativeSize="100" Removed="True">
-              <LayoutItem Id="CariGrupAdi" ViewItem="CariGrupAdi" Removed="True" />
-              <LayoutItem Id="IsVarsayilan" ViewItem="IsVarsayilan" Removed="True" />
-            </LayoutGroup>
-          </LayoutGroup>
-        </LayoutGroup>
-      </Layout>
-    </DetailView>
-    <ListView Id="CariGrupTanim_ListView">
-      <Columns IsNewNode="True">
-        <ColumnInfo Id="CariGrupAdi" PropertyName="CariGrupAdi" Index="0" IsNewNode="True" />
-        <ColumnInfo Id="IsVarsayilan" PropertyName="IsVarsayilan" Index="1" IsNewNode="True" />
-      </Columns>
-    </ListView>
     <DetailView Id="CariHesapTanim_DetailView" IsNewNode="True">
       <Layout IsNewNode="True">
         <LayoutGroup Id="Main" RelativeSize="100" IsNewNode="True">
           <LayoutGroup Id="SimpleEditors" RelativeSize="36.62337662337662" IsNewNode="True">
             <TabbedGroup Id="Tabs" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
               <LayoutGroup Id="Genel" Caption="Genel" Direction="Vertical" Index="0" RelativeSize="100" ShowCaption="True" IsNewNode="True">
-                <LayoutItem Id="CariHesapKodu" ViewItem="CariHesapKodu" Index="0" RelativeSize="15.789473684210526" IsNewNode="True" />
-                <LayoutItem Id="HesapAdi" ViewItem="HesapAdi" Index="1" RelativeSize="11.403508771929825" IsNewNode="True" />
-                <LayoutGroup Id="Auto833c885e-b224-4d34-8a33-e84ea81437be" ShowCaption="False" Caption="" Direction="Horizontal" Index="2" RelativeSize="11.403508771929825" IsNewNode="True">
-                  <LayoutItem Id="CariHesapTipi" ViewItem="CariHesapTipi" Index="0" RelativeSize="49.96486296556571" IsNewNode="True" />
-                  <LayoutItem Id="CariHesapTuru" ViewItem="CariHesapTuru" Index="1" RelativeSize="50.03513703443429" IsNewNode="True" />
+                <LayoutItem Id="CariHesapTipiTanim" ViewItem="CariHesapTipiTanim" Index="0" RelativeSize="11.403508771929825" IsNewNode="True" />
+                <LayoutGroup Id="Auto833c885e-b224-4d34-8a33-e84ea81437be" ShowCaption="False" Caption="" Direction="Horizontal" Index="1" RelativeSize="11.403508771929825" IsNewNode="True">
+                  <LayoutItem Id="CariHesapGrubu" ViewItem="CariHesapGrubu" Index="0" RelativeSize="49.96486296556571" IsNewNode="True" />
+                  <LayoutItem Id="CariHesapAltGrubu" ViewItem="CariHesapAltGrubu" Index="1" RelativeSize="50.03513703443429" IsNewNode="True" />
                 </LayoutGroup>
-                <LayoutGroup Id="Auto5f2a1b3c-6d4e-4a8f-9c1d-2e3f4a5b6c7d" ShowCaption="False" Caption="" Direction="Horizontal" Index="3" RelativeSize="11.403508771929825" IsNewNode="True">
+                <LayoutItem Id="CariHesapKodu" ViewItem="CariHesapKodu" Index="2" RelativeSize="15.789473684210526" IsNewNode="True" />
+                <LayoutItem Id="HesapAdi" ViewItem="HesapAdi" Index="3" RelativeSize="11.403508771929825" IsNewNode="True" />
+                <LayoutItem Id="CariHesapTuru" ViewItem="CariHesapTuru" Index="4" RelativeSize="11.403508771929825" IsNewNode="True" />
+                <LayoutGroup Id="Auto5f2a1b3c-6d4e-4a8f-9c1d-2e3f4a5b6c7d" ShowCaption="False" Caption="" Direction="Horizontal" Index="5" RelativeSize="11.403508771929825" IsNewNode="True">
                   <LayoutItem Id="IsVarsayilan" ViewItem="IsVarsayilan" Index="0" RelativeSize="49.96486296556571" IsNewNode="True" />
                   <LayoutItem Id="GuncelBakiye" ViewItem="GuncelBakiye" Index="1" RelativeSize="50.03513703443429" IsNewNode="True" />
                 </LayoutGroup>
-                <LayoutGroup Id="Auto3d5506cc-aa89-4b85-a9ba-905cdea2102e" ShowCaption="False" Caption="" Index="4" RelativeSize="61.40350877192982" IsNewNode="True">
+                <LayoutGroup Id="Auto3d5506cc-aa89-4b85-a9ba-905cdea2102e" ShowCaption="False" Caption="" Index="6" RelativeSize="61.40350877192982" IsNewNode="True">
                   <LayoutGroup Id="Auto6d8fa1ae-d5c6-4618-ac96-67030452affd" ShowCaption="False" Caption="" Direction="Horizontal" Index="0" RelativeSize="18.571428571428573" IsNewNode="True">
                     <LayoutItem Id="TCKimlikVergiNo" ViewItem="TCKimlikVergiNo" Index="0" RelativeSize="49.96486296556571" IsNewNode="True" />
                     <LayoutItem Id="VergiDairesi" ViewItem="VergiDairesi" Index="1" RelativeSize="50.03513703443429" IsNewNode="True" />
                   </LayoutGroup>
                   <LayoutGroup Id="Autoec663fa3-1090-4306-8fa9-6f2fefda300c" ShowCaption="False" Caption="" Index="1" RelativeSize="81.42857142857143" IsNewNode="True">
-                    <LayoutItem Id="CariGrupTanim" ViewItem="CariGrupTanim" Index="0" RelativeSize="22.80701754385965" IsNewNode="True" />
-                    <LayoutGroup Id="Auto537014da-1146-47a2-ba30-b66070d162c2" ShowCaption="False" Caption="" Direction="Horizontal" Index="1" RelativeSize="77.19298245614036" IsNewNode="True">
+                    <LayoutGroup Id="Auto537014da-1146-47a2-ba30-b66070d162c2" ShowCaption="False" Caption="" Direction="Horizontal" Index="0" RelativeSize="100" IsNewNode="True">
                       <LayoutGroup Id="Autob3d44983-08d8-447b-b752-9b6c23d1add1" ShowCaption="False" Caption="" Index="0" RelativeSize="49.96486296556571" IsNewNode="True">
                         <LayoutItem Id="DovizTanim" ViewItem="DovizTanim" Index="0" RelativeSize="29.545454545454547" IsNewNode="True" />
                         <LayoutItem Id="EPostaAdresi" ViewItem="EPostaAdresi" Index="1" RelativeSize="29.545454545454547" IsNewNode="True" />
@@ -300,7 +251,7 @@
                     </LayoutGroup>
                   </LayoutGroup>
                 </LayoutGroup>
-                <TabbedGroup Id="AdresYetkiliTabs" CaptionLocation="Top" Index="5" RelativeSize="30" IsNewNode="True">
+                <TabbedGroup Id="AdresYetkiliTabs" CaptionLocation="Top" Index="7" RelativeSize="30" IsNewNode="True">
                   <LayoutGroup Id="Adres" Caption="Adres" Index="0" RelativeSize="100" ShowCaption="True" IsNewNode="True">
                     <LayoutItem Id="CariAdresleri" ViewItem="CariAdresleri" Index="0" RelativeSize="100" IsNewNode="True" />
                   </LayoutGroup>
@@ -338,9 +289,10 @@
             </LayoutGroup>
             <LayoutGroup Id="CariHesapTanim" RelativeSize="100" Removed="True">
               <LayoutItem Id="CariAdresleri" ViewItem="CariAdresleri" Removed="True" />
-              <LayoutItem Id="CariGrupTanim" ViewItem="CariGrupTanim" Removed="True" />
+              <LayoutItem Id="CariHesapAltGrubu" ViewItem="CariHesapAltGrubu" Removed="True" />
+              <LayoutItem Id="CariHesapGrubu" ViewItem="CariHesapGrubu" Removed="True" />
               <LayoutItem Id="CariHesapKodu" ViewItem="CariHesapKodu" Removed="True" />
-              <LayoutItem Id="CariHesapTipi" ViewItem="CariHesapTipi" Removed="True" />
+              <LayoutItem Id="CariHesapTipiTanim" ViewItem="CariHesapTipiTanim" Removed="True" />
               <LayoutItem Id="CariHesapTuru" ViewItem="CariHesapTuru" Removed="True" />
               <LayoutItem Id="CariYetkiliTanimlari" ViewItem="CariYetkiliTanimlari" Removed="True" />
               <LayoutItem Id="EPostaAdresi" ViewItem="EPostaAdresi" Removed="True" />
@@ -376,9 +328,123 @@
       <Columns IsNewNode="True">
         <ColumnInfo Id="CariHesapKodu" PropertyName="CariHesapKodu" Index="0" IsNewNode="True" />
         <ColumnInfo Id="HesapAdi" PropertyName="HesapAdi" Index="1" IsNewNode="True" />
-        <ColumnInfo Id="CariHesapTipi" PropertyName="CariHesapTipi" Index="2" IsNewNode="True" />
+        <ColumnInfo Id="CariHesapAltGrubu" PropertyName="CariHesapAltGrubu" Index="2" IsNewNode="True" />
         <ColumnInfo Id="DovizTanim" PropertyName="DovizTanim" Index="3" IsNewNode="True" />
-        <ColumnInfo Id="CariGrupTanim" PropertyName="CariGrupTanim" Index="4" IsNewNode="True" />
+        <ColumnInfo Id="GuncelBakiye" PropertyName="GuncelBakiye" Index="4" IsNewNode="True" />
+      </Columns>
+    </ListView>
+    <DetailView Id="CariHesapTipiTanim_DetailView" IsNewNode="True">
+      <Layout IsNewNode="True">
+        <LayoutGroup Id="Main" RelativeSize="100" IsNewNode="True">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="100" IsNewNode="True">
+            <TabbedGroup Id="Tabs" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
+              <LayoutGroup Id="Genel" Caption="Genel" Direction="Vertical" Index="0" RelativeSize="100" IsNewNode="True">
+                <LayoutItem Id="CariHesapTipiKodu" ViewItem="CariHesapTipiKodu" Index="0" RelativeSize="34" IsNewNode="True" />
+                <LayoutItem Id="CariHesapTipiAdi" ViewItem="CariHesapTipiAdi" Index="1" RelativeSize="33" IsNewNode="True" />
+                <LayoutItem Id="CariHesapSinifi" ViewItem="CariHesapSinifi" Index="2" RelativeSize="33" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutGroup Id="OzelKodlar" Caption="Özel Kodlar &amp; Açıklama" Direction="Vertical" Index="1" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="CariHesapTipiTanim_Row2" ShowCaption="False" Direction="Horizontal" Index="0" RelativeSize="20" IsNewNode="True">
+                  <LayoutItem Id="CustomCode1" ViewItem="CustomCode1" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="CustomCode2" ViewItem="CustomCode2" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutItem Id="Description" ViewItem="Description" Index="1" RelativeSize="80" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutGroup Id="Denetim" Caption="Denetim" Direction="Horizontal" Index="2" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="CariHesapTipiTanim_Denetim_col1" ShowCaption="False" Index="0" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedBy" ViewItem="CreatedBy" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedBy" ViewItem="ModifiedBy" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="CariHesapTipiTanim_Denetim_col2" ShowCaption="False" Index="1" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedDate" ViewItem="CreatedDate" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedDate" ViewItem="ModifiedDate" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+              </LayoutGroup>
+            </TabbedGroup>
+            <LayoutGroup Id="BaseClassWithAudit" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CreatedBy" ViewItem="CreatedBy" Removed="True" />
+              <LayoutItem Id="CreatedDate" ViewItem="CreatedDate" Removed="True" />
+              <LayoutItem Id="ModifiedBy" ViewItem="ModifiedBy" Removed="True" />
+              <LayoutItem Id="ModifiedDate" ViewItem="ModifiedDate" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="BaseClassWithAuditAndDescription" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CustomCode1" ViewItem="CustomCode1" Removed="True" />
+              <LayoutItem Id="CustomCode2" ViewItem="CustomCode2" Removed="True" />
+              <LayoutItem Id="Description" ViewItem="Description" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="CariHesapTipiTanim" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CariHesapSinifi" ViewItem="CariHesapSinifi" Removed="True" />
+              <LayoutItem Id="CariHesapTipiAdi" ViewItem="CariHesapTipiAdi" Removed="True" />
+              <LayoutItem Id="CariHesapTipiKodu" ViewItem="CariHesapTipiKodu" Removed="True" />
+            </LayoutGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <ListView Id="CariHesapTipiTanim_ListView">
+      <Columns IsNewNode="True">
+        <ColumnInfo Id="CariHesapTipiKodu" PropertyName="CariHesapTipiKodu" Index="0" IsNewNode="True" />
+        <ColumnInfo Id="CariHesapTipiAdi" PropertyName="CariHesapTipiAdi" Index="1" IsNewNode="True" />
+        <ColumnInfo Id="CariHesapSinifi" PropertyName="CariHesapSinifi" Index="2" IsNewNode="True" />
+      </Columns>
+    </ListView>
+    <DetailView Id="CariHesapGrupTanim_DetailView" IsNewNode="True">
+      <Layout IsNewNode="True">
+        <LayoutGroup Id="Main" RelativeSize="100" IsNewNode="True">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="100" IsNewNode="True">
+            <TabbedGroup Id="Tabs" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
+              <LayoutGroup Id="Genel" Caption="Genel" Direction="Vertical" Index="0" RelativeSize="100" IsNewNode="True">
+                <LayoutItem Id="CariHesapTipiTanim" ViewItem="CariHesapTipiTanim" Index="0" RelativeSize="34" IsNewNode="True" />
+                <LayoutGroup Id="CariHesapGrupTanim_Row1" ShowCaption="False" Direction="Horizontal" Index="1" RelativeSize="33" IsNewNode="True">
+                  <LayoutItem Id="CariHesapGrupKodu" ViewItem="CariHesapGrupKodu" Index="0" RelativeSize="30" IsNewNode="True" />
+                  <LayoutItem Id="CariHesapGrupAdi" ViewItem="CariHesapGrupAdi" Index="1" RelativeSize="70" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutItem Id="YurtIciYurtDisiTipi" ViewItem="YurtIciYurtDisiTipi" Index="2" RelativeSize="33" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutGroup Id="OzelKodlar" Caption="Özel Kodlar &amp; Açıklama" Direction="Vertical" Index="1" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="CariHesapGrupTanim_Row2" ShowCaption="False" Direction="Horizontal" Index="0" RelativeSize="20" IsNewNode="True">
+                  <LayoutItem Id="CustomCode1" ViewItem="CustomCode1" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="CustomCode2" ViewItem="CustomCode2" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutItem Id="Description" ViewItem="Description" Index="1" RelativeSize="80" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutGroup Id="Denetim" Caption="Denetim" Direction="Horizontal" Index="2" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="CariHesapGrupTanim_Denetim_col1" ShowCaption="False" Index="0" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedBy" ViewItem="CreatedBy" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedBy" ViewItem="ModifiedBy" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+                <LayoutGroup Id="CariHesapGrupTanim_Denetim_col2" ShowCaption="False" Index="1" RelativeSize="50" IsNewNode="True">
+                  <LayoutItem Id="CreatedDate" ViewItem="CreatedDate" Index="0" RelativeSize="50" IsNewNode="True" />
+                  <LayoutItem Id="ModifiedDate" ViewItem="ModifiedDate" Index="1" RelativeSize="50" IsNewNode="True" />
+                </LayoutGroup>
+              </LayoutGroup>
+            </TabbedGroup>
+            <LayoutGroup Id="BaseClassWithAudit" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CreatedBy" ViewItem="CreatedBy" Removed="True" />
+              <LayoutItem Id="CreatedDate" ViewItem="CreatedDate" Removed="True" />
+              <LayoutItem Id="ModifiedBy" ViewItem="ModifiedBy" Removed="True" />
+              <LayoutItem Id="ModifiedDate" ViewItem="ModifiedDate" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="BaseClassWithAuditAndDescription" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CustomCode1" ViewItem="CustomCode1" Removed="True" />
+              <LayoutItem Id="CustomCode2" ViewItem="CustomCode2" Removed="True" />
+              <LayoutItem Id="Description" ViewItem="Description" Removed="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="CariHesapGrupTanim" RelativeSize="100" Removed="True">
+              <LayoutItem Id="CariHesapGrupAdi" ViewItem="CariHesapGrupAdi" Removed="True" />
+              <LayoutItem Id="CariHesapGrupKodu" ViewItem="CariHesapGrupKodu" Removed="True" />
+              <LayoutItem Id="CariHesapTipiTanim" ViewItem="CariHesapTipiTanim" Removed="True" />
+              <LayoutItem Id="YurtIciYurtDisiTipi" ViewItem="YurtIciYurtDisiTipi" Removed="True" />
+            </LayoutGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <ListView Id="CariHesapGrupTanim_ListView">
+      <Columns IsNewNode="True">
+        <ColumnInfo Id="CariHesapGrupKodu" PropertyName="CariHesapGrupKodu" Index="0" IsNewNode="True" />
+        <ColumnInfo Id="CariHesapGrupAdi" PropertyName="CariHesapGrupAdi" Index="1" IsNewNode="True" />
+        <ColumnInfo Id="CariHesapTipiTanim" PropertyName="CariHesapTipiTanim" Index="2" IsNewNode="True" />
       </Columns>
     </ListView>
     <DetailView Id="DepoTanim_DetailView" IsNewNode="True">

@@ -35,13 +35,15 @@ public class AdVarsayilanRow { public string Ad { get; set; } public bool Varsay
 public class StokTipiRow { public string Kod { get; set; } public string Ad { get; set; } public bool MamulMu { get; set; } }
 public class ModelRow { public string ModelAdi { get; set; } public string ModelAdiIngilizce { get; set; } }
 public class StokGrupRow { public string StokTipiKodu { get; set; } public string StokGrupAdi { get; set; } }
+public class CariHesapTipiRow { public string Kod { get; set; } public string Ad { get; set; } public CariHesapTipi Sinif { get; set; } }
+public class CariHesapGrupRow { public string TipiKodu { get; set; } public string GrupAdi { get; set; } public YurtIciYurtDisiTipi YurtIciYurtDisi { get; set; } }
+public class CariHesapAltGrupRow { public string GrupAdi { get; set; } public string AltGrupAdi { get; set; } public ToptanPerakendeTipi ToptanPerakende { get; set; } }
 public class BankaRow { public string Ad { get; set; } public string SwiftKodu { get; set; } }
 public class FisTuruRow
 {
     public string Kod { get; set; }
     public string Ad { get; set; }
     public FinansModulTipi FinansModulTipi { get; set; }
-    public FinansBorcAlacakTipi FinansBorcAlacakTipi { get; set; }
     public StokHareketYonu StokHareketYonu { get; set; }
 }
 
@@ -64,8 +66,13 @@ public class DatabaseSeeder
         SeedBirim();
         SeedStokTipi();
         SeedStokGrup();     // StokTipiTanim'e bağlı
+        SeedStokParametre();
         SeedModelTanim();
         SeedFisTuru();
+        SeedCariHesapTipi();
+        SeedCariHesapGrup();    // CariHesapTipiTanim'e bağlı
+        SeedCariHesapAltGrup(); // CariHesapGrupTanim'e bağlı
+        SeedCariHesapParametre();
         SeedGenelParametre();
         SeedDepo();
         SeedKasa();
@@ -74,7 +81,12 @@ public class DatabaseSeeder
         SeedAcilisDengeHesabi();
         os.CommitChanges();
 
-        SeedKasaCariBankaTestVerisi();
+        // 4-ajanlı testte (2026-08-22, yazılım mühendisi bulgusu) tespit edildi: bu
+        // metod rastgele (sabit Random tohumuyla de olsa) KURGUSAL finansal hareketler
+        // üretiyor — yalnızca geliştirme/demo ortamında anlamlı, production'da veri
+        // kirliliği riski. Bkz. OrtamKontrolu.cs.
+        if (OrtamKontrolu.GelistirmeOrtamiMi())
+            SeedKasaCariBankaTestVerisi();
     }
 
     // Denetim: yeni kayda oluşturan kullanıcıyı ata (base auto-audit'i ezmez).
@@ -270,8 +282,6 @@ public class DatabaseSeeder
                 // Daha önce (FinansModulTipi/StokHareketYonu eklenmeden) seed edilmiş satırları geriye dönük tamamlar.
                 if (mevcut.FinansModulTipi == FinansModulTipi.Yok)
                     mevcut.FinansModulTipi = r.FinansModulTipi;
-                if (mevcut.FinansBorcAlacakTipi == FinansBorcAlacakTipi.Yok)
-                    mevcut.FinansBorcAlacakTipi = r.FinansBorcAlacakTipi;
                 if (mevcut.StokHareketYonu == StokHareketYonu.Yok)
                     mevcut.StokHareketYonu = r.StokHareketYonu;
                 continue;
@@ -280,8 +290,66 @@ public class DatabaseSeeder
             e.FisTuruKodu = r.Kod;
             e.FisTuruAdi = r.Ad;
             e.FinansModulTipi = r.FinansModulTipi;
-            e.FinansBorcAlacakTipi = r.FinansBorcAlacakTipi;
             e.StokHareketYonu = r.StokHareketYonu;
+            e.IsSystemRecord = true;
+            SetOlusturan(e);
+        }
+        os.CommitChanges();
+    }
+
+    // Cari Hesap kod hiyerarşisinin en üst seviyesi — StokTipiTanim ile aynı gerekçe,
+    // ama Tekdüzen Hesap Planı'nın GERÇEK 12x/22x/32x (Alıcılar/Alıcı-Satıcı/Satıcılar)
+    // numaralandırma STİLİNDEN esinlenilmiştir (bkz. CariHesapKoduJeneratoru).
+    void SeedCariHesapTipi()
+    {
+        foreach (var r in SeedCsvReader.Read<CariHesapTipiRow>("cari-hesap-tipi-tanimlari.csv"))
+        {
+            if (os.FirstOrDefault<CariHesapTipiTanim>(x => x.CariHesapTipiKodu == r.Kod) != null) continue;
+            var e = os.CreateObject<CariHesapTipiTanim>();
+            e.CariHesapTipiKodu = r.Kod;
+            e.CariHesapTipiAdi = r.Ad;
+            e.CariHesapSinifi = r.Sinif;
+            e.IsSystemRecord = true;
+            SetOlusturan(e);
+        }
+        os.CommitChanges();
+    }
+
+    // Orta seviye (Yurtiçi/Yurtdışı kırılımı) — CariHesapGrupKodu burada elle üretilmez,
+    // CariHesapGrupTanim.OnSaving zaten CariHesapTipiTanim atanınca otomatik üretir (bkz.
+    // CariHesapKoduJeneratoru.SonrakiCariHesapGrupKodu). CSV satır SIRASI önemli: her
+    // TipiKodu için önce Yurtiçi sonra Yurtdışı yazılmalı ki .01/.02 doğru sırayla çıksın.
+    void SeedCariHesapGrup()
+    {
+        foreach (var r in SeedCsvReader.Read<CariHesapGrupRow>("cari-hesap-grup-tanimlari.csv"))
+        {
+            if (os.FirstOrDefault<CariHesapGrupTanim>(x => x.CariHesapGrupAdi == r.GrupAdi) != null) continue;
+            CariHesapTipiTanim tip = os.FirstOrDefault<CariHesapTipiTanim>(x => x.CariHesapTipiKodu == r.TipiKodu);
+            if (tip == null) continue;
+            var e = os.CreateObject<CariHesapGrupTanim>();
+            e.CariHesapTipiTanim = tip;
+            e.CariHesapGrupAdi = r.GrupAdi;
+            e.YurtIciYurtDisiTipi = r.YurtIciYurtDisi;
+            e.IsSystemRecord = true;
+            SetOlusturan(e);
+        }
+        os.CommitChanges();
+    }
+
+    // En alt seviye (Toptan/Perakende kırılımı) — StokAltGrupTanim'in aksine burada CSV
+    // ile önceden dolduruluyor (kullanıcı kararı 2026-08-22: sabit/kapalı 12 kombinasyon,
+    // Stok'un açık uçlu/muhasebe-yönetimli AltGrup'undan farklı). Kod yine elle üretilmez.
+    void SeedCariHesapAltGrup()
+    {
+        foreach (var r in SeedCsvReader.Read<CariHesapAltGrupRow>("cari-hesap-alt-grup-tanimlari.csv"))
+        {
+            if (os.FirstOrDefault<CariHesapAltGrupTanim>(x => x.CariHesapAltGrupAdi == r.AltGrupAdi) != null) continue;
+            CariHesapGrupTanim grup = os.FirstOrDefault<CariHesapGrupTanim>(x => x.CariHesapGrupAdi == r.GrupAdi);
+            if (grup == null) continue;
+            var e = os.CreateObject<CariHesapAltGrupTanim>();
+            e.CariHesapGrupTanim = grup;
+            e.CariHesapAltGrupAdi = r.AltGrupAdi;
+            e.ToptanPerakendeTipi = r.ToptanPerakende;
             e.IsSystemRecord = true;
             SetOlusturan(e);
         }
@@ -296,6 +364,32 @@ public class DatabaseSeeder
     {
         if (os.GetObjects<GenelParametre>().Any()) return;
         var e = os.CreateObject<GenelParametre>();
+        e.IsSystemRecord = true;
+        SetOlusturan(e);
+        os.CommitChanges();
+    }
+
+    // GenelParametre ile aynı gerekçe: tek satırlık singleton ekran hiç boş gelmemeli.
+    // Ayrıca StokParametre.AfterConstruction'daki tekrar-oluşturma-engelleme (dedup) mantığı
+    // yalnızca zaten bir kayıt VARKEN doğru çalışıyor — tablo tamamen boşken ilk "Yeni" tıklaması
+    // kendi kendini mevcut kayıt sanıp yanlış davranabiliyordu (kullanıcı kararı 2026-08-22:
+    // varsayılan kayıt Jenerator seçili olarak baştan var olsun).
+    void SeedStokParametre()
+    {
+        if (os.GetObjects<StokParametre>().Any()) return;
+        var e = os.CreateObject<StokParametre>();
+        e.StokKoduUretimYontemi = StokKoduUretimYontemi.Jenerator;
+        e.IsSystemRecord = true;
+        SetOlusturan(e);
+        os.CommitChanges();
+    }
+
+    // CariHesapParametre için aynı gerekçe — bkz. SeedStokParametre.
+    void SeedCariHesapParametre()
+    {
+        if (os.GetObjects<CariHesapParametre>().Any()) return;
+        var e = os.CreateObject<CariHesapParametre>();
+        e.CariHesapKoduUretimYontemi = CariHesapKoduUretimYontemi.Jenerator;
         e.IsSystemRecord = true;
         SetOlusturan(e);
         os.CommitChanges();
@@ -330,6 +424,12 @@ public class DatabaseSeeder
         e.CustomCode1 = "ACILIS_DENGE";
         e.DovizTanim = doviz;
         e.IsSystemRecord = true;
+        // Bu bir gerçek müşteri/tedarikçi değil, sistem hesabı — Cari Hesap Alt Grubu
+        // sınıflandırması anlamsız, bu yüzden CariHesapKodu jeneratörü hiç TETİKLENMEDEN
+        // elle atanır (sıfır veritabanında CariHesapAltGrubu boşken jeneratörün
+        // ArgumentException fırlatıp seed'i çökertmesini önler — bkz. CariHesapKoduJeneratoru.
+        // SonrakiCariHesapKodu, Jenerator modunda AltGrubu null ise istisna fırlatıyor).
+        e.CariHesapKodu = "SYS.ACILIS";
         SetOlusturan(e);
         os.CommitChanges();
     }
@@ -408,7 +508,13 @@ public class DatabaseSeeder
         // olsun (4-ajanlı testte bulunan "Cari Açılış Tedarikçiyi ters yönde işliyor"
         // hatasının doğrulanabilmesi için) — idempotent, tekrar seed'de zararsız.
         var ilkCari = cariler.OfType<CariHesapTanim>().FirstOrDefault();
-        if (ilkCari != null) ilkCari.CariHesapTipi = CariHesapTipi.Tedarikci;
+        var saticiAltGrubu = os.GetObjects<CariHesapAltGrupTanim>()
+            .FirstOrDefault(x => x.CariHesapGrupTanim?.CariHesapTipiTanim?.CariHesapSinifi == CariHesapTipi.Tedarikci);
+        if (ilkCari != null && saticiAltGrubu != null)
+        {
+            ilkCari.CariHesapGrubu = saticiAltGrubu.CariHesapGrupTanim;
+            ilkCari.CariHesapAltGrubu = saticiAltGrubu;
+        }
 
         var acilis = os.FirstOrDefault<FisTuruTanim>(x => x.FisTuruKodu == "ACILIS");
         var tahsil = os.FirstOrDefault<FisTuruTanim>(x => x.FisTuruKodu == "TAHSIL");

@@ -135,6 +135,16 @@ public class StokTransferi : BaseClassWithAuditAndDescription
             FisTarihi = TransferTarihi,
             Depo = HedefDepo
         };
+        // 4-ajanlı testte (2026-08-22, yazılım debugger bulgusu) tespit edildi: StokTanim
+        // atanınca StokHareketleriD'nin kendi OnChanged'i DovizTanim'i StokTanim'in DÖVİZ
+        // CİNSİNE göre ayarlayıp günlük kur arıyordu — TRY olmayan bir stok, o günün kuru
+        // girilmemişse basit bir depo-içi transferde bile "Döviz kuru bulunamadı" hatasıyla
+        // çöküyordu. Oysa BirimMaliyet zaten TL bazlı OrtalamaMaliyet'e sabitlenir (bkz.
+        // aşağıdaki yorum) — transfer gerçek bir alım değil, dövizle hiç ilgisi yok. Çıkış
+        // satırının kendi motoru (StokHareketleriD.ObjectSaving) Döviz alanlarını TRY/1'e
+        // sabitlediği gibi, Giriş satırı için de burada AÇIKÇA TRY/1 atanır.
+        DovizTanim tryDoviz = Session.FindObject<DovizTanim>(
+            CriteriaOperator.FromLambda<DovizTanim>(x => x.DovizKodu == "TRY"));
         StokHareketleriD girisSatiri = new StokHareketleriD(Session)
         {
             StokHareketleriM = girisFisi,
@@ -144,6 +154,8 @@ public class StokTransferi : BaseClassWithAuditAndDescription
             // maliyeti, transferin diğer tarafındaki Giriş satırının maliyeti olur — transfer
             // stok değerini korumalı (ne kâr ne zarar üretmeli).
             BirimMaliyet = cikisSatiri.BirimMaliyet <= 0 ? StokTanim.OrtalamaMaliyet : cikisSatiri.BirimMaliyet,
+            DovizTanim = tryDoviz,
+            DovizKuru = 1,
             KaynakBelgeTipi = typeof(StokTransferi),
             KaynakBelgeOid = Oid
         };

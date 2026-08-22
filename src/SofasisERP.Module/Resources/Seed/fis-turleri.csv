@@ -1,25 +1,25 @@
-Kod;Ad;FinansModulTipi;FinansBorcAlacakTipi;StokHareketYonu
-STOKTN;Stok Tanımlama;Stok;Yok;Yok
-HZMTTN;Hizmet Tanımlama;Stok;Yok;Yok
-MSRFTN;Masraf Tanımlama;Stok;Yok;Yok
-CARITN;Cari Hesap Tanımlama;Cari;Yok;Yok
-STACLS;Stok Açılış Fişi;Stok;Yok;Giris
-STALIS;Stok Alış Girişi;Stok;Yok;Giris
-STSAGR;Satın Alma Mal Kabul Girişi;Stok;Yok;Giris
-STURET;Üretim Girişi;Stok;Yok;Giris
-STSFAZ;Sayım Fazlası;Stok;Yok;Giris
-STTRGR;Depo Transfer Girişi;Stok;Yok;Giris
-STSTIG;Satış İade Girişi;Stok;Yok;Giris
-STSTIS;Stok Satış Çıkışı;Stok;Yok;Cikis
-STURTK;Üretim Tüketimi;Stok;Yok;Cikis
-STSEKS;Sayım Eksiği;Stok;Yok;Cikis
-STTRCK;Depo Transfer Çıkışı;Stok;Yok;Cikis
-STFIRE;Fire / Zayiat;Stok;Yok;Cikis
-STSAIC;Satın Alma İade Çıkışı;Stok;Yok;Cikis
-STTRNS;Depo Transferi;Stok;Yok;Yok
-KASATN;Kasa Tanımlama;Kasa;Yok;Yok
-BANKTN;Banka Hesabı Tanımlama;Banka;Yok;Yok
-ACILIS;Açılış Fişi;TahsilatOdeme;Yok;Yok
-TAHSIL;Tahsilat Fişi;TahsilatOdeme;Yok;Yok
-ODEME;Ödeme Fişi;TahsilatOdeme;Yok;Yok
-VIRMAN;Virman Fişi;TahsilatOdeme;Yok;Yok
+Kod;Ad;FinansModulTipi;StokHareketYonu
+STOKTN;Stok Tanımlama;Stok;Yok
+HZMTTN;Hizmet Tanımlama;Stok;Yok
+MSRFTN;Masraf Tanımlama;Stok;Yok
+CARITN;Cari Hesap Tanımlama;Cari;Yok
+STACLS;Stok Açılış Fişi;Stok;Giris
+STALIS;Stok Alış Girişi;Stok;Giris
+STSAGR;Satın Alma Mal Kabul Girişi;Stok;Giris
+STURET;Üretim Girişi;Stok;Giris
+STSFAZ;Sayım Fazlası;Stok;Giris
+STTRGR;Depo Transfer Girişi;Stok;Giris
+STSTIG;Satış İade Girişi;Stok;Giris
+STSTIS;Stok Satış Çıkışı;Stok;Cikis
+STURTK;Üretim Tüketimi;Stok;Cikis
+STSEKS;Sayım Eksiği;Stok;Cikis
+STTRCK;Depo Transfer Çıkışı;Stok;Cikis
+STFIRE;Fire / Zayiat;Stok;Cikis
+STSAIC;Satın Alma İade Çıkışı;Stok;Cikis
+STTRNS;Depo Transferi;Stok;Yok
+KASATN;Kasa Tanımlama;Kasa;Yok
+BANKTN;Banka Hesabı Tanımlama;Banka;Yok
+ACILIS;Açılış Fişi;TahsilatOdeme;Yok
+TAHSIL;Tahsilat Fişi;TahsilatOdeme;Yok
+ODEME;Ödeme Fişi;TahsilatOdeme;Yok
+VIRMAN;Virman Fişi;TahsilatOdeme;Yok

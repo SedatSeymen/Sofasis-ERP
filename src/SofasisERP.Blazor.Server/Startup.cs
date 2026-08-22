@@ -20,8 +20,6 @@ public class Startup {
 
     public IConfiguration Configuration { get; }
 
-    // This method gets called by the runtime. Use this method to add services to the container.
-    // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
     public void ConfigureServices(IServiceCollection services) {
         // https://www.npgsql.org/doc/types/datetime.html#timestamps-and-timezones
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -131,22 +129,29 @@ public class Startup {
             });
     }
 
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
         if(env.IsDevelopment()) {
             app.UseDeveloperExceptionPage();
         }
         else {
             app.UseExceptionHandler("/Error");
-            // The default HSTS value is 30 days. To change this for production scenarios, see: https://aka.ms/aspnetcore-hsts.
+            // Varsayılan HSTS süresi 30 gündür. Production senaryoları için bkz. https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
         app.UseHttpsRedirection();
         // Türkçe dil paketi (bin/tr) etkin olsun diye kültür tr-TR'ye sabitlendi
         // (appsettings.json'daki DevExpress:ExpressApp:Languages ile birlikte).
-        var desteklenenKulturler = new[] { new System.Globalization.CultureInfo("tr-TR") };
+        // .NET'in yerleşik tr-TR kısa tarih deseni "d.MM.yyyy" — gün tek haneliyken
+        // başında sıfır YOK (ör. "1.01.2026"). Kullanıcı kararı (2026-08-22): tüm
+        // tarih alanlarında gün de her zaman 2 haneli görünmeli (dd.MM.yyyy) — bu
+        // yüzden ShortDatePattern açıkça ezilir. Aynı CultureInfo NESNESİ hem
+        // Supported*Cultures hem DefaultRequestCulture'a verilir, aksi halde
+        // RequestCulture kendi taze (düzeltilmemiş) bir tr-TR kopyası oluşturur.
+        var turkce = new System.Globalization.CultureInfo("tr-TR");
+        turkce.DateTimeFormat.ShortDatePattern = "dd.MM.yyyy";
+        var desteklenenKulturler = new[] { turkce };
         app.UseRequestLocalization(new Microsoft.AspNetCore.Builder.RequestLocalizationOptions {
-            DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("tr-TR"),
+            DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture(turkce, turkce),
             SupportedCultures = desteklenenKulturler,
             SupportedUICultures = desteklenenKulturler
         });

@@ -6,9 +6,10 @@
  * Son Güncelleme   : 08/17/2026
  * Son Güncelleyen  : Sedat Seymen
  * Açıklama         : Belge/fiş türü tanımı — eski projeden uyarlandı (FisTuruKodu =
- *                    numaralandırma öneki). FinansModulTipi/FinansBorcAlacakTipi
- *                    Cari Hesap Hareketleri için eklendi (2026-08-18) — Borç/Alacak
- *                    alan görünürlüğü bunlara göre belirlenir. StokHareketYonu
+ *                    numaralandırma öneki). FinansModulTipi Cari Hesap Hareketleri
+ *                    için eklendi (2026-08-18) — StokHareketleriM'in Fiş Türü
+ *                    seçimini modüle göre filtrelemek için kullanılır (bkz.
+ *                    DataSourceCriteria "FinansModulTipi = 'Stok'"). StokHareketYonu
  *                    (Faz 2, StokHareketleriM/D) aynı desenle eklendi — Stok
  *                    modülünün Giriş/Çıkış yönü, ViewName eski projedeki gibi
  *                    hâlâ BİLEREK yok (bu projede fiş-türü-varyant DetailView'ları
@@ -40,7 +41,6 @@ public class FisTuruTanim : BaseClassWithAudit
     string fisTuruKodu;
     string fisTuruAdi;
     FinansModulTipi finansModulTipi;
-    FinansBorcAlacakTipi finansBorcAlacakTipi;
     StokHareketYonu stokHareketYonu;
 
     // Numaralandırmadaki önek budur (bkz. NumberSequenceService.SonrakiNumara) —
@@ -70,13 +70,6 @@ public class FisTuruTanim : BaseClassWithAudit
     {
         get => finansModulTipi;
         set => SetPropertyValue(nameof(FinansModulTipi), ref finansModulTipi, value);
-    }
-
-    [XafDisplayName("Borç Alacak Tipi")]
-    public FinansBorcAlacakTipi FinansBorcAlacakTipi
-    {
-        get => finansBorcAlacakTipi;
-        set => SetPropertyValue(nameof(FinansBorcAlacakTipi), ref finansBorcAlacakTipi, value);
     }
 
     [XafDisplayName("Stok Hareket Yönü")]

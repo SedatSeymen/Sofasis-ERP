@@ -59,7 +59,6 @@ public sealed class SofasisERPModule : ModuleBase {
     }
     public override void Setup(XafApplication application) {
         base.Setup(application);
-        // Manage various aspects of the application UI and behavior at the module level.
     }
     public override void CustomizeTypesInfo(ITypesInfo typesInfo) {
         base.CustomizeTypesInfo(typesInfo);

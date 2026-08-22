@@ -28,21 +28,17 @@ namespace SofasisERP.Module.BusinessObjects
         {
         }
 
-        protected override void OnDeleting()
-        {
-            base.OnDeleting();
-        }
-
-        public override void AfterConstruction()
-        {
-            base.AfterConstruction();
-        }
-
-        protected override void OnSaving()
-        {
-            base.OnSaving();
-        }
-
+        // 4-ajanlı testte (2026-08-22, yazılım mühendisi bulgusu) tespit edildi: CustomCode1/
+        // CustomCode2/Description alanları BaseClassWithAuditAndDescription.cs'de BİREBİR
+        // tekrarlanıyor. Bu, C#'ın tekli kalıtım kısıtının kaçınılmaz sonucu — "Audit'siz
+        // Description" ve "Audit'li Description" ayrı dallarda var olduğundan (BaseClassWithAudit
+        // ARADA), alanları TEK bir ortak atadan miras almak, ya BaseClassWithAudit'i (Description
+        // istemeyen tüm kullanıcılarına da bu alanları zorlayarak) ya da bu sınıfı (Audit
+        // istemeyen kullanıcılarına Audit alanlarını zorlayarak) DEĞİŞTİRMEYİ gerektirir — her
+        // ikisi de DÜZİNELERCE var olan tablonun şemasını (ve üretim verisini) etkiler. Composition
+        // (Aggregated ilişkili nesne) ile çözmek de aynı şekilde şema/veri taşıma riski taşır.
+        // Bu yüzden BİLİNÇLİ OLARAK duplike bırakıldı — DEĞİŞTİRİRSEN, BaseClassWithAuditAndDescription.
+        // cs'deki birebir kopyayı da GÜNCELLE.
         string customCode2;
         string customCode1;
         string description;
