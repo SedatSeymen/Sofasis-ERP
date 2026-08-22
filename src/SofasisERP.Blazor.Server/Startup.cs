@@ -34,7 +34,9 @@ public class Startup {
 
         // Döviz kuru: TCMB'den çekme + güncelleme servisleri, ve process başına
         // TEK çalışan periyodik arka plan worker'ı (bkz. DovizKuruGuncellemeWorker).
-        services.AddScoped<IDovizKuruService, TcmbDovizKuruService>();
+        // 22.08.2026 denetimi G20: HttpClient artık DI'den geliyor, 15sn zaman aşımı
+        // zorunlu (XDocument.Load(url) eskiden hem zaman aşımısızdı hem senkrondu).
+        services.AddHttpClient<IDovizKuruService, TcmbDovizKuruService>(c => c.Timeout = TimeSpan.FromSeconds(15));
         services.AddScoped<IDovizKuruGuncellemeServisi, DovizKuruGuncellemeServisi>();
         services.AddHostedService<DovizKuruGuncellemeWorker>();
         // Rapor Controller'ları (ör. HesapEkstresiRaporuController) ile aşağıdaki

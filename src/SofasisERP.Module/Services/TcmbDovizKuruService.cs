@@ -11,15 +11,28 @@
 
 using System.Globalization;
 using System.Xml.Linq;
+using DevExpress.Persistent.Base;
 
 namespace SofasisERP.Module.Services;
 
 // TCMB'nin günlük yayınladığı XML kur listesini okuyup ayrıştırır. Sorumluluğu
 // yalnızca "veriyi çek ve ayrıştır" ile sınırlıdır; DB'ye yazma işini
 // DovizKuruGuncellemeServisi yapar — test edilebilirlik için ayrıldı.
+//
+// 22.08.2026 denetiminde bulundu (G20): XDocument.Load(url) senkron+zaman aşımısızdı
+// (askıda kalırsa arka plan worker thread'i sonsuza dek bloke ederdi) ve tüm hatalar
+// (DNS/TLS dahil) sessizce yutulup loglanmıyordu. Artık DI'den enjekte edilen, Startup.cs'de
+// AddHttpClient ile 15sn timeout'lu kaydedilen HttpClient kullanılıyor; hatalar loglanıyor.
 public sealed class TcmbDovizKuruService : IDovizKuruService
 {
-    public IReadOnlyList<DovizKuruDto> KurlariCek(DateTime tarih)
+    readonly HttpClient httpClient;
+
+    public TcmbDovizKuruService(HttpClient httpClient)
+    {
+        this.httpClient = httpClient;
+    }
+
+    public async Task<IReadOnlyList<DovizKuruDto>> KurlariCekAsync(DateTime tarih)
     {
         string url = tarih.Date == TurkiyeZamani.Bugun
             ? "https://www.tcmb.gov.tr/kurlar/today.xml"
@@ -27,7 +40,8 @@ public sealed class TcmbDovizKuruService : IDovizKuruService
 
         try
         {
-            XDocument document = XDocument.Load(url);
+            string xml = await httpClient.GetStringAsync(url).ConfigureAwait(false);
+            XDocument document = XDocument.Parse(xml);
             return document.Root?
                 .Elements("Currency")
                 .Select(ToDto)
@@ -35,10 +49,12 @@ public sealed class TcmbDovizKuruService : IDovizKuruService
                 .ToList()
                 ?? new List<DovizKuruDto>();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             // Ağ erişimi yok / TCMB o gün için henüz yayınlamadı / XML formatı değişti:
-            // sessizce boş liste dön, çağıran taraf bir sonraki denemede tekrar dener.
+            // boş liste dön (çağıran taraf bir sonraki denemede tekrar dener) ama hatayı
+            // logla — kalıcı arıza artık fark edilebilir.
+            Tracing.Tracer.LogError(ex);
             return Array.Empty<DovizKuruDto>();
         }
     }

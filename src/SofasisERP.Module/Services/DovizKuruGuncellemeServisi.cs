@@ -23,7 +23,7 @@ namespace SofasisERP.Module.Services;
 
 public interface IDovizKuruGuncellemeServisi
 {
-    void BugununKuruGerekirseGuncelle(IObjectSpace objectSpace);
+    Task BugununKuruGerekirseGuncelleAsync(IObjectSpace objectSpace);
 }
 
 public sealed class DovizKuruGuncellemeServisi : IDovizKuruGuncellemeServisi
@@ -35,7 +35,7 @@ public sealed class DovizKuruGuncellemeServisi : IDovizKuruGuncellemeServisi
         this.dovizKuruService = dovizKuruService;
     }
 
-    public void BugununKuruGerekirseGuncelle(IObjectSpace objectSpace)
+    public async Task BugununKuruGerekirseGuncelleAsync(IObjectSpace objectSpace)
     {
         DateTime bugun = TurkiyeZamani.Bugun;
 
@@ -57,7 +57,13 @@ public sealed class DovizKuruGuncellemeServisi : IDovizKuruGuncellemeServisi
             return; // Bugüne ait, tanımlı tüm dövizlerin kuru zaten var; TCMB'ye tekrar sorma.
         }
 
-        var kurlar = dovizKuruService.KurlariCek(bugun);
+        // NOT (G20): Ağ çağrısını ObjectSpace açılmadan ÖNCEye taşımak, bu metodun imzasını
+        // ve çağıranı (Worker'ın ObjectSpace oluşturma sırasını) değiştirmeyi gerektirirdi —
+        // bu turda dokunulmadı. Asenkron+timeout'lu hale getirilmesi (aşağıda) zaten worker
+        // thread'ini artık bloke etmiyor; ObjectSpace'in ağ çağrısı süresince açık kalması
+        // XPO'da gerçek bir DB bağlantısı/transaction TUTMADIĞI için (sorgu başına açılır)
+        // pratik bir maliyeti yok.
+        var kurlar = await dovizKuruService.KurlariCekAsync(bugun).ConfigureAwait(false);
         if (kurlar.Count == 0)
         {
             return; // TCMB'ye ulaşılamadı; sessizce vazgeç, sonraki denemede tekrar denenir.

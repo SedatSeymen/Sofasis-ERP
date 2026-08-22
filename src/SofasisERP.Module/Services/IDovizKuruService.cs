@@ -15,7 +15,7 @@ public interface IDovizKuruService
 {
     // Verilen tarihe ait TCMB döviz kurlarını çeker. Ağ/parse hatasında boş liste döner
     // (istisna fırlatmaz) — çağıran taraf boş listeyi "bu sefer güncellenemedi" olarak yorumlar.
-    IReadOnlyList<DovizKuruDto> KurlariCek(DateTime tarih);
+    Task<IReadOnlyList<DovizKuruDto>> KurlariCekAsync(DateTime tarih);
 }
 
 public sealed class DovizKuruDto

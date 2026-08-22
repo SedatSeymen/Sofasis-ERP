@@ -51,7 +51,7 @@ public sealed class DovizKuruGuncellemeWorker : BackgroundService
         using PeriodicTimer timer = new(KontrolAraligi);
         do
         {
-            GuncellemeyiDene();
+            await GuncellemeyiDeneAsync().ConfigureAwait(false);
         }
         while (await timer.WaitForNextTickAsync(stoppingToken).ConfigureAwait(false));
     }
@@ -69,7 +69,7 @@ public sealed class DovizKuruGuncellemeWorker : BackgroundService
         await tcs.Task.ConfigureAwait(false);
     }
 
-    void GuncellemeyiDene()
+    async Task GuncellemeyiDeneAsync()
     {
         try
         {
@@ -80,7 +80,7 @@ public sealed class DovizKuruGuncellemeWorker : BackgroundService
                 scope.ServiceProvider.GetRequiredService<IDovizKuruGuncellemeServisi>();
 
             using IObjectSpace objectSpace = objectSpaceFactory.CreateNonSecuredObjectSpace<DovizGunlukKurM>();
-            guncellemeServisi.BugununKuruGerekirseGuncelle(objectSpace);
+            await guncellemeServisi.BugununKuruGerekirseGuncelleAsync(objectSpace).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
