@@ -100,6 +100,11 @@ public abstract class BaseClass : BaseObject
     [VisibleInLookupListView(false)]
     [VisibleInReports(false)]
     [XafDisplayName("Varsayılan mı?")]
+    // Her kayıtta OnSaving()'de FindObject(IsDefault=true) sorgusu çalışıyor (yalnızca
+    // bu nesnenin kendi IsDefault'u true iken, bkz. yukarısı) — indekssiz olduğu için
+    // yazma hacmi yüksek tiplerde (hareketler) tablo taraması riski taşıyordu (22.08.2026
+    // denetimi G10).
+    [Indexed]
     public bool IsDefault
     {
         get => isDefault;

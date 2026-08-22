@@ -92,6 +92,10 @@ public class KasaCariBankaHareketleri : BaseClassWithAuditAndDescription
     [RuleRequiredField("RuleRequired_KasaCariBankaHareketleri_FisTarihi", DefaultContexts.Save, "Lütfen Fiş Tarihini Giriniz...")]
     [Appearance("ED_KasaCariBankaHareketleri_FisTarihi", Enabled = false, Criteria = "!(IsNewObject(this))", Context = "DetailView")]
     [XafDisplayName("Fiş Tarihi")]
+    // Mükerrer-kayıt kontrolü (OnSaving) ve ekstre/rapor sorguları bu üç alanın
+    // kombinasyonuyla filtreliyor — indekssiz olduğu için tablo büyüdükçe her
+    // "Kaydet" yavaşlıyordu (22.08.2026 denetimi G10).
+    [Indexed("KaynakHesap;KarsiHesap")]
     public DateTime FisTarihi
     {
         get => fisTarihi;

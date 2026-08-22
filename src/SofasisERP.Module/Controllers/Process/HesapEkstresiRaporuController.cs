@@ -83,11 +83,17 @@ public abstract class HesapEkstresiRaporuControllerBase<TKriteri> : ObjectViewCo
 
         // Devreden bakiye: dönem başlangıcından ÖNCEki tüm hareketlerin, seçili Hesap
         // perspektifinden net toplamı. UygulananYerel* kullanılır (fiilen GuncelBakiye'ye
-        // işlenmiş tutar — bkz. KasaCariBankaHareketleri.ObjectSaving).
-        decimal acilisBakiyesi = new XPQuery<KasaCariBankaHareketleri>(((XPObjectSpace)ObjectSpace).Session)
-            .Where(x => (x.KaynakHesap == hesap || x.KarsiHesap == hesap) && x.FisTarihi < baslangic)
-            .ToList()
-            .Sum(x => (x.KaynakHesap == hesap ? x.UygulananYerelBorcTutar : 0m) - (x.KarsiHesap == hesap ? x.UygulananYerelAlacakTutar : 0m));
+        // işlenmiş tutar — bkz. KasaCariBankaHareketleri.ObjectSaving). 22.08.2026
+        // denetiminde bulundu (G9): .ToList().Sum(...) dönem öncesi TÜM hareketleri tam
+        // nesne olarak belleğe çekiyordu — iki sunucu-taraflı Sum'a çevrildi.
+        Session hesapSession = ((XPObjectSpace)ObjectSpace).Session;
+        decimal acilisBorc = new XPQuery<KasaCariBankaHareketleri>(hesapSession)
+            .Where(x => x.KaynakHesap == hesap && x.FisTarihi < baslangic)
+            .Sum(x => (decimal?)x.UygulananYerelBorcTutar) ?? 0m;
+        decimal acilisAlacak = new XPQuery<KasaCariBankaHareketleri>(hesapSession)
+            .Where(x => x.KarsiHesap == hesap && x.FisTarihi < baslangic)
+            .Sum(x => (decimal?)x.UygulananYerelAlacakTutar) ?? 0m;
+        decimal acilisBakiyesi = acilisBorc - acilisAlacak;
 
         ReportServiceController reportController = Frame.GetController<ReportServiceController>();
         if (reportController == null) return;
