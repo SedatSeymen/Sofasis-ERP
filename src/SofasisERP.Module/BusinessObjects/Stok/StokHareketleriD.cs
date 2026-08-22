@@ -291,10 +291,15 @@ public class StokHareketleriD : BaseClassWithAuditAndDescription
             DovizKuru = 1;
             return;
         }
-        DovizGunlukKurM kurMaster = Session.FindObject<DovizGunlukKurM>(
-            DevExpress.Data.Filtering.CriteriaOperator.FromLambda<DovizGunlukKurM>(x => x.KurTarihi == StokHareketleriM.FisTarihi));
-        DovizGunlukKurD kurDetay = kurMaster?.DovizGunlukKurDetails.FirstOrDefault(x => x.DovizTanim == doviz);
-        DovizKuru = kurDetay?.DovizSatis;
+        // Tam gün eşleşmesi bulunamazsa en son yayınlanan kuru (<=) fallback olarak
+        // kullan — KasaCariBankaHareketleri.DovizKuruGuncelle ile aynı desen
+        // (22.08.2026 denetimi G15).
+        DateTime fisTarihiGunu = StokHareketleriM.FisTarihi.Date;
+        DovizKuru = new XPQuery<DovizGunlukKurD>(Session)
+            .Where(x => x.DovizTanim == doviz && x.KurTarihi <= fisTarihiGunu)
+            .OrderByDescending(x => x.KurTarihi)
+            .Select(x => (decimal?)x.DovizSatis)
+            .FirstOrDefault();
     }
 
     public override void ObjectSaving()

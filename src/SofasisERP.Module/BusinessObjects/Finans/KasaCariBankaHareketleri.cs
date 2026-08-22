@@ -327,10 +327,15 @@ public class KasaCariBankaHareketleri : BaseClassWithAuditAndDescription
         else
         {
             DateTime fisTarihiGunu = FisTarihi.Date;
-            DovizGunlukKurM kurMaster = Session.FindObject<DovizGunlukKurM>(
-                CriteriaOperator.FromLambda<DovizGunlukKurM>(x => x.KurTarihi == fisTarihiGunu));
-            DovizGunlukKurD kurDetay = kurMaster?.DovizGunlukKurDetails.FirstOrDefault(x => x.DovizTanim == doviz);
-            kur = kurDetay?.DovizSatis ?? 0;
+            // Tam gün eşleşmesi bulunamazsa (hafta sonu/resmi tatil — TCMB o gün kur
+            // yayınlamaz) en son yayınlanan kuru (<=) fallback olarak kullan; hiç yoksa
+            // 0 kalır ve mevcut DovizKuru>0 kuralı kaydı bloke eder (22.08.2026 denetimi
+            // G15).
+            kur = new XPQuery<DovizGunlukKurD>(Session)
+                .Where(x => x.DovizTanim == doviz && x.KurTarihi <= fisTarihiGunu)
+                .OrderByDescending(x => x.KurTarihi)
+                .Select(x => x.DovizSatis)
+                .FirstOrDefault();
         }
         if (kaynak) DovizKuru = kur; else KarsiDovizKuru = kur;
     }
