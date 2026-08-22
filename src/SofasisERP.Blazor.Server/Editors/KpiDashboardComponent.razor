@@ -1,5 +1,6 @@
 @using DevExpress.ExpressApp
 @using DevExpress.ExpressApp.Blazor.Editors
+@using DevExpress.Persistent.Base
 @using SofasisERP.Module.BusinessObjects
 @using System.Globalization
 @using System.Linq
@@ -7,6 +8,12 @@
 
 <div class="kpi-dashboard">
     <div class="kpi-section-title">Finansal Özet</div>
+    @if (hataMesaji != null)
+    {
+        <div class="kpi-hata">@hataMesaji</div>
+    }
+    else
+    {
     <div class="kpi-card-row">
         <div class="kpi-card kpi-accent-teal" @onclick="@(() => Git("KasaCariBankaHareketleri_KasaTumHareketlerListView"))">
             <div class="kpi-icon">
@@ -45,6 +52,7 @@
             </div>
         </div>
     </div>
+    }
 </div>
 
 @code {
@@ -56,11 +64,12 @@
     decimal BankaToplamBakiye;
     decimal MusterilerdenAlacak;
     decimal TedarikcilereBorc;
+    string hataMesaji;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
-        VerileriYukle();
+        await base.OnInitializedAsync();
+        await VerileriYukleAsync();
     }
 
     // GuncelBakiye tüm Hesap türlerinde (Kasa/Banka/Cari) her zaman yerel (TL) para
@@ -68,16 +77,34 @@
     // YerelBorcTutar/YerelAlacakTutar üzerinden işler) — döviz bazlı gruplama gerekmez,
     // doğrudan toplanabilir. Cari'de pozitif bakiye "bize borçlu" (alacağımız), negatif
     // bakiye "biz borçluyuz" (borcumuz) anlamına gelir (Borç hesabı artırır kuralı).
-    void VerileriYukle()
+    //
+    // 22.08.2026 denetimi G22: OnInitialized -> OnInitializedAsync; sorgular başarısız
+    // olursa (ör. DB geçici erişilemez) kart yerine kısa hata metni gösterilir ve hata
+    // loglanır — önceden yakalanmamış istisna tüm dashboard'u çökertirdi.
+    Task VerileriYukleAsync()
     {
-        IObjectSpace os = ViewItem.ObjectSpace;
+        // NOT: XPO'nun GetObjectsQuery IQueryable'ı gerçek bir async LINQ sağlayıcısı
+        // DEĞİLDİR (EF Core'un SumAsync'i IAsyncQueryProvider bekler, XPO'da yok) --
+        // sorgular senkron kalıyor. OnInitializedAsync'e geçiş asıl olarak (a) hata
+        // yönetimini Blazor'un async lifecycle'ıyla tutarlı hale getirmek, (b) gelecekte
+        // gerçek async bir veri kaynağına geçişi kolaylaştırmak için.
+        try
+        {
+            IObjectSpace os = ViewItem.ObjectSpace;
 
-        KasaToplamBakiye = os.GetObjectsQuery<KasaTanim>().Sum(x => (decimal?)x.GuncelBakiye) ?? 0;
-        BankaToplamBakiye = os.GetObjectsQuery<BankaHesabiTanim>().Sum(x => (decimal?)x.GuncelBakiye) ?? 0;
-        MusterilerdenAlacak = os.GetObjectsQuery<CariHesapTanim>()
-            .Where(x => x.GuncelBakiye > 0).Sum(x => (decimal?)x.GuncelBakiye) ?? 0;
-        TedarikcilereBorc = -(os.GetObjectsQuery<CariHesapTanim>()
-            .Where(x => x.GuncelBakiye < 0).Sum(x => (decimal?)x.GuncelBakiye) ?? 0);
+            KasaToplamBakiye = os.GetObjectsQuery<KasaTanim>().Sum(x => (decimal?)x.GuncelBakiye) ?? 0;
+            BankaToplamBakiye = os.GetObjectsQuery<BankaHesabiTanim>().Sum(x => (decimal?)x.GuncelBakiye) ?? 0;
+            MusterilerdenAlacak = os.GetObjectsQuery<CariHesapTanim>()
+                .Where(x => x.GuncelBakiye > 0).Sum(x => (decimal?)x.GuncelBakiye) ?? 0;
+            TedarikcilereBorc = -(os.GetObjectsQuery<CariHesapTanim>()
+                .Where(x => x.GuncelBakiye < 0).Sum(x => (decimal?)x.GuncelBakiye) ?? 0);
+        }
+        catch (Exception ex)
+        {
+            Tracing.Tracer.LogError(ex);
+            hataMesaji = "Finansal özet şu anda yüklenemedi.";
+        }
+        return Task.CompletedTask;
     }
 
     void Git(string listViewId) => NavigationManager.NavigateTo("/" + listViewId);

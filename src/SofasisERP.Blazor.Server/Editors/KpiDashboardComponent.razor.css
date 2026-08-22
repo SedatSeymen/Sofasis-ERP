@@ -17,6 +17,12 @@
     text-transform: uppercase;
 }
 
+.kpi-hata {
+    color: var(--dxds-color-content-neutral-subdued-rest);
+    font-size: 13px;
+    padding: 8px 4px;
+}
+
 .kpi-card-row {
     display: flex;
     flex-wrap: wrap;

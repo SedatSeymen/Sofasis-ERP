@@ -428,7 +428,11 @@ public class StokHareketleriD : BaseClassWithAuditAndDescription
             .Where(x => x.StokTanim == StokTanim && x.Oid != Oid)
             .ToList()
             .Where(x => !(KaynakBelgeTipi != null && x.KaynakBelgeTipi == KaynakBelgeTipi && x.KaynakBelgeOid == KaynakBelgeOid))
-            .OrderBy(x => x.CreatedDate)
+            // ThenBy(Oid): CreatedDate aynı saniyeye denk gelen satırlarda sırayı kararlı
+            // kılar (22.08.2026 denetimi G21). FisTarihi'ne GEÇİLMEDİ — geriye-tarihli
+            // fişlerde tam kronolojik yeniden maliyetlendirme, canlı işleme sırasıyla replay
+            // sırası arasındaki tutarlılığı bozan ayrı bir ürün kararı gerektirir.
+            .OrderBy(x => x.CreatedDate).ThenBy(x => x.Oid)
             .Select(x => (
                 Giris: x.StokHareketleriM.FisTuruTanim.StokHareketYonu == StokHareketYonu.Giris,
                 x.Miktar,
