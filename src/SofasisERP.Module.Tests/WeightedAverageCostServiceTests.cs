@@ -56,6 +56,32 @@ public class WeightedAverageCostServiceTests
     }
 
     [Fact]
+    public void GirisUygula_NegatifMiktarTamSifiraKapanirsa_ExceptionAtmazVeGirisMaliyetiniKullanir()
+    {
+        // 22.08.2026 denetiminde bulundu: eskiMiktar negatif VE giris tam 0'a getiriyorsa
+        // (yeniMiktar=0) eski kod DivideByZeroException atiyordu (eskiMiktar==0 kontrolu
+        // negatif eskiMiktar'i yakalamiyordu).
+        (decimal yeniMiktar, decimal yeniOrtalama) = servis.GirisUygula(
+            eskiMiktar: -5, eskiOrtalama: 20m, girisMiktari: 5, girisBirimMaliyeti: 30m);
+
+        Assert.Equal(0, yeniMiktar);
+        Assert.Equal(30m, yeniOrtalama);
+    }
+
+    [Fact]
+    public void GirisUygula_NegatifMiktardanGirisleToparlanma_YeniGirisMaliyetiTabanAlinir()
+    {
+        // eskiMiktar negatifken gecmis ortalama anlamini yitirmistir (bozuk stok durumu) --
+        // toparlanma sirasinda yeniMiktar hala negatif/sifir olsa bile yeni girisin
+        // maliyeti taban alinmali, eski (anlamsiz) ortalamayla karistirilmamali.
+        (decimal yeniMiktar, decimal yeniOrtalama) = servis.GirisUygula(
+            eskiMiktar: -10, eskiOrtalama: 20m, girisMiktari: 5, girisBirimMaliyeti: 30m);
+
+        Assert.Equal(-5, yeniMiktar);
+        Assert.Equal(30m, yeniOrtalama);
+    }
+
+    [Fact]
     public void CikisUygula_MiktarAzalirOrtalamaDegismez()
     {
         (decimal yeniMiktar, decimal ayniOrtalama) = servis.CikisUygula(
