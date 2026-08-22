@@ -41,13 +41,7 @@ public sealed class TcmbDovizKuruService : IDovizKuruService
         try
         {
             string xml = await httpClient.GetStringAsync(url).ConfigureAwait(false);
-            XDocument document = XDocument.Parse(xml);
-            return document.Root?
-                .Elements("Currency")
-                .Select(ToDto)
-                .Where(dto => dto != null)
-                .ToList()
-                ?? new List<DovizKuruDto>();
+            return XmlAyristir(xml);
         }
         catch (Exception ex)
         {
@@ -57,6 +51,19 @@ public sealed class TcmbDovizKuruService : IDovizKuruService
             Tracing.Tracer.LogError(ex);
             return Array.Empty<DovizKuruDto>();
         }
+    }
+
+    // Ayrıştırma HTTP çağrısından bilerek ayrıldı (22.08.2026 denetimi G23) — saf, XML
+    // string alan bir metot olarak test edilebilir (bkz. TcmbDovizKuruServiceTests).
+    public static IReadOnlyList<DovizKuruDto> XmlAyristir(string xml)
+    {
+        XDocument document = XDocument.Parse(xml);
+        return document.Root?
+            .Elements("Currency")
+            .Select(ToDto)
+            .Where(dto => dto != null)
+            .ToList()
+            ?? new List<DovizKuruDto>();
     }
 
     static DovizKuruDto ToDto(XElement currency)

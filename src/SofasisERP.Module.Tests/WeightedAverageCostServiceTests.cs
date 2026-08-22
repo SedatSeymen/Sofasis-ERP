@@ -131,6 +131,42 @@ public class WeightedAverageCostServiceTests
     }
 
     [Fact]
+    public void YenidenHesapla_CikisSifiraIndirirVeYeniGirisGelirse_OrtalamaResetlenir()
+    {
+        // +10@20 (ortalama 20) -> -10 (miktar tam 0'a iner) -> +5@50 (miktar 0 sayildigi
+        // icin ortalama dogrudan yeni girisin maliyeti olur, eski 20 ile karismaz).
+        var hareketler = new (bool Giris, decimal Miktar, decimal BirimMaliyet)[]
+        {
+            (true, 10, 20m),
+            (false, 10, 0m),
+            (true, 5, 50m),
+        };
+
+        (decimal toplamMiktar, decimal ortalama) = servis.YenidenHesapla(hareketler);
+
+        Assert.Equal(5, toplamMiktar);
+        Assert.Equal(50m, ortalama);
+    }
+
+    [Fact]
+    public void YenidenHesapla_NegatifeDusupToparlanma_YeniGirisMaliyetiTabanAlinir()
+    {
+        // +5@10 -> -15 (miktar -10'a duser, Uyar politikasiyla ulasilabilir) -> +5@30
+        // (eskiMiktar negatif oldugu icin gecmis ortalama anlamsiz -- yeni giris tabani).
+        var hareketler = new (bool Giris, decimal Miktar, decimal BirimMaliyet)[]
+        {
+            (true, 5, 10m),
+            (false, 15, 0m),
+            (true, 5, 30m),
+        };
+
+        (decimal toplamMiktar, decimal ortalama) = servis.YenidenHesapla(hareketler);
+
+        Assert.Equal(-5, toplamMiktar);
+        Assert.Equal(30m, ortalama);
+    }
+
+    [Fact]
     public void YenidenHesapla_TekBirSatirSilindiktenSonraki_ReplaySonucuDogru()
     {
         // Orijinal sıra: +10@10, +10@20, +5@50, -8. Ortadaki (+10@20) satırı SİLİNİYOR
