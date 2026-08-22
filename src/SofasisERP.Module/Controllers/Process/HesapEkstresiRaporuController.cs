@@ -111,7 +111,10 @@ public abstract class HesapEkstresiRaporuControllerBase<TKriteri> : ObjectViewCo
         previewContext.ParameterValues.Clear();
         previewContext.ParameterValues["RaporBasligi"] = raporBasligi;
         previewContext.ParameterValues["HesapAdi"] = hesap.HesapAdi;
-        previewContext.ParameterValues["DovizKodu"] = hesap.DovizTanim?.DovizKodu ?? "";
+        // Rapor rakamları (YerelBorc/YerelAlacak) HER ZAMAN TL — hesabın kendi döviz koduyla
+        // (ör. USD) etiketlemek yanıltıcıydı (22.08.2026 denetimi G14). Hesabın kendi
+        // dövizinde ekstre ayrı bir geliştirme (bkz. denetim raporu §4.5).
+        previewContext.ParameterValues["DovizKodu"] = "TRY";
         previewContext.ParameterValues["BaslangicTarihi"] = baslangic;
         previewContext.ParameterValues["BitisTarihi"] = bitis;
         previewContext.ParameterValues["AcilisBakiyesi"] = acilisBakiyesi;

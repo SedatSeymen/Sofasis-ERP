@@ -92,6 +92,13 @@ internal static class HesapEkstresiRaporuBuilder
         DetailBand detail = new DetailBand { HeightF = RowHeight };
         report.Bands.AddRange(new Band[] { topMargin, reportHeader, detail, reportFooter, bottomMargin });
 
+        // Koşan bakiye yazdırma sırasına göre birikir; FisTarihi sırası garanti değildi
+        // (geri tarihli fiş girildiğinde ara satırların "Bakiye" sütunu yanlış çıkıyordu,
+        // nihai kapanış doğru kalsa da) — 22.08.2026 denetimi G13. CreatedDate tie-breaker
+        // aynı tarihli fişlerin sırasını kararlı kılar.
+        detail.SortFields.Add(new GroupField("FisTarihi", XRColumnSortOrder.Ascending));
+        detail.SortFields.Add(new GroupField("CreatedDate", XRColumnSortOrder.Ascending));
+
         BuildHeader(reportHeader, contentWidth);
         BuildColumnHeader(reportHeader, contentWidth);
         BuildDetailRow(detail, contentWidth, oddRowStyle.Name, evenRowStyle.Name);
