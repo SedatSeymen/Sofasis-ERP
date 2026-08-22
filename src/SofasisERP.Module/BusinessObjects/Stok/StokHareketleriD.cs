@@ -322,13 +322,15 @@ public class StokHareketleriD : BaseClassWithAuditAndDescription
             DovizKuru = 1;
             YerelBirimMaliyet = BirimMaliyet;
 
-            (decimal yeniMiktar, _) = maliyetServisi.CikisUygula(
+            (decimal yeniToplamMiktar, _) = maliyetServisi.CikisUygula(
                 StokTanim.ToplamMiktar, StokTanim.OrtalamaMaliyet, Miktar);
+            decimal yeniDepoBakiye = bakiye.Miktar - Miktar;
 
-            StokTanim.ToplamMiktar = yeniMiktar;
-            bakiye.Miktar -= Miktar;
-
-            if (bakiye.Miktar < 0)
+            // Negatif stok politikası, nesnelere YAZILMADAN ÖNCE hem depo-bazlı hem
+            // GLOBAL toplam için kontrol edilir (22.08.2026 denetimi G3) — önceki halde
+            // yalnızca depo bakiyesi kontrol ediliyordu ve kontrol mutasyondan SONRA
+            // çalışıyordu (Engelle durumunda bile nesneler bellekte kirleniyordu).
+            if ((yeniDepoBakiye < 0 || yeniToplamMiktar < 0))
             {
                 StokParametre parametre = Session.GetObjectsToSave().OfType<StokParametre>().FirstOrDefault()
                     ?? new XPQuery<StokParametre>(Session).FirstOrDefault();
@@ -338,6 +340,9 @@ public class StokHareketleriD : BaseClassWithAuditAndDescription
                 if (politika == NegatifStokPolitikasi.Uyar)
                     NegatifBakiyeUyarisi = true;
             }
+
+            StokTanim.ToplamMiktar = yeniToplamMiktar;
+            bakiye.Miktar = yeniDepoBakiye;
         }
 
         ToplamMaliyet = Math.Round(Miktar * BirimMaliyet, 2, MidpointRounding.AwayFromZero);
