@@ -6,6 +6,7 @@ using DevExpress.Persistent.Base;
 using DevExpress.Persistent.BaseImpl.PermissionPolicy;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Server.Circuits;
+using Microsoft.AspNetCore.Http;
 using DevExpress.ExpressApp.Xpo;
 using SofasisERP.Blazor.Server.Services;
 using SofasisERP.Module.BusinessObjects;
@@ -123,9 +124,17 @@ public class Startup {
         // SignInMiddleware'i giriş yapmamış kullanıcıyı /api/challenge'a yönlendirdiğinde
         // "No authenticationScheme was specified" hatası fırlatıyor (resmi DevExpress
         // Blazor Startup.cs örneği).
+        // Çerez güvenlik bayrakları açıkça zorlanır (22.08.2026 denetimi G7) — HTTPS/HSTS
+        // mevcut olsa da bunlar aksi belirtilmeden zorunlu değildir; oturum çerezi
+        // sızıntısı/CSRF yüzeyini daraltır.
         services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options => {
                 options.LoginPath = "/LoginPage";
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+                options.SlidingExpiration = true;
+                options.ExpireTimeSpan = TimeSpan.FromHours(8);
             });
     }
 
