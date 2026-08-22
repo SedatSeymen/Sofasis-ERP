@@ -85,4 +85,13 @@ public class GenelParametre : BaseClass
         get => kurOndalikMaski;
         set => SetPropertyValue(nameof(KurOndalikMaski), ref kurOndalikMaski, value);
     }
+
+    // GenelParametreOkuyucu'nun process-genelindeki önbelleğini geçersiz kılar
+    // (22.08.2026 denetimi G11) — değişiklik başarıyla kaydedildikten sonra
+    // bir sonraki okuma güncel değerleri görsün diye.
+    protected override void OnSaved()
+    {
+        base.OnSaved();
+        GenelParametreOkuyucu.OnbellegiTemizle();
+    }
 }

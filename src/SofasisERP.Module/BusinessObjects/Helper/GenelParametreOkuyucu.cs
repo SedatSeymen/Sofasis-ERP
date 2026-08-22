@@ -19,8 +19,20 @@ namespace SofasisERP.Module.BusinessObjects;
 
 public static class GenelParametreOkuyucu
 {
+    // Process-genelinde önbellek (22.08.2026 denetimi G11): tek-satırlık GenelParametre
+    // her DetailView/ListView açılışında ve her Döviz Kodu/Kuru değişiminde tekrar
+    // sorgulanıyordu. GenelParametre.OnSaved bu önbelleği geçersiz kılar (bkz. o dosya).
+    static readonly object kilit = new();
+    static (int MiktarHane, int TutarHane, int KurHane)? onbellek;
+
     public static (int MiktarHane, int TutarHane, int KurHane) OndalikHaneleriniOku(IObjectSpace objectSpace)
     {
+        lock (kilit)
+        {
+            if (onbellek.HasValue)
+                return onbellek.Value;
+        }
+
         int miktarHane = 4, tutarHane = 2, kurHane = 6;
         try
         {
@@ -37,6 +49,13 @@ public static class GenelParametreOkuyucu
             Tracing.Tracer.LogError(ex);
         }
 
-        return (miktarHane, tutarHane, kurHane);
+        var sonuc = (miktarHane, tutarHane, kurHane);
+        lock (kilit) { onbellek = sonuc; }
+        return sonuc;
+    }
+
+    public static void OnbellegiTemizle()
+    {
+        lock (kilit) { onbellek = null; }
     }
 }
