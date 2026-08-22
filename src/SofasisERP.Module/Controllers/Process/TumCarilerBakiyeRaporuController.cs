@@ -76,24 +76,39 @@ public class TumCarilerBakiyeRaporuController : ObjectViewController<ListView, C
             cariler = cariler.Where(c => string.Compare(c.CariHesapKodu, bitisKodu, StringComparison.Ordinal) <= 0).ToList();
         cariler = cariler.OrderBy(c => c.CariHesapKodu, StringComparer.Ordinal).ToList();
 
-        // Devreden/Dönem hesapları: dönem bitişine kadar olan TÜM ilgili hareketler
-        // tek sorguda çekilip bellekte Cari bazında gruplanır (N+1 sorgu önlenir) —
-        // sağlamlık için ekstre raporundaki UygulananYerel* kullanım deseniyle aynı.
-        List<KasaCariBankaHareketleri> hareketler = new XPQuery<KasaCariBankaHareketleri>(session)
-            .Where(x => x.FisTarihi <= bitis)
-            .ToList();
+        // 22.08.2026 denetiminde bulunan hata (G8): TÜM hareketler .ToList() ile
+        // belleğe çekilip her Cari için bellek-içi Where çalıştırılıyordu ->
+        // O(Cari × Hareket), gerçek veride OutOfMemory/dakikalarca bekleme. Artık
+        // dört ayrı sunucu-taraflı GROUP BY sorgusuyla (KaynakHesap/KarsiHesap ×
+        // öncesi/dönem) Cari başına toplamlar önceden hesaplanıp sözlüğe alınır —
+        // hiçbir yerde hareket satırları tam nesne olarak materialize edilmez.
+        Dictionary<Guid, decimal> borcOncesi = new XPQuery<KasaCariBankaHareketleri>(session)
+            .Where(x => x.MotorIslendi && x.FisTarihi < baslangic)
+            .GroupBy(x => x.KaynakHesap)
+            .Select(g => new { Hesap = g.Key, Toplam = g.Sum(x => x.UygulananYerelBorcTutar) })
+            .ToDictionary(x => x.Hesap.Oid, x => x.Toplam);
+        Dictionary<Guid, decimal> alacakOncesi = new XPQuery<KasaCariBankaHareketleri>(session)
+            .Where(x => x.MotorIslendi && x.FisTarihi < baslangic)
+            .GroupBy(x => x.KarsiHesap)
+            .Select(g => new { Hesap = g.Key, Toplam = g.Sum(x => x.UygulananYerelAlacakTutar) })
+            .ToDictionary(x => x.Hesap.Oid, x => x.Toplam);
+        Dictionary<Guid, decimal> borcDonem = new XPQuery<KasaCariBankaHareketleri>(session)
+            .Where(x => x.MotorIslendi && x.FisTarihi >= baslangic && x.FisTarihi <= bitis)
+            .GroupBy(x => x.KaynakHesap)
+            .Select(g => new { Hesap = g.Key, Toplam = g.Sum(x => x.UygulananYerelBorcTutar) })
+            .ToDictionary(x => x.Hesap.Oid, x => x.Toplam);
+        Dictionary<Guid, decimal> alacakDonem = new XPQuery<KasaCariBankaHareketleri>(session)
+            .Where(x => x.MotorIslendi && x.FisTarihi >= baslangic && x.FisTarihi <= bitis)
+            .GroupBy(x => x.KarsiHesap)
+            .Select(g => new { Hesap = g.Key, Toplam = g.Sum(x => x.UygulananYerelAlacakTutar) })
+            .ToDictionary(x => x.Hesap.Oid, x => x.Toplam);
 
         List<CariBakiyeSatiri> satirlar = new List<CariBakiyeSatiri>();
         foreach (CariHesapTanim cari in cariler)
         {
-            List<KasaCariBankaHareketleri> ilgili = hareketler
-                .Where(x => x.KaynakHesap == cari || x.KarsiHesap == cari)
-                .ToList();
-
-            decimal devreden = ilgili.Where(x => x.FisTarihi < baslangic)
-                .Sum(x => (x.KaynakHesap == cari ? x.UygulananYerelBorcTutar : 0m) - (x.KarsiHesap == cari ? x.UygulananYerelAlacakTutar : 0m));
-            decimal donemBorc = ilgili.Where(x => x.FisTarihi >= baslangic && x.KaynakHesap == cari).Sum(x => x.UygulananYerelBorcTutar);
-            decimal donemAlacak = ilgili.Where(x => x.FisTarihi >= baslangic && x.KarsiHesap == cari).Sum(x => x.UygulananYerelAlacakTutar);
+            decimal devreden = borcOncesi.GetValueOrDefault(cari.Oid) - alacakOncesi.GetValueOrDefault(cari.Oid);
+            decimal donemBorc = borcDonem.GetValueOrDefault(cari.Oid);
+            decimal donemAlacak = alacakDonem.GetValueOrDefault(cari.Oid);
             decimal kapanis = devreden + donemBorc - donemAlacak;
 
             satirlar.Add(new CariBakiyeSatiri
